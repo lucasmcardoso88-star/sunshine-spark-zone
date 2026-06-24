@@ -14,6 +14,7 @@ import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppReceitasRouteImport } from './routes/_app/receitas'
 import { Route as AppPrevistoRealizadoRouteImport } from './routes/_app/previsto-realizado'
 import { Route as AppFluxoCaixaRouteImport } from './routes/_app/fluxo-caixa'
+import { Route as AppExternoRouteImport } from './routes/_app/externo'
 import { Route as AppDreRouteImport } from './routes/_app/dre'
 import { Route as AppDespesasRouteImport } from './routes/_app/despesas'
 import { Route as AppConfiguracoesRouteImport } from './routes/_app/configuracoes'
@@ -43,6 +44,11 @@ const AppFluxoCaixaRoute = AppFluxoCaixaRouteImport.update({
   path: '/fluxo-caixa',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppExternoRoute = AppExternoRouteImport.update({
+  id: '/externo',
+  path: '/externo',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppDreRoute = AppDreRouteImport.update({
   id: '/dre',
   path: '/dre',
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/configuracoes': typeof AppConfiguracoesRoute
   '/despesas': typeof AppDespesasRoute
   '/dre': typeof AppDreRoute
+  '/externo': typeof AppExternoRoute
   '/fluxo-caixa': typeof AppFluxoCaixaRoute
   '/previsto-realizado': typeof AppPrevistoRealizadoRoute
   '/receitas': typeof AppReceitasRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByTo {
   '/configuracoes': typeof AppConfiguracoesRoute
   '/despesas': typeof AppDespesasRoute
   '/dre': typeof AppDreRoute
+  '/externo': typeof AppExternoRoute
   '/fluxo-caixa': typeof AppFluxoCaixaRoute
   '/previsto-realizado': typeof AppPrevistoRealizadoRoute
   '/receitas': typeof AppReceitasRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   '/_app/configuracoes': typeof AppConfiguracoesRoute
   '/_app/despesas': typeof AppDespesasRoute
   '/_app/dre': typeof AppDreRoute
+  '/_app/externo': typeof AppExternoRoute
   '/_app/fluxo-caixa': typeof AppFluxoCaixaRoute
   '/_app/previsto-realizado': typeof AppPrevistoRealizadoRoute
   '/_app/receitas': typeof AppReceitasRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
     | '/configuracoes'
     | '/despesas'
     | '/dre'
+    | '/externo'
     | '/fluxo-caixa'
     | '/previsto-realizado'
     | '/receitas'
@@ -113,6 +123,7 @@ export interface FileRouteTypes {
     | '/configuracoes'
     | '/despesas'
     | '/dre'
+    | '/externo'
     | '/fluxo-caixa'
     | '/previsto-realizado'
     | '/receitas'
@@ -124,6 +135,7 @@ export interface FileRouteTypes {
     | '/_app/configuracoes'
     | '/_app/despesas'
     | '/_app/dre'
+    | '/_app/externo'
     | '/_app/fluxo-caixa'
     | '/_app/previsto-realizado'
     | '/_app/receitas'
@@ -171,6 +183,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFluxoCaixaRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/externo': {
+      id: '/_app/externo'
+      path: '/externo'
+      fullPath: '/externo'
+      preLoaderRoute: typeof AppExternoRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/dre': {
       id: '/_app/dre'
       path: '/dre'
@@ -207,6 +226,7 @@ interface AppRouteRouteChildren {
   AppConfiguracoesRoute: typeof AppConfiguracoesRoute
   AppDespesasRoute: typeof AppDespesasRoute
   AppDreRoute: typeof AppDreRoute
+  AppExternoRoute: typeof AppExternoRoute
   AppFluxoCaixaRoute: typeof AppFluxoCaixaRoute
   AppPrevistoRealizadoRoute: typeof AppPrevistoRealizadoRoute
   AppReceitasRoute: typeof AppReceitasRoute
@@ -218,6 +238,7 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppConfiguracoesRoute: AppConfiguracoesRoute,
   AppDespesasRoute: AppDespesasRoute,
   AppDreRoute: AppDreRoute,
+  AppExternoRoute: AppExternoRoute,
   AppFluxoCaixaRoute: AppFluxoCaixaRoute,
   AppPrevistoRealizadoRoute: AppPrevistoRealizadoRoute,
   AppReceitasRoute: AppReceitasRoute,
@@ -234,13 +255,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
