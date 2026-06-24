@@ -1,0 +1,31 @@
+export const BRL = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+  maximumFractionDigits: 0,
+});
+export const BRL2 = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});
+
+export const formatBRL = (n: number | null | undefined, decimals = false) =>
+  n == null ? "—" : (decimals ? BRL2 : BRL).format(n);
+
+export const formatPercent = (n: number | null | undefined, digits = 1) =>
+  n == null ? "—" : `${(n * 100).toFixed(digits).replace(".", ",")}%`;
+
+export const formatVariation = (n: number | null | undefined, digits = 1) => {
+  if (n == null) return "—";
+  const sign = n > 0 ? "+" : "";
+  return `${sign}${(n * 100).toFixed(digits).replace(".", ",")}%`;
+};
+
+export const formatDate = (iso: string) => {
+  const d = new Date(iso);
+  return d.toLocaleDateString("pt-BR");
+};
+
+export const MONTHS_PT = [
+  "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+  "Jul", "Ago", "Set", "Out", "Nov", "Dez",
+];
