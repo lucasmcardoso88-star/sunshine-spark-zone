@@ -39,7 +39,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { supabase } from "@/integrations/supabase/client";
+import { supabaseExternal as supabase } from "@/integrations/supabase-external/client";
 import { BRL, MONTHS_PT, formatDate } from "@/lib/format";
 
 export const Route = createFileRoute("/_app/dashboard")({
@@ -52,18 +52,32 @@ export const Route = createFileRoute("/_app/dashboard")({
   component: DashboardPage,
 });
 
-type DbRow = {
+type ReceitaRow = {
   id: string;
   descricao: string | null;
-  categoria: string | null;
-  centro_custo: string | null;
-  valor: number | string;
+  total: number | string | null;
+  recebido: number | string | null;
+  a_receber: number | string | null;
   data_vencimento: string | null;
-  data_pagamento: string | null;
+  data_competencia: string | null;
   status: string | null;
+  cliente_nome: string | null;
+  categoria_nome: string | null;
+  centro_de_custo_nome: string | null;
 };
-type ReceitaRow = DbRow & { cliente: string | null };
-type DespesaRow = DbRow & { fornecedor: string | null };
+type DespesaRow = {
+  id: string;
+  descricao: string | null;
+  total: number | string | null;
+  pago: number | string | null;
+  nao_pago: number | string | null;
+  data_vencimento: string | null;
+  data_competencia: string | null;
+  status: string | null;
+  fornecedor_nome: string | null;
+  categoria_nome: string | null;
+  centro_de_custo_nome: string | null;
+};
 
 type NormStatus = "ACQUITTED" | "PENDING" | "OVERDUE";
 
@@ -104,19 +118,20 @@ type Item = {
 };
 
 function toItem(kind: "receita" | "despesa", r: ReceitaRow | DespesaRow): Item {
+  const isReceita = kind === "receita";
   return {
     kind,
     id: r.id,
     descricao: r.descricao ?? "—",
     party:
-      kind === "receita"
-        ? (r as ReceitaRow).cliente ?? "—"
-        : (r as DespesaRow).fornecedor ?? "—",
-    categoria: r.categoria ?? "Sem categoria",
-    centroCusto: r.centro_custo ?? "Não alocado",
-    valor: Number(r.valor) || 0,
-    vencimento: r.data_vencimento,
-    pagamento: r.data_pagamento,
+      (isReceita
+        ? (r as ReceitaRow).cliente_nome
+        : (r as DespesaRow).fornecedor_nome) ?? "—",
+    categoria: r.categoria_nome ?? "Sem categoria",
+    centroCusto: r.centro_de_custo_nome ?? "Não alocado",
+    valor: Number(r.total) || 0,
+    vencimento: r.data_vencimento ?? r.data_competencia,
+    pagamento: null,
     status: normStatus(r.status),
   };
 }
