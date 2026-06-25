@@ -33,7 +33,7 @@ type Ctx = FiltersState & {
 const FiltersContext = createContext<Ctx | null>(null);
 
 export const DEFAULT_FILTERS: FiltersState = {
-  year: 2026,
+  year: 2023,
   quarter: "all",
   month: "all",
   basis: "accrual",

@@ -1,6 +1,6 @@
 import { MONTHS_PT } from "@/lib/format";
 
-// Dados zerados — sistema limpo. Repor quando integrar fonte real.
+// Estruturas preenchidas em runtime pelos dados reais do banco externo.
 
 export type CompanyId = "all" | "main" | "growth" | "branding";
 export type AccountingBasis = "cash" | "accrual";
@@ -20,7 +20,7 @@ export const CLIENTS: string[] = [];
 export const SUPPLIERS: string[] = [];
 export const SERVICE_TYPES = [] as const;
 export const EXPENSE_CATEGORIES = [] as const;
-export const COST_CENTERS = ["Não alocado", "Tributária", "Ocupação", "Pessoal"] as const;
+export const COST_CENTERS = ["Não alocado", "Tributária", "Ocupação", "Pessoal"] as string[];
 
 export type MonthlyKpi = {
   year: number; monthIndex: number; monthLabel: string;
@@ -55,6 +55,7 @@ export const YEARS = [2023, 2024, 2025, 2026, 2027] as const;
 export type Transaction = { id: string; date: string; type: "revenue" | "expense"; party: string; category: string; costCenter: string; amount: number; status: "Pago" | "Pendente" | "Atrasado"; };
 
 export const TRANSACTIONS_BY_YEAR: Record<number, Transaction[]> = {
+  2023: [],
   2024: [],
   2025: [],
   2026: [],
