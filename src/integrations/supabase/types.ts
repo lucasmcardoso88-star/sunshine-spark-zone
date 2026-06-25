@@ -118,6 +118,63 @@ export type Database = {
           },
         ]
       }
+      bem: {
+        Row: {
+          categoria_id: string | null
+          centro_custo_id: string | null
+          created_at: string
+          data_aquisicao: string | null
+          descricao: string | null
+          id: string
+          nome: string
+          raw: Json
+          status: string
+          updated_at: string
+          valor_aquisicao: number
+        }
+        Insert: {
+          categoria_id?: string | null
+          centro_custo_id?: string | null
+          created_at?: string
+          data_aquisicao?: string | null
+          descricao?: string | null
+          id: string
+          nome: string
+          raw?: Json
+          status?: string
+          updated_at?: string
+          valor_aquisicao?: number
+        }
+        Update: {
+          categoria_id?: string | null
+          centro_custo_id?: string | null
+          created_at?: string
+          data_aquisicao?: string | null
+          descricao?: string | null
+          id?: string
+          nome?: string
+          raw?: Json
+          status?: string
+          updated_at?: string
+          valor_aquisicao?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bem_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bem_centro_custo_id_fkey"
+            columns: ["centro_custo_id"]
+            isOneToOne: false
+            referencedRelation: "centros_de_custo"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       budget_targets: {
         Row: {
           category_name: string
@@ -167,6 +224,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      categorias: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string
+          tipo: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          nome: string
+          tipo?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string
+          tipo?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      centros_de_custo: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          nome: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       companies: {
         Row: {
@@ -235,6 +337,79 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contratos: {
+        Row: {
+          categoria_id: string | null
+          centro_custo_id: string | null
+          cliente_id: string | null
+          cliente_nome: string | null
+          created_at: string
+          data_fim: string | null
+          data_inicio: string | null
+          descricao: string | null
+          id: string
+          numero: string | null
+          raw: Json
+          status: string
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          categoria_id?: string | null
+          centro_custo_id?: string | null
+          cliente_id?: string | null
+          cliente_nome?: string | null
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          id: string
+          numero?: string | null
+          raw?: Json
+          status?: string
+          updated_at?: string
+          valor?: number
+        }
+        Update: {
+          categoria_id?: string | null
+          centro_custo_id?: string | null
+          cliente_id?: string | null
+          cliente_nome?: string | null
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string | null
+          descricao?: string | null
+          id?: string
+          numero?: string | null
+          raw?: Json
+          status?: string
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contratos_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contratos_centro_custo_id_fkey"
+            columns: ["centro_custo_id"]
+            isOneToOne: false
+            referencedRelation: "centros_de_custo"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contratos_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "pessoas"
             referencedColumns: ["id"]
           },
         ]
@@ -504,6 +679,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pessoas: {
+        Row: {
+          cpf_cnpj: string | null
+          created_at: string
+          email: string | null
+          id: string
+          nome: string
+          telefone: string | null
+          tipo: string | null
+          updated_at: string
+        }
+        Insert: {
+          cpf_cnpj?: string | null
+          created_at?: string
+          email?: string | null
+          id: string
+          nome: string
+          telefone?: string | null
+          tipo?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cpf_cnpj?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          nome?: string
+          telefone?: string | null
+          tipo?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       receitas: {
         Row: {
