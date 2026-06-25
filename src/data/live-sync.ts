@@ -187,7 +187,7 @@ async function loadContaAzulData() {
       balance += month.cashIn - month.cashOut;
       month.cashBalance = balance;
     }
-    TRANSACTIONS_BY_YEAR[year].sort((a, b) => b.date.localeCompare(a.date));
+    TRANSACTIONS_BY_YEAR[year]?.sort((a, b) => b.date.localeCompare(a.date));
   }
 
   ALERTS.length = 0;
