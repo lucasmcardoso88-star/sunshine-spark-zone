@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 
 const TABS = [
   { to: "/", label: "Painel Gerencial", icon: BarChart3 },
+  { to: "/dashboard", label: "Dashboard", icon: LineChart },
   { to: "/dre", label: "DRE", icon: Table2 },
   { to: "/previsto-realizado", label: "Previsto x Realizado", icon: TrendingUp },
   { to: "/fluxo-caixa", label: "Fluxo de Caixa", icon: LineChart },
