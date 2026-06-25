@@ -17,6 +17,7 @@ import { Route as AppFluxoCaixaRouteImport } from './routes/_app/fluxo-caixa'
 import { Route as AppExternoRouteImport } from './routes/_app/externo'
 import { Route as AppDreRouteImport } from './routes/_app/dre'
 import { Route as AppDespesasRouteImport } from './routes/_app/despesas'
+import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppConfiguracoesRouteImport } from './routes/_app/configuracoes'
 import { Route as AppAlertasRouteImport } from './routes/_app/alertas'
 
@@ -59,6 +60,11 @@ const AppDespesasRoute = AppDespesasRouteImport.update({
   path: '/despesas',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppConfiguracoesRoute = AppConfiguracoesRouteImport.update({
   id: '/configuracoes',
   path: '/configuracoes',
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/alertas': typeof AppAlertasRoute
   '/configuracoes': typeof AppConfiguracoesRoute
+  '/dashboard': typeof AppDashboardRoute
   '/despesas': typeof AppDespesasRoute
   '/dre': typeof AppDreRoute
   '/externo': typeof AppExternoRoute
@@ -84,6 +91,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/alertas': typeof AppAlertasRoute
   '/configuracoes': typeof AppConfiguracoesRoute
+  '/dashboard': typeof AppDashboardRoute
   '/despesas': typeof AppDespesasRoute
   '/dre': typeof AppDreRoute
   '/externo': typeof AppExternoRoute
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteRouteWithChildren
   '/_app/alertas': typeof AppAlertasRoute
   '/_app/configuracoes': typeof AppConfiguracoesRoute
+  '/_app/dashboard': typeof AppDashboardRoute
   '/_app/despesas': typeof AppDespesasRoute
   '/_app/dre': typeof AppDreRoute
   '/_app/externo': typeof AppExternoRoute
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/'
     | '/alertas'
     | '/configuracoes'
+    | '/dashboard'
     | '/despesas'
     | '/dre'
     | '/externo'
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
   to:
     | '/alertas'
     | '/configuracoes'
+    | '/dashboard'
     | '/despesas'
     | '/dre'
     | '/externo'
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/_app'
     | '/_app/alertas'
     | '/_app/configuracoes'
+    | '/_app/dashboard'
     | '/_app/despesas'
     | '/_app/dre'
     | '/_app/externo'
@@ -204,6 +216,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDespesasRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/configuracoes': {
       id: '/_app/configuracoes'
       path: '/configuracoes'
@@ -224,6 +243,7 @@ declare module '@tanstack/react-router' {
 interface AppRouteRouteChildren {
   AppAlertasRoute: typeof AppAlertasRoute
   AppConfiguracoesRoute: typeof AppConfiguracoesRoute
+  AppDashboardRoute: typeof AppDashboardRoute
   AppDespesasRoute: typeof AppDespesasRoute
   AppDreRoute: typeof AppDreRoute
   AppExternoRoute: typeof AppExternoRoute
@@ -236,6 +256,7 @@ interface AppRouteRouteChildren {
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppAlertasRoute: AppAlertasRoute,
   AppConfiguracoesRoute: AppConfiguracoesRoute,
+  AppDashboardRoute: AppDashboardRoute,
   AppDespesasRoute: AppDespesasRoute,
   AppDreRoute: AppDreRoute,
   AppExternoRoute: AppExternoRoute,
@@ -255,13 +276,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
