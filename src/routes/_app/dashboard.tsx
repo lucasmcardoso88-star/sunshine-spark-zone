@@ -56,8 +56,8 @@ type ReceitaRow = {
   id: string;
   descricao: string | null;
   total: number | string | null;
-  recebido: number | string | null;
-  a_receber: number | string | null;
+  pago: number | string | null;
+  nao_pago: number | string | null;
   data_vencimento: string | null;
   data_competencia: string | null;
   status: string | null;
@@ -112,13 +112,25 @@ type Item = {
   categoria: string;
   centroCusto: string;
   valor: number;
+  aberto: number;
   vencimento: string | null;
   pagamento: string | null;
   status: NormStatus;
 };
 
+function asNumber(value: number | string | null | undefined) {
+  if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+  if (!value) return 0;
+  const normalized = value.replace(/\./g, "").replace(",", ".");
+  const n = Number(normalized);
+  return Number.isFinite(n) ? n : 0;
+}
+
 function toItem(kind: "receita" | "despesa", r: ReceitaRow | DespesaRow): Item {
   const isReceita = kind === "receita";
+  const valor = asNumber(r.total);
+  const status = normStatus(r.status);
+  const aberto = asNumber(r.nao_pago) || (status === "ACQUITTED" ? 0 : valor);
   return {
     kind,
     id: r.id,
@@ -129,11 +141,29 @@ function toItem(kind: "receita" | "despesa", r: ReceitaRow | DespesaRow): Item {
         : (r as DespesaRow).fornecedor_nome) ?? "—",
     categoria: r.categoria_nome ?? "Sem categoria",
     centroCusto: r.centro_de_custo_nome ?? "Não alocado",
-    valor: Number(r.total) || 0,
+    valor,
+    aberto,
     vencimento: r.data_vencimento ?? r.data_competencia,
     pagamento: null,
-    status: normStatus(r.status),
+    status,
   };
+}
+
+async function fetchAllRows<T>(table: "receitas" | "despesas") {
+  const pageSize = 1000;
+  const rows: T[] = [];
+  for (let from = 0; ; from += pageSize) {
+    const { data, error } = await supabase
+      .from(table)
+      .select("*")
+      .order("data_vencimento", { ascending: true })
+      .range(from, from + pageSize - 1);
+    if (error) throw error;
+    const batch = (data ?? []) as T[];
+    rows.push(...batch);
+    if (batch.length < pageSize) break;
+  }
+  return rows;
 }
 
 function DashboardPage() {
@@ -155,11 +185,11 @@ function DashboardPage() {
   async function load() {
     setLoading(true);
     const [r, d] = await Promise.all([
-      supabase.from("receitas").select("*").limit(5000),
-      supabase.from("despesas").select("*").limit(5000),
+      fetchAllRows<ReceitaRow>("receitas"),
+      fetchAllRows<DespesaRow>("despesas"),
     ]);
-    setReceitas((r.data ?? []).map((row) => toItem("receita", row as ReceitaRow)));
-    setDespesas((d.data ?? []).map((row) => toItem("despesa", row as DespesaRow)));
+    setReceitas(r.map((row) => toItem("receita", row)));
+    setDespesas(d.map((row) => toItem("despesa", row)));
     setLoading(false);
   }
 
@@ -222,10 +252,10 @@ function DashboardPage() {
   const resultado = totalReceitas - totalDespesas;
   const aReceber = fReceitas
     .filter((i) => i.status !== "ACQUITTED")
-    .reduce((a, b) => a + b.valor, 0);
+    .reduce((a, b) => a + b.aberto, 0);
   const aPagar = fDespesas
     .filter((i) => i.status !== "ACQUITTED")
-    .reduce((a, b) => a + b.valor, 0);
+    .reduce((a, b) => a + b.aberto, 0);
 
   // Monthly chart (current year, respects categoria/centro/status filters)
   const monthly = useMemo(() => {

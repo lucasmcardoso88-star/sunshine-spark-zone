@@ -243,7 +243,7 @@ export function SidebarFilters() {
             </Card>
 
             <p className="text-[11px] text-muted-foreground leading-relaxed px-1">
-              Dados reais sincronizados do Conta Azul — W2 Publicidade · referência jun/2026
+              Dados reais sincronizados do Conta Azul — W2 Publicidade · base 2023
             </p>
           </>
         )}
