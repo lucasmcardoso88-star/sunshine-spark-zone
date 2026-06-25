@@ -143,7 +143,7 @@ function DashboardPage() {
 
   // Filters
   const now = new Date();
-  const [year, setYear] = useState<string>(String(now.getFullYear()));
+  const [year, setYear] = useState<string>("2023");
   const [month, setMonth] = useState<string>("all");
   const [categoria, setCategoria] = useState<string>("all");
   const [centro, setCentro] = useState<string>("all");
