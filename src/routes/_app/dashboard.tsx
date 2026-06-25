@@ -39,7 +39,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { supabase } from "@/integrations/supabase/client";
+import { supabaseExternal as supabase } from "@/integrations/supabase-external/client";
 import { BRL, MONTHS_PT, formatDate } from "@/lib/format";
 
 export const Route = createFileRoute("/_app/dashboard")({
