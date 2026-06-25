@@ -239,6 +239,54 @@ export type Database = {
           },
         ]
       }
+      despesas: {
+        Row: {
+          categoria: string | null
+          centro_custo: string | null
+          conta_azul_event: string | null
+          created_at: string
+          data_pagamento: string | null
+          data_vencimento: string | null
+          descricao: string | null
+          fornecedor: string | null
+          id: string
+          raw: Json
+          status: string
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          categoria?: string | null
+          centro_custo?: string | null
+          conta_azul_event?: string | null
+          created_at?: string
+          data_pagamento?: string | null
+          data_vencimento?: string | null
+          descricao?: string | null
+          fornecedor?: string | null
+          id: string
+          raw?: Json
+          status?: string
+          updated_at?: string
+          valor?: number
+        }
+        Update: {
+          categoria?: string | null
+          centro_custo?: string | null
+          conta_azul_event?: string | null
+          created_at?: string
+          data_pagamento?: string | null
+          data_vencimento?: string | null
+          descricao?: string | null
+          fornecedor?: string | null
+          id?: string
+          raw?: Json
+          status?: string
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: []
+      }
       email_report_runs: {
         Row: {
           company_id: string
@@ -457,6 +505,84 @@ export type Database = {
           },
         ]
       }
+      receitas: {
+        Row: {
+          categoria: string | null
+          centro_custo: string | null
+          cliente: string | null
+          conta_azul_event: string | null
+          created_at: string
+          data_pagamento: string | null
+          data_vencimento: string | null
+          descricao: string | null
+          id: string
+          raw: Json
+          status: string
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          categoria?: string | null
+          centro_custo?: string | null
+          cliente?: string | null
+          conta_azul_event?: string | null
+          created_at?: string
+          data_pagamento?: string | null
+          data_vencimento?: string | null
+          descricao?: string | null
+          id: string
+          raw?: Json
+          status?: string
+          updated_at?: string
+          valor?: number
+        }
+        Update: {
+          categoria?: string | null
+          centro_custo?: string | null
+          cliente?: string | null
+          conta_azul_event?: string | null
+          created_at?: string
+          data_pagamento?: string | null
+          data_vencimento?: string | null
+          descricao?: string | null
+          id?: string
+          raw?: Json
+          status?: string
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: []
+      }
+      sync_log: {
+        Row: {
+          evento: string
+          executado_em: string
+          id: string
+          mensagem: string | null
+          registro_id: string | null
+          status: string
+          tabela: string
+        }
+        Insert: {
+          evento: string
+          executado_em?: string
+          id?: string
+          mensagem?: string | null
+          registro_id?: string | null
+          status: string
+          tabela: string
+        }
+        Update: {
+          evento?: string
+          executado_em?: string
+          id?: string
+          mensagem?: string | null
+          registro_id?: string | null
+          status?: string
+          tabela?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -515,6 +641,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      vendas: {
+        Row: {
+          cliente: string | null
+          conta_azul_event: string | null
+          created_at: string
+          data: string | null
+          descricao: string | null
+          id: string
+          numero: string | null
+          raw: Json
+          status: string
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          cliente?: string | null
+          conta_azul_event?: string | null
+          created_at?: string
+          data?: string | null
+          descricao?: string | null
+          id: string
+          numero?: string | null
+          raw?: Json
+          status?: string
+          updated_at?: string
+          valor?: number
+        }
+        Update: {
+          cliente?: string | null
+          conta_azul_event?: string | null
+          created_at?: string
+          data?: string | null
+          descricao?: string | null
+          id?: string
+          numero?: string | null
+          raw?: Json
+          status?: string
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: []
       }
     }
     Views: {
