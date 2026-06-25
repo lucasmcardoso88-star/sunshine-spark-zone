@@ -1,15 +1,45 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabaseExternal as supabase } from "@/integrations/supabase-external/client";
 import {
   KPI_BY_YEAR,
   TRANSACTIONS_BY_YEAR,
   ALERTS,
   TARGETS_2025,
+  COST_CENTERS,
+  EXPENSE_CATEGORIES,
+  SERVICE_TYPES,
   type MonthlyKpi,
   type Transaction,
-  type AlertEvent,
 } from "@/data/mock";
 import { MONTHS_PT } from "@/lib/format";
+
+type ReceitaRow = {
+  id: string;
+  descricao: string | null;
+  status: string | null;
+  total: number | string | null;
+  pago: number | string | null;
+  nao_pago: number | string | null;
+  data_vencimento: string | null;
+  data_competencia: string | null;
+  cliente_nome: string | null;
+  categoria_nome: string | null;
+  centro_de_custo_nome: string | null;
+};
+
+type DespesaRow = {
+  id: string;
+  descricao: string | null;
+  status: string | null;
+  total: number | string | null;
+  pago: number | string | null;
+  nao_pago: number | string | null;
+  data_vencimento: string | null;
+  data_competencia: string | null;
+  fornecedor_nome: string | null;
+  categoria_nome: string | null;
+  centro_de_custo_nome: string | null;
+};
 
 function emptyMonth(year: number, monthIndex: number): MonthlyKpi {
   return {
@@ -24,116 +54,144 @@ function emptyMonth(year: number, monthIndex: number): MonthlyKpi {
   };
 }
 
-type DbStatus = "pending" | "paid" | "overdue" | "canceled";
-const STATUS_MAP: Record<DbStatus, Transaction["status"]> = {
-  paid: "Pago",
-  pending: "Pendente",
-  overdue: "Atrasado",
-  canceled: "Pendente",
+const STATUS_MAP: Record<string, Transaction["status"]> = {
+  ACQUITTED: "Pago",
+  PAID: "Pago",
+  PAGO: "Pago",
+  PENDING: "Pendente",
+  PENDENTE: "Pendente",
+  OVERDUE: "Atrasado",
+  VENCIDO: "Atrasado",
+  ATRASADO: "Atrasado",
+  CANCELED: "Pendente",
 };
 
-async function loadKpis() {
-  const { data } = await supabase.from("kpi_snapshots").select("*");
-  if (!data) return;
-  // Reset known years in place
+function asNumber(value: number | string | null | undefined) {
+  if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+  if (!value) return 0;
+  const normalized = value.replace(/\./g, "").replace(",", ".");
+  const n = Number(normalized);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function normalizeStatus(value: string | null | undefined): Transaction["status"] {
+  return STATUS_MAP[(value ?? "").toUpperCase()] ?? "Pendente";
+}
+
+async function fetchAll<T>(table: "receitas" | "despesas") {
+  const pageSize = 1000;
+  const rows: T[] = [];
+  for (let from = 0; ; from += pageSize) {
+    const { data, error } = await supabase
+      .from(table)
+      .select("*")
+      .order("data_vencimento", { ascending: true })
+      .range(from, from + pageSize - 1);
+    if (error) throw error;
+    const batch = (data ?? []) as T[];
+    rows.push(...batch);
+    if (batch.length < pageSize) break;
+  }
+  return rows;
+}
+
+function ensureYear(year: number) {
+  if (!KPI_BY_YEAR[year]) KPI_BY_YEAR[year] = Array.from({ length: 12 }, (_, i) => emptyMonth(year, i));
+  if (!TRANSACTIONS_BY_YEAR[year]) TRANSACTIONS_BY_YEAR[year] = [];
+}
+
+function pushUnique(list: string[], value: string | null | undefined) {
+  const label = value?.trim();
+  if (label && !list.includes(label)) list.push(label);
+}
+
+async function loadContaAzulData() {
+  const [receitas, despesas] = await Promise.all([
+    fetchAll<ReceitaRow>("receitas"),
+    fetchAll<DespesaRow>("despesas"),
+  ]);
+
   for (const year of Object.keys(KPI_BY_YEAR)) {
     const y = Number(year);
     const arr = KPI_BY_YEAR[y];
     for (let i = 0; i < arr.length; i++) arr[i] = emptyMonth(y, i);
   }
-  // Aggregate across companies per (year, month)
-  for (const row of data) {
-    const yearArr = KPI_BY_YEAR[row.year];
-    if (!yearArr) {
-      KPI_BY_YEAR[row.year] = Array.from({ length: 12 }, (_, i) => emptyMonth(row.year, i));
-    }
-    const m = KPI_BY_YEAR[row.year][row.month - 1];
-    if (!m) continue;
-    m.grossRevenue += Number(row.gross_revenue);
-    m.netRevenue += Number(row.net_revenue);
-    m.operationalCosts += Number(row.operational_costs);
-    m.operationalExpenses += Number(row.operational_expenses);
-    m.ebitda += Number(row.ebitda);
-    m.netProfit += Number(row.net_profit);
-    m.cashBalance += Number(row.cash_balance);
-    m.accountsReceivable += Number(row.accounts_receivable);
-    m.accountsPayable += Number(row.accounts_payable);
-    m.netMargin = m.netRevenue > 0 ? m.netProfit / m.netRevenue : 0;
-    m.grossProfit = m.netRevenue - m.operationalCosts;
-  }
-}
-
-async function loadTransactions() {
-  const { data } = await supabase
-    .from("financial_transactions")
-    .select("*")
-    .order("competence_date", { ascending: false })
-    .limit(5000);
-  if (!data) return;
   for (const k of Object.keys(TRANSACTIONS_BY_YEAR)) TRANSACTIONS_BY_YEAR[Number(k)] = [];
-  for (const row of data) {
-    const dateStr = row.payment_date ?? row.competence_date;
+
+  for (const row of receitas) {
+    const dateStr = row.data_vencimento ?? row.data_competencia;
     if (!dateStr) continue;
-    const year = new Date(dateStr).getFullYear();
-    if (!TRANSACTIONS_BY_YEAR[year]) TRANSACTIONS_BY_YEAR[year] = [];
-    const isRevenue =
-      row.transaction_type === "revenue" || row.transaction_type === "financial_income";
-    const isExpense =
-      row.transaction_type === "expense" ||
-      row.transaction_type === "financial_expense" ||
-      row.transaction_type === "tax";
-    if (!isRevenue && !isExpense) continue;
+    const dt = new Date(dateStr);
+    if (Number.isNaN(dt.getTime())) continue;
+    const year = dt.getFullYear();
+    ensureYear(year);
+    const month = KPI_BY_YEAR[year][dt.getMonth()];
+    const total = asNumber(row.total);
+    const paid = asNumber(row.pago);
+    const open = asNumber(row.nao_pago) || (normalizeStatus(row.status) === "Pago" ? 0 : total);
+
+    month.grossRevenue += total;
+    month.netRevenue += total;
+    month.cashIn += paid || total;
+    month.accountsReceivable += open;
     TRANSACTIONS_BY_YEAR[year].push({
       id: row.id,
       date: dateStr,
-      type: isRevenue ? "revenue" : "expense",
-      party: row.customer_or_supplier_name ?? "—",
-      category: row.category_name ?? "—",
-      costCenter: row.cost_center_name ?? "Não alocado",
-      amount: Number(row.amount),
-      status: STATUS_MAP[row.status as DbStatus] ?? "Pendente",
+      type: "revenue",
+      party: row.cliente_nome ?? "—",
+      category: row.categoria_nome ?? "Sem categoria",
+      costCenter: row.centro_de_custo_nome ?? "Não alocado",
+      amount: total,
+      status: normalizeStatus(row.status),
     });
+    pushUnique(SERVICE_TYPES as unknown as string[], row.categoria_nome);
+    pushUnique(COST_CENTERS, row.centro_de_custo_nome);
   }
-}
 
-async function loadAlerts() {
-  const { data } = await supabase
-    .from("alert_events")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(500);
-  if (!data) return;
-  ALERTS.length = 0;
-  for (const row of data) {
-    ALERTS.push({
+  for (const row of despesas) {
+    const dateStr = row.data_vencimento ?? row.data_competencia;
+    if (!dateStr) continue;
+    const dt = new Date(dateStr);
+    if (Number.isNaN(dt.getTime())) continue;
+    const year = dt.getFullYear();
+    ensureYear(year);
+    const month = KPI_BY_YEAR[year][dt.getMonth()];
+    const total = asNumber(row.total);
+    const paid = asNumber(row.pago);
+    const open = asNumber(row.nao_pago) || (normalizeStatus(row.status) === "Pago" ? 0 : total);
+
+    month.operationalExpenses += total;
+    month.cashOut += paid || total;
+    month.accountsPayable += open;
+    TRANSACTIONS_BY_YEAR[year].push({
       id: row.id,
-      title: row.title,
-      description: row.description ?? "",
-      severity: row.severity as AlertEvent["severity"],
-      financialImpact: Number(row.financial_impact),
-      recommendation: row.recommendation ?? "",
-      createdAt: row.created_at,
-      status: row.status as AlertEvent["status"],
+      date: dateStr,
+      type: "expense",
+      party: row.fornecedor_nome ?? "—",
+      category: row.categoria_nome ?? "Sem categoria",
+      costCenter: row.centro_de_custo_nome ?? "Não alocado",
+      amount: total,
+      status: normalizeStatus(row.status),
     });
+    pushUnique(EXPENSE_CATEGORIES as unknown as string[], row.categoria_nome);
+    pushUnique(COST_CENTERS, row.centro_de_custo_nome);
   }
-}
 
-async function loadTargets() {
-  const { data } = await supabase
-    .from("budget_targets")
-    .select("category_name, planned_revenue, planned_expense")
-    .eq("year", 2025);
-  if (!data) return;
+  for (const year of Object.keys(KPI_BY_YEAR).map(Number).sort()) {
+    let balance = 0;
+    for (const month of KPI_BY_YEAR[year]) {
+      month.grossProfit = month.netRevenue - month.operationalCosts;
+      month.ebitda = month.grossProfit - month.commercialExpenses - month.adminExpenses - month.operationalExpenses;
+      month.netProfit = month.ebitda + month.financialIncome - month.financialExpense;
+      month.netMargin = month.netRevenue > 0 ? month.netProfit / month.netRevenue : 0;
+      balance += month.cashIn - month.cashOut;
+      month.cashBalance = balance;
+    }
+    TRANSACTIONS_BY_YEAR[year].sort((a, b) => b.date.localeCompare(a.date));
+  }
+
+  ALERTS.length = 0;
   TARGETS_2025.length = 0;
-  const agg = new Map<string, { planned: number; realized: number }>();
-  for (const row of data) {
-    const cur = agg.get(row.category_name) ?? { planned: 0, realized: 0 };
-    cur.planned += Number(row.planned_revenue) + Number(row.planned_expense);
-    agg.set(row.category_name, cur);
-  }
-  for (const [category, v] of agg) {
-    TARGETS_2025.push({ category, planned: v.planned, realized: v.realized });
-  }
 }
 
 export function useLiveData() {
@@ -142,10 +200,10 @@ export function useLiveData() {
     let cancelled = false;
     (async () => {
       try {
-        await Promise.all([loadKpis(), loadTransactions(), loadAlerts(), loadTargets()]);
+        await loadContaAzulData();
         if (!cancelled) setVersion((v) => v + 1);
       } catch (err) {
-        console.error("[live-sync] failed to load Supabase data", err);
+        console.error("[live-sync] failed to load external financial data", err);
       }
     })();
     return () => {
