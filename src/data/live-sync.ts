@@ -58,12 +58,19 @@ const STATUS_MAP: Record<string, Transaction["status"]> = {
   ACQUITTED: "Pago",
   PAID: "Pago",
   PAGO: "Pago",
+  RECEBIDO: "Pago",
+  SETTLED: "Pago",
+  LIQUIDADO: "Pago",
+  PERDIDO: "Pago",
+  LOST: "Pago",
+  CANCELED: "Pago",
+  CANCELLED: "Pago",
+  CANCELADO: "Pago",
   PENDING: "Pendente",
   PENDENTE: "Pendente",
   OVERDUE: "Atrasado",
   VENCIDO: "Atrasado",
   ATRASADO: "Atrasado",
-  CANCELED: "Pendente",
 };
 
 function asNumber(value: number | string | null | undefined) {
