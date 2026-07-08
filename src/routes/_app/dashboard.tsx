@@ -405,6 +405,16 @@ function DashboardPage() {
             { value: "OVERDUE", label: "Vencido" },
           ]}
         />
+        <FilterSelect
+          label="Realização"
+          value={realizacao}
+          onChange={setRealizacao}
+          options={[
+            { value: "all", label: "Todas" },
+            { value: "realizadas", label: "Realizadas (liquidadas)" },
+            { value: "previstas", label: "Previstas (a receber/pagar)" },
+          ]}
+        />
       </Card>
 
       {/* KPIs */}
