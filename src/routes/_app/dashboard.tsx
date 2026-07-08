@@ -305,7 +305,7 @@ function DashboardPage() {
       b.Saldo = acc;
     }
     return buckets;
-  }, [receitas, despesas, year, categoria, centro, status]);
+  }, [receitas, despesas, year, categoria, centro, status, realizacao]);
 
   // DRE by category
   const dre = useMemo(() => {
