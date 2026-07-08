@@ -195,7 +195,6 @@ function DashboardPage() {
   const [pageReceitas, setPageReceitas] = useState(1);
   const [pageDespesas, setPageDespesas] = useState(1);
   const pageSize = 10;
-  const todayISO = now.toISOString().slice(0, 10);
 
   async function load() {
     setLoading(true);
