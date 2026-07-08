@@ -292,6 +292,8 @@ function DashboardPage() {
         if (categoria !== "all" && it.categoria !== categoria) continue;
         if (centro !== "all" && it.centroCusto !== centro) continue;
         if (status !== "all" && it.status !== status) continue;
+        if (realizacao === "realizadas" && it.status !== "ACQUITTED") continue;
+        if (realizacao === "previstas" && it.status === "ACQUITTED") continue;
         buckets[dt.getMonth()][key] += it.valor;
       }
     }
