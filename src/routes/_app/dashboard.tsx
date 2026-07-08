@@ -374,7 +374,7 @@ function DashboardPage() {
       />
 
       {/* Filters */}
-      <Card className="mb-6 grid grid-cols-2 md:grid-cols-5 gap-3 rounded-2xl p-4">
+      <Card className="mb-6 grid grid-cols-2 md:grid-cols-6 gap-3 rounded-2xl p-4">
         <FilterSelect label="Ano" value={year} onChange={setYear} options={years.map((y) => ({ value: y, label: y }))} />
         <FilterSelect
           label="Mês"
