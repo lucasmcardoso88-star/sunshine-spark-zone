@@ -191,6 +191,7 @@ function DashboardPage() {
   const [categoria, setCategoria] = useState<string>("all");
   const [centro, setCentro] = useState<string>("all");
   const [status, setStatus] = useState<string>("all");
+  const [realizacao, setRealizacao] = useState<string>("all"); // all | realizadas | previstas
   const [pageReceitas, setPageReceitas] = useState(1);
   const [pageDespesas, setPageDespesas] = useState(1);
   const pageSize = 10;
@@ -253,11 +254,14 @@ function DashboardPage() {
     if (categoria !== "all" && it.categoria !== categoria) return false;
     if (centro !== "all" && it.centroCusto !== centro) return false;
     if (status !== "all" && it.status !== status) return false;
+    if (realizacao === "realizadas" && it.status !== "ACQUITTED") return false;
+    if (realizacao === "previstas" && it.status === "ACQUITTED") return false;
     return true;
   }
 
-  const fReceitas = useMemo(() => receitas.filter(inFilter), [receitas, year, month, categoria, centro, status]);
-  const fDespesas = useMemo(() => despesas.filter(inFilter), [despesas, year, month, categoria, centro, status]);
+  const filterDeps = [receitas, despesas, year, month, categoria, centro, status, realizacao];
+  const fReceitas = useMemo(() => receitas.filter(inFilter), filterDeps);
+  const fDespesas = useMemo(() => despesas.filter(inFilter), filterDeps);
 
   // KPIs
   const totalReceitas = fReceitas.reduce((a, b) => a + b.valor, 0);
@@ -287,6 +291,8 @@ function DashboardPage() {
         if (categoria !== "all" && it.categoria !== categoria) continue;
         if (centro !== "all" && it.centroCusto !== centro) continue;
         if (status !== "all" && it.status !== status) continue;
+        if (realizacao === "realizadas" && it.status !== "ACQUITTED") continue;
+        if (realizacao === "previstas" && it.status === "ACQUITTED") continue;
         buckets[dt.getMonth()][key] += it.valor;
       }
     }
@@ -298,7 +304,7 @@ function DashboardPage() {
       b.Saldo = acc;
     }
     return buckets;
-  }, [receitas, despesas, year, categoria, centro, status]);
+  }, [receitas, despesas, year, categoria, centro, status, realizacao]);
 
   // DRE by category
   const dre = useMemo(() => {
@@ -367,7 +373,7 @@ function DashboardPage() {
       />
 
       {/* Filters */}
-      <Card className="mb-6 grid grid-cols-2 md:grid-cols-5 gap-3 rounded-2xl p-4">
+      <Card className="mb-6 grid grid-cols-2 md:grid-cols-6 gap-3 rounded-2xl p-4">
         <FilterSelect label="Ano" value={year} onChange={setYear} options={years.map((y) => ({ value: y, label: y }))} />
         <FilterSelect
           label="Mês"
@@ -396,6 +402,16 @@ function DashboardPage() {
             { value: "ACQUITTED", label: "Pago / Recebido" },
             { value: "PENDING", label: "Pendente" },
             { value: "OVERDUE", label: "Vencido" },
+          ]}
+        />
+        <FilterSelect
+          label="Realização"
+          value={realizacao}
+          onChange={setRealizacao}
+          options={[
+            { value: "all", label: "Todas" },
+            { value: "realizadas", label: "Realizadas (liquidadas)" },
+            { value: "previstas", label: "Previstas (a receber/pagar)" },
           ]}
         />
       </Card>
