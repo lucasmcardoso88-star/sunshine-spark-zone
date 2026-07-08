@@ -94,7 +94,20 @@ const STATUS_TONE: Record<NormStatus, Tone> = {
 
 function normStatus(s: string | null | undefined): NormStatus {
   const v = (s ?? "").toUpperCase();
-  if (v === "ACQUITTED" || v === "PAID" || v === "PAGO") return "ACQUITTED";
+  if (
+    v === "ACQUITTED" ||
+    v === "PAID" ||
+    v === "PAGO" ||
+    v === "RECEBIDO" ||
+    v === "SETTLED" ||
+    v === "LIQUIDADO" ||
+    v === "PERDIDO" ||
+    v === "LOST" ||
+    v === "CANCELED" ||
+    v === "CANCELLED" ||
+    v === "CANCELADO"
+  )
+    return "ACQUITTED";
   if (v === "OVERDUE" || v === "VENCIDO" || v === "ATRASADO") return "OVERDUE";
   return "PENDING";
 }
