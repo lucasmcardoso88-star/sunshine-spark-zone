@@ -255,11 +255,14 @@ function DashboardPage() {
     if (categoria !== "all" && it.categoria !== categoria) return false;
     if (centro !== "all" && it.centroCusto !== centro) return false;
     if (status !== "all" && it.status !== status) return false;
+    if (realizacao === "realizadas" && it.status !== "ACQUITTED") return false;
+    if (realizacao === "previstas" && it.status === "ACQUITTED") return false;
     return true;
   }
 
-  const fReceitas = useMemo(() => receitas.filter(inFilter), [receitas, year, month, categoria, centro, status]);
-  const fDespesas = useMemo(() => despesas.filter(inFilter), [despesas, year, month, categoria, centro, status]);
+  const filterDeps = [receitas, despesas, year, month, categoria, centro, status, realizacao];
+  const fReceitas = useMemo(() => receitas.filter(inFilter), filterDeps);
+  const fDespesas = useMemo(() => despesas.filter(inFilter), filterDeps);
 
   // KPIs
   const totalReceitas = fReceitas.reduce((a, b) => a + b.valor, 0);
