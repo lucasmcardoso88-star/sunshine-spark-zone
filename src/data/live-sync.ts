@@ -151,6 +151,7 @@ async function loadContaAzulData() {
       amount: total,
       status: normalizeStatus(row.status),
       company: "w2",
+    });
     pushUnique(SERVICE_TYPES as unknown as string[], row.categoria_nome);
     pushUnique(COST_CENTERS, row.centro_de_custo_nome);
   }
