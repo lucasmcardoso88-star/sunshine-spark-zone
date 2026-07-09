@@ -115,18 +115,22 @@ function pushUnique(list: string[], value: string | null | undefined) {
   if (label && !list.includes(label)) list.push(label);
 }
 
-async function loadContaAzulData() {
-  const [receitas, despesas] = await Promise.all([
-    fetchAll<ReceitaRow>("receitas"),
-    fetchAll<DespesaRow>("despesas"),
-  ]);
+const SOURCES: { company: Exclude<CompanyId, "all">; client: SupabaseClient }[] = [
+  { company: "w2", client: supabaseExternal },
+  { company: "d61", client: supabaseD61 },
+];
 
-  for (const year of Object.keys(KPI_BY_YEAR)) {
-    const y = Number(year);
-    const arr = KPI_BY_YEAR[y];
-    for (let i = 0; i < arr.length; i++) arr[i] = emptyMonth(y, i);
-  }
-  for (const k of Object.keys(TRANSACTIONS_BY_YEAR)) TRANSACTIONS_BY_YEAR[Number(k)] = [];
+async function loadSource(company: Exclude<CompanyId, "all">, client: SupabaseClient) {
+  const [receitas, despesas] = await Promise.all([
+    fetchAll<ReceitaRow>(client, "receitas").catch((err) => {
+      console.warn(`[live-sync:${company}] receitas failed`, err);
+      return [] as ReceitaRow[];
+    }),
+    fetchAll<DespesaRow>(client, "despesas").catch((err) => {
+      console.warn(`[live-sync:${company}] despesas failed`, err);
+      return [] as DespesaRow[];
+    }),
+  ]);
 
   for (const row of receitas) {
     const dateStr = row.data_vencimento ?? row.data_competencia;
@@ -145,7 +149,7 @@ async function loadContaAzulData() {
     month.cashIn += paid || total;
     month.accountsReceivable += open;
     TRANSACTIONS_BY_YEAR[year].push({
-      id: row.id,
+      id: `${company}:${row.id}`,
       date: dateStr,
       type: "revenue",
       party: row.cliente_nome ?? "—",
@@ -153,7 +157,7 @@ async function loadContaAzulData() {
       costCenter: row.centro_de_custo_nome ?? "Não alocado",
       amount: total,
       status: normalizeStatus(row.status),
-      company: "w2",
+      company,
     });
     pushUnique(SERVICE_TYPES as unknown as string[], row.categoria_nome);
     pushUnique(COST_CENTERS, row.centro_de_custo_nome);
@@ -175,7 +179,7 @@ async function loadContaAzulData() {
     month.cashOut += paid || total;
     month.accountsPayable += open;
     TRANSACTIONS_BY_YEAR[year].push({
-      id: row.id,
+      id: `${company}:${row.id}`,
       date: dateStr,
       type: "expense",
       party: row.fornecedor_nome ?? "—",
@@ -183,11 +187,22 @@ async function loadContaAzulData() {
       costCenter: row.centro_de_custo_nome ?? "Não alocado",
       amount: total,
       status: normalizeStatus(row.status),
-      company: "w2",
+      company,
     });
     pushUnique(EXPENSE_CATEGORIES as unknown as string[], row.categoria_nome);
     pushUnique(COST_CENTERS, row.centro_de_custo_nome);
   }
+}
+
+async function loadContaAzulData() {
+  for (const year of Object.keys(KPI_BY_YEAR)) {
+    const y = Number(year);
+    const arr = KPI_BY_YEAR[y];
+    for (let i = 0; i < arr.length; i++) arr[i] = emptyMonth(y, i);
+  }
+  for (const k of Object.keys(TRANSACTIONS_BY_YEAR)) TRANSACTIONS_BY_YEAR[Number(k)] = [];
+
+  await Promise.all(SOURCES.map((s) => loadSource(s.company, s.client)));
 
   for (const year of Object.keys(KPI_BY_YEAR).map(Number).sort()) {
     let balance = 0;
@@ -205,6 +220,7 @@ async function loadContaAzulData() {
   ALERTS.length = 0;
   TARGETS_2025.length = 0;
 }
+
 
 export function useLiveData() {
   const [version, setVersion] = useState(0);
