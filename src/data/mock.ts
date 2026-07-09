@@ -2,13 +2,13 @@ import { MONTHS_PT } from "@/lib/format";
 
 // Estruturas preenchidas em runtime pelos dados reais do banco externo.
 
-export type CompanyId = "all" | "main" | "growth" | "branding";
+export type CompanyId = "all" | "w2" | "d61" | "somus";
 export type AccountingBasis = "cash" | "accrual";
 
 export const COMPANIES: { id: Exclude<CompanyId, "all">; name: string }[] = [
-  { id: "main", name: "W2 Publicidade" },
-  { id: "growth", name: "Growth" },
-  { id: "branding", name: "VeinUp / Mobilizze" },
+  { id: "w2", name: "W2 Publicidade" },
+  { id: "d61", name: "D61" },
+  { id: "somus", name: "Somus" },
 ];
 
 export const COMPANY_OPTIONS: { id: CompanyId; name: string }[] = [
