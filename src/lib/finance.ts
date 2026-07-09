@@ -2,7 +2,9 @@ import { KPI_BY_YEAR, TRANSACTIONS_BY_YEAR, type MonthlyKpi, type Transaction } 
 import { monthsForFilters, type FiltersState } from "@/context/FiltersContext";
 
 export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
-  const all = KPI_BY_YEAR[f.year] ?? [];
+  // KPI aggregate reflects W2 only (current live source). Other companies show empty.
+  const companyHasData = f.company === "all" || f.company === "w2";
+  const all = companyHasData ? (KPI_BY_YEAR[f.year] ?? []) : [];
   const months = monthsForFilters(f);
   return all.filter((k) => {
     if (!months.includes(k.monthIndex)) return false;
@@ -17,6 +19,7 @@ export function getTransactions(f: FiltersState): Transaction[] {
   const list = TRANSACTIONS_BY_YEAR[f.year] ?? [];
   const months = monthsForFilters(f);
   return list.filter((t) => {
+    if (f.company !== "all" && t.company !== f.company) return false;
     const txDate = new Date(t.date);
     if (!months.includes(txDate.getMonth())) return false;
     if (f.customStart && txDate < new Date(f.customStart)) return false;
