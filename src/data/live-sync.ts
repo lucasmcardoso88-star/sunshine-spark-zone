@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { supabaseExternal as supabase } from "@/integrations/supabase-external/client";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { supabaseExternal } from "@/integrations/supabase-external/client";
+import { supabaseD61 } from "@/integrations/supabase-d61/client";
+import type { CompanyId } from "@/data/mock";
 import {
   KPI_BY_YEAR,
   TRANSACTIONS_BY_YEAR,
