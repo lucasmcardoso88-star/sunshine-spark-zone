@@ -88,11 +88,11 @@ function normalizeStatus(value: string | null | undefined): Transaction["status"
   return STATUS_MAP[(value ?? "").toUpperCase()] ?? "Pendente";
 }
 
-async function fetchAll<T>(table: "receitas" | "despesas") {
+async function fetchAll<T>(client: SupabaseClient, table: "receitas" | "despesas") {
   const pageSize = 1000;
   const rows: T[] = [];
   for (let from = 0; ; from += pageSize) {
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from(table)
       .select("*")
       .order("data_vencimento", { ascending: true })
