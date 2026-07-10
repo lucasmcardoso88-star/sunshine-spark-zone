@@ -222,20 +222,38 @@ async function loadContaAzulData() {
 }
 
 
-export function useLiveData() {
-  const [version, setVersion] = useState(0);
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        await loadContaAzulData();
-        if (!cancelled) setVersion((v) => v + 1);
-      } catch (err) {
+
+let loadPromise: Promise<void> | null = null;
+let loaded = false;
+const subscribers = new Set<() => void>();
+
+function ensureLoad() {
+  if (!loadPromise) {
+    loadPromise = loadContaAzulData()
+      .then(() => {
+        loaded = true;
+        subscribers.forEach((fn) => fn());
+      })
+      .catch((err) => {
         console.error("[live-sync] failed to load external financial data", err);
-      }
-    })();
+        loadPromise = null; // allow retry on next mount
+      });
+  }
+  return loadPromise;
+}
+
+export function useLiveData() {
+  const [version, setVersion] = useState(loaded ? 1 : 0);
+  useEffect(() => {
+    const bump = () => setVersion((v) => v + 1);
+    subscribers.add(bump);
+    if (loaded) {
+      bump();
+    } else {
+      ensureLoad();
+    }
     return () => {
-      cancelled = true;
+      subscribers.delete(bump);
     };
   }, []);
   return version;
