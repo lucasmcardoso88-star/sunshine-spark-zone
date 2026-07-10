@@ -4,26 +4,47 @@ import { monthsForFilters, type FiltersState } from "@/context/FiltersContext";
 export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
   // KPI aggregate reflects W2 only (current live source). Other companies show empty.
   const companyHasData = f.company === "all" || f.company === "w2";
-  const all = companyHasData ? (KPI_BY_YEAR[f.year] ?? []) : [];
-  const months = monthsForFilters(f);
-  return all.filter((k) => {
+  if (!companyHasData) return [];
+
+  const hasCustomRange = Boolean(f.customStart || f.customEnd);
+  // With a custom date range, span all years and ignore year/quarter/month filters.
+  const source = hasCustomRange
+    ? Object.values(KPI_BY_YEAR).flat()
+    : (KPI_BY_YEAR[f.year] ?? []);
+  const months = hasCustomRange
+    ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    : monthsForFilters(f);
+
+  const startDate = f.customStart ? new Date(f.customStart) : null;
+  const endDate = f.customEnd ? new Date(f.customEnd) : null;
+
+  return source.filter((k) => {
     if (!months.includes(k.monthIndex)) return false;
-    const monthDate = new Date(k.year, k.monthIndex, 1);
-    if (f.customStart && monthDate < new Date(f.customStart)) return false;
-    if (f.customEnd && monthDate > new Date(f.customEnd)) return false;
+    const monthStart = new Date(k.year, k.monthIndex, 1);
+    const monthEnd = new Date(k.year, k.monthIndex + 1, 0);
+    // Include the month if it overlaps the custom range at all.
+    if (startDate && monthEnd < startDate) return false;
+    if (endDate && monthStart > endDate) return false;
     return true;
   });
 }
 
 export function getTransactions(f: FiltersState): Transaction[] {
-  const list = TRANSACTIONS_BY_YEAR[f.year] ?? [];
-  const months = monthsForFilters(f);
+  const hasCustomRange = Boolean(f.customStart || f.customEnd);
+  const list = hasCustomRange
+    ? Object.values(TRANSACTIONS_BY_YEAR).flat()
+    : (TRANSACTIONS_BY_YEAR[f.year] ?? []);
+  const months = hasCustomRange
+    ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    : monthsForFilters(f);
+  const startDate = f.customStart ? new Date(f.customStart) : null;
+  const endDate = f.customEnd ? new Date(f.customEnd) : null;
   return list.filter((t) => {
     if (f.company !== "all" && t.company !== f.company) return false;
     const txDate = new Date(t.date);
     if (!months.includes(txDate.getMonth())) return false;
-    if (f.customStart && txDate < new Date(f.customStart)) return false;
-    if (f.customEnd && txDate > new Date(f.customEnd)) return false;
+    if (startDate && txDate < startDate) return false;
+    if (endDate && txDate > endDate) return false;
     if (f.costCenter !== "all" && t.costCenter !== f.costCenter) return false;
     if (f.category !== "all" && t.category !== f.category) return false;
     return true;
