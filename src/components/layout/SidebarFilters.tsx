@@ -226,7 +226,14 @@ export function SidebarFilters() {
                 <Input
                   type="date"
                   value={customStart}
-                  onChange={(e) => setCustomStart(e.target.value)}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setCustomStart(v);
+                    if (v) {
+                      const y = Number(v.slice(0, 4));
+                      if (!Number.isNaN(y)) setYear(y);
+                    }
+                  }}
                   className="h-10"
                 />
               </div>
@@ -236,7 +243,14 @@ export function SidebarFilters() {
                 <Input
                   type="date"
                   value={customEnd}
-                  onChange={(e) => setCustomEnd(e.target.value)}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setCustomEnd(v);
+                    if (v) {
+                      const y = Number(v.slice(0, 4));
+                      if (!Number.isNaN(y)) setYear(y);
+                    }
+                  }}
                   className="h-10"
                 />
               </div>
