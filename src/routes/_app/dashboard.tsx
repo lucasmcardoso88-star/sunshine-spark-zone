@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   TrendingUp,
   TrendingDown,
@@ -39,8 +39,11 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { supabaseExternal as supabase } from "@/integrations/supabase-external/client";
+import { useFilters } from "@/context/FiltersContext";
+import { getTransactions } from "@/lib/finance";
+import { getLocalYear, parseLocalDate } from "@/lib/date";
 import { BRL, MONTHS_PT, formatDate } from "@/lib/format";
+import { YEARS, type Transaction } from "@/data/mock";
 
 export const Route = createFileRoute("/_app/dashboard")({
   head: () => ({
@@ -51,33 +54,6 @@ export const Route = createFileRoute("/_app/dashboard")({
   }),
   component: DashboardPage,
 });
-
-type ReceitaRow = {
-  id: string;
-  descricao: string | null;
-  total: number | string | null;
-  pago: number | string | null;
-  nao_pago: number | string | null;
-  data_vencimento: string | null;
-  data_competencia: string | null;
-  status: string | null;
-  cliente_nome: string | null;
-  categoria_nome: string | null;
-  centro_de_custo_nome: string | null;
-};
-type DespesaRow = {
-  id: string;
-  descricao: string | null;
-  total: number | string | null;
-  pago: number | string | null;
-  nao_pago: number | string | null;
-  data_vencimento: string | null;
-  data_competencia: string | null;
-  status: string | null;
-  fornecedor_nome: string | null;
-  categoria_nome: string | null;
-  centro_de_custo_nome: string | null;
-};
 
 type NormStatus = "ACQUITTED" | "PENDING" | "OVERDUE";
 
@@ -92,23 +68,9 @@ const STATUS_TONE: Record<NormStatus, Tone> = {
   OVERDUE: "critical",
 };
 
-function normStatus(s: string | null | undefined): NormStatus {
-  const v = (s ?? "").toUpperCase();
-  if (
-    v === "ACQUITTED" ||
-    v === "PAID" ||
-    v === "PAGO" ||
-    v === "RECEBIDO" ||
-    v === "SETTLED" ||
-    v === "LIQUIDADO" ||
-    v === "PERDIDO" ||
-    v === "LOST" ||
-    v === "CANCELED" ||
-    v === "CANCELLED" ||
-    v === "CANCELADO"
-  )
-    return "ACQUITTED";
-  if (v === "OVERDUE" || v === "VENCIDO" || v === "ATRASADO") return "OVERDUE";
+function normStatus(s: Transaction["status"]): NormStatus {
+  if (s === "Pago") return "ACQUITTED";
+  if (s === "Atrasado") return "OVERDUE";
   return "PENDING";
 }
 
@@ -131,128 +93,66 @@ type Item = {
   status: NormStatus;
 };
 
-function asNumber(value: number | string | null | undefined) {
-  if (typeof value === "number") return Number.isFinite(value) ? value : 0;
-  if (!value) return 0;
-  const normalized = value.replace(/\./g, "").replace(",", ".");
-  const n = Number(normalized);
-  return Number.isFinite(n) ? n : 0;
-}
-
-function toItem(kind: "receita" | "despesa", r: ReceitaRow | DespesaRow): Item {
-  const isReceita = kind === "receita";
-  const valor = asNumber(r.total);
-  const status = normStatus(r.status);
+function toItem(t: Transaction): Item {
+  const status = normStatus(t.status);
   const aberto = asNumber(r.nao_pago) || (status === "ACQUITTED" ? 0 : valor);
   return {
-    kind,
-    id: r.id,
-    descricao: r.descricao ?? "—",
-    party:
-      (isReceita
-        ? (r as ReceitaRow).cliente_nome
-        : (r as DespesaRow).fornecedor_nome) ?? "—",
-    categoria: r.categoria_nome ?? "Sem categoria",
-    centroCusto: r.centro_de_custo_nome ?? "Não alocado",
-    valor,
+    kind: t.type === "revenue" ? "receita" : "despesa",
+    id: t.id,
+    descricao: t.category,
+    party: t.party,
+    categoria: t.category,
+    centroCusto: t.costCenter,
+    valor: t.amount,
     aberto,
-    vencimento: r.data_vencimento ?? r.data_competencia,
+    vencimento: t.date,
     pagamento: null,
     status,
   };
 }
 
-async function fetchAllRows<T>(table: "receitas" | "despesas") {
-  const pageSize = 1000;
-  const rows: T[] = [];
-  for (let from = 0; ; from += pageSize) {
-    const { data, error } = await supabase
-      .from(table)
-      .select("*")
-      .order("data_vencimento", { ascending: true })
-      .range(from, from + pageSize - 1);
-    if (error) throw error;
-    const batch = (data ?? []) as T[];
-    rows.push(...batch);
-    if (batch.length < pageSize) break;
-  }
-  return rows;
-}
-
 function DashboardPage() {
-  const [receitas, setReceitas] = useState<Item[]>([]);
-  const [despesas, setDespesas] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
+  const filters = useFilters();
 
   // Filters
-  const now = new Date();
-  const [year, setYear] = useState<string>("2023");
-  const [month, setMonth] = useState<string>("all");
-  const [categoria, setCategoria] = useState<string>("all");
-  const [centro, setCentro] = useState<string>("all");
   const [status, setStatus] = useState<string>("all");
   const [realizacao, setRealizacao] = useState<string>("all"); // all | realizadas | previstas
   const [pageReceitas, setPageReceitas] = useState(1);
   const [pageDespesas, setPageDespesas] = useState(1);
   const pageSize = 10;
 
-  async function load() {
-    setLoading(true);
-    const [r, d] = await Promise.all([
-      fetchAllRows<ReceitaRow>("receitas"),
-      fetchAllRows<DespesaRow>("despesas"),
-    ]);
-    setReceitas(r.map((row) => toItem("receita", row)));
-    setDespesas(d.map((row) => toItem("despesa", row)));
-    setLoading(false);
-  }
-
-  useEffect(() => {
-    load();
-    const ch = supabase
-      .channel("dashboard-live")
-      .on("postgres_changes", { event: "*", schema: "public", table: "receitas" }, load)
-      .on("postgres_changes", { event: "*", schema: "public", table: "despesas" }, load)
-      .subscribe();
-    return () => {
-      supabase.removeChannel(ch);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const all = useMemo(() => [...receitas, ...despesas], [receitas, despesas]);
+  const txs = useMemo(() => getTransactions(filters), [filters]);
+  const optionTxs = useMemo(
+    () => getTransactions({ ...filters, category: "all", costCenter: "all" }),
+    [filters],
+  );
+  const all = useMemo(() => txs.map(toItem), [txs]);
+  const receitas = useMemo(() => all.filter((it) => it.kind === "receita"), [all]);
+  const despesas = useMemo(() => all.filter((it) => it.kind === "despesa"), [all]);
 
   const years = useMemo(() => {
-    const s = new Set<string>();
-    for (const it of all) {
-      const d = it.vencimento ?? it.pagamento;
-      if (d) s.add(String(new Date(d).getFullYear()));
+    const s = new Set<string>(YEARS.map(String));
+    for (const t of optionTxs) {
+      const y = getLocalYear(t.date);
+      if (y) s.add(String(y));
     }
-    s.add(String(now.getFullYear()));
+    s.add(String(filters.year));
     return [...s].sort().reverse();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [all]);
+  }, [filters.year, optionTxs]);
 
   const categorias = useMemo(() => {
     const s = new Set<string>();
-    all.forEach((i) => s.add(i.categoria));
+    optionTxs.forEach((i) => s.add(i.category));
     return [...s].sort();
-  }, [all]);
+  }, [optionTxs]);
 
   const centros = useMemo(() => {
     const s = new Set<string>();
-    all.forEach((i) => s.add(i.centroCusto));
+    optionTxs.forEach((i) => s.add(i.costCenter));
     return [...s].sort();
-  }, [all]);
+  }, [optionTxs]);
 
   function inFilter(it: Item) {
-    const d = it.vencimento ?? it.pagamento;
-    if (!d) return false;
-    const dt = new Date(d);
-    if (String(dt.getFullYear()) !== year) return false;
-    if (month !== "all" && dt.getMonth() !== Number(month)) return false;
-    if (categoria !== "all" && it.categoria !== categoria) return false;
-    if (centro !== "all" && it.centroCusto !== centro) return false;
     if (status !== "all" && it.status !== status) return false;
     if (realizacao === "realizadas" && it.status !== "ACQUITTED") return false;
     if (realizacao === "previstas" && it.status === "ACQUITTED") return false;
