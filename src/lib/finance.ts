@@ -1,6 +1,6 @@
 import { KPI_BY_YEAR, TRANSACTIONS_BY_YEAR, type MonthlyKpi, type Transaction } from "@/data/mock";
 import { monthsForFilters, type FiltersState } from "@/context/FiltersContext";
-import { dateIsInRange, monthOverlapsRange } from "@/lib/date";
+import { dateIsInRange, getLocalMonthIndex, monthOverlapsRange } from "@/lib/date";
 
 export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
   // KPI aggregate reflects W2 only (current live source). Other companies show empty.
@@ -34,9 +34,7 @@ export function getTransactions(f: FiltersState): Transaction[] {
   return list.filter((t) => {
     if (f.company !== "all" && t.company !== f.company) return false;
     if (!hasCustomRange) {
-      const txMonth = dateIsInRange(t.date, undefined, undefined)
-        ? new Date(t.date).getMonth()
-        : null;
+      const txMonth = getLocalMonthIndex(t.date);
       if (txMonth == null || !months.includes(txMonth)) return false;
     }
     if (hasCustomRange && !dateIsInRange(t.date, f.customStart, f.customEnd)) return false;

@@ -95,7 +95,7 @@ type Item = {
 
 function toItem(t: Transaction): Item {
   const status = normStatus(t.status);
-  const aberto = asNumber(r.nao_pago) || (status === "ACQUITTED" ? 0 : valor);
+  const aberto = status === "ACQUITTED" ? 0 : t.amount;
   return {
     kind: t.type === "revenue" ? "receita" : "despesa",
     id: t.id,
@@ -159,7 +159,7 @@ function DashboardPage() {
     return true;
   }
 
-  const filterDeps = [receitas, despesas, year, month, categoria, centro, status, realizacao];
+  const filterDeps = [receitas, despesas, status, realizacao];
   const fReceitas = useMemo(() => receitas.filter(inFilter), filterDeps);
   const fDespesas = useMemo(() => despesas.filter(inFilter), filterDeps);
 
@@ -186,10 +186,8 @@ function DashboardPage() {
       for (const it of items) {
         const d = it.vencimento ?? it.pagamento;
         if (!d) continue;
-        const dt = new Date(d);
-        if (String(dt.getFullYear()) !== year) continue;
-        if (categoria !== "all" && it.categoria !== categoria) continue;
-        if (centro !== "all" && it.centroCusto !== centro) continue;
+        const dt = parseLocalDate(d);
+        if (!dt) continue;
         if (status !== "all" && it.status !== status) continue;
         if (realizacao === "realizadas" && it.status !== "ACQUITTED") continue;
         if (realizacao === "previstas" && it.status === "ACQUITTED") continue;
@@ -204,7 +202,7 @@ function DashboardPage() {
       b.Saldo = acc;
     }
     return buckets;
-  }, [receitas, despesas, year, categoria, centro, status, realizacao]);
+  }, [receitas, despesas, status, realizacao]);
 
   // DRE by category
   const dre = useMemo(() => {
@@ -274,23 +272,28 @@ function DashboardPage() {
 
       {/* Filters */}
       <Card className="mb-6 grid grid-cols-2 md:grid-cols-6 gap-3 rounded-2xl p-4">
-        <FilterSelect label="Ano" value={year} onChange={setYear} options={years.map((y) => ({ value: y, label: y }))} />
+        <FilterSelect
+          label="Ano"
+          value={String(filters.year)}
+          onChange={(v) => filters.setYear(Number(v))}
+          options={years.map((y) => ({ value: y, label: y }))}
+        />
         <FilterSelect
           label="Mês"
-          value={month}
-          onChange={setMonth}
-          options={[{ value: "all", label: "Todos" }, ...MONTHS_PT.map((m, i) => ({ value: String(i), label: m }))]}
+          value={String(filters.month)}
+          onChange={(v) => filters.setMonth(v === "all" ? "all" : Number(v))}
+          options={[{ value: "all", label: "Todos" }, ...MONTHS_PT.map((m, i) => ({ value: String(i + 1), label: m }))]}
         />
         <FilterSelect
           label="Categoria"
-          value={categoria}
-          onChange={setCategoria}
+          value={filters.category}
+          onChange={filters.setCategory}
           options={[{ value: "all", label: "Todas" }, ...categorias.map((c) => ({ value: c, label: c }))]}
         />
         <FilterSelect
           label="Centro de custo"
-          value={centro}
-          onChange={setCentro}
+          value={filters.costCenter}
+          onChange={filters.setCostCenter}
           options={[{ value: "all", label: "Todos" }, ...centros.map((c) => ({ value: c, label: c }))]}
         />
         <FilterSelect
@@ -332,7 +335,10 @@ function DashboardPage() {
 
       {/* Monthly chart */}
       <div className="mt-6">
-        <ChartCard title="Receitas vs Despesas por mês" subtitle={`Ano ${year} • linha = saldo acumulado`}>
+        <ChartCard
+          title="Receitas vs Despesas por mês"
+          subtitle={`${filters.customStart || filters.customEnd ? `${filters.customStart || "início"} a ${filters.customEnd || "hoje"}` : `Ano ${filters.year}`} • linha = saldo acumulado`}
+        >
           {monthly.every((m) => m.Receitas === 0 && m.Despesas === 0) ? (
             <EmptyState title="Sem dados no período" description="Aguarde sincronização ou ajuste filtros." />
           ) : (
@@ -429,9 +435,6 @@ function DashboardPage() {
         partyLabel="Fornecedor"
       />
 
-      {loading && !all.length ? (
-        <p className="mt-6 text-sm text-muted-foreground">Carregando dados…</p>
-      ) : null}
     </>
   );
 }
