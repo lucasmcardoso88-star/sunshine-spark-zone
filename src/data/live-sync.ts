@@ -242,13 +242,19 @@ function ensureLoad() {
   return loadPromise;
 }
 
+// Kick off the load as early as possible (module import), so data is ready
+// before any route component mounts.
+if (typeof window !== "undefined") {
+  ensureLoad().catch(() => {});
+}
+
 export function useLiveData() {
   const [version, setVersion] = useState(loaded ? 1 : 0);
   useEffect(() => {
     const bump = () => setVersion((v) => v + 1);
     subscribers.add(bump);
     if (loaded) {
-      bump();
+      setVersion((v) => (v === 0 ? 1 : v));
     } else {
       ensureLoad();
     }
