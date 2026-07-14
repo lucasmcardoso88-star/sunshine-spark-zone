@@ -1,5 +1,6 @@
 import { KPI_BY_YEAR, TRANSACTIONS_BY_YEAR, type MonthlyKpi, type Transaction } from "@/data/mock";
 import { monthsForFilters, type FiltersState } from "@/context/FiltersContext";
+import { dateIsInRange, getLocalMonthIndex, monthOverlapsRange } from "@/lib/date";
 
 export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
   // KPI aggregate reflects W2 only (current live source). Other companies show empty.
@@ -15,16 +16,9 @@ export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
     ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     : monthsForFilters(f);
 
-  const startDate = f.customStart ? new Date(f.customStart) : null;
-  const endDate = f.customEnd ? new Date(f.customEnd) : null;
-
   return source.filter((k) => {
     if (!months.includes(k.monthIndex)) return false;
-    const monthStart = new Date(k.year, k.monthIndex, 1);
-    const monthEnd = new Date(k.year, k.monthIndex + 1, 0);
-    // Include the month if it overlaps the custom range at all.
-    if (startDate && monthEnd < startDate) return false;
-    if (endDate && monthStart > endDate) return false;
+    if (hasCustomRange && !monthOverlapsRange(k.year, k.monthIndex, f.customStart, f.customEnd)) return false;
     return true;
   });
 }
@@ -37,14 +31,13 @@ export function getTransactions(f: FiltersState): Transaction[] {
   const months = hasCustomRange
     ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     : monthsForFilters(f);
-  const startDate = f.customStart ? new Date(f.customStart) : null;
-  const endDate = f.customEnd ? new Date(f.customEnd) : null;
   return list.filter((t) => {
     if (f.company !== "all" && t.company !== f.company) return false;
-    const txDate = new Date(t.date);
-    if (!months.includes(txDate.getMonth())) return false;
-    if (startDate && txDate < startDate) return false;
-    if (endDate && txDate > endDate) return false;
+    if (!hasCustomRange) {
+      const txMonth = getLocalMonthIndex(t.date);
+      if (txMonth == null || !months.includes(txMonth)) return false;
+    }
+    if (hasCustomRange && !dateIsInRange(t.date, f.customStart, f.customEnd)) return false;
     if (f.costCenter !== "all" && t.costCenter !== f.costCenter) return false;
     if (f.category !== "all" && t.category !== f.category) return false;
     return true;
