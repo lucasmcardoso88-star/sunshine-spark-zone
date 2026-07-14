@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabaseExternal } from "@/integrations/supabase-external/client";
 import { supabaseD61 } from "@/integrations/supabase-d61/client";
 import type { CompanyId } from "@/data/mock";
+import { parseLocalDate } from "@/lib/date";
 import {
   KPI_BY_YEAR,
   TRANSACTIONS_BY_YEAR,
@@ -135,8 +136,8 @@ async function loadSource(company: Exclude<CompanyId, "all">, client: SupabaseCl
   for (const row of receitas) {
     const dateStr = row.data_vencimento ?? row.data_competencia;
     if (!dateStr) continue;
-    const dt = new Date(dateStr);
-    if (Number.isNaN(dt.getTime())) continue;
+    const dt = parseLocalDate(dateStr);
+    if (!dt) continue;
     const year = dt.getFullYear();
     ensureYear(year);
     const month = KPI_BY_YEAR[year][dt.getMonth()];
@@ -166,8 +167,8 @@ async function loadSource(company: Exclude<CompanyId, "all">, client: SupabaseCl
   for (const row of despesas) {
     const dateStr = row.data_vencimento ?? row.data_competencia;
     if (!dateStr) continue;
-    const dt = new Date(dateStr);
-    if (Number.isNaN(dt.getTime())) continue;
+    const dt = parseLocalDate(dateStr);
+    if (!dt) continue;
     const year = dt.getFullYear();
     ensureYear(year);
     const month = KPI_BY_YEAR[year][dt.getMonth()];
