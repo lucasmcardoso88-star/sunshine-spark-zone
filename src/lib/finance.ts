@@ -3,12 +3,61 @@ import { monthsForFilters, type FiltersState } from "@/context/FiltersContext";
 import { dateIsInRange, getLocalMonthIndex, monthOverlapsRange } from "@/lib/date";
 
 export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
-  // KPI aggregate reflects W2 only (current live source). Other companies show empty.
-  const companyHasData = f.company === "all" || f.company === "w2";
-  if (!companyHasData) return [];
-
   const hasCustomRange = Boolean(f.customStart || f.customEnd);
-  // With a custom date range, span all years and ignore year/quarter/month filters.
+
+  // When filtering by a specific company (or with any tx-affecting filter),
+  // derive KPIs from transactions so the company/category/cost-center filter
+  // actually reflects on all dashboards.
+  const deriveFromTx =
+    f.company !== "all" || f.category !== "all" || f.costCenter !== "all";
+
+  if (deriveFromTx) {
+    const txs = getTransactions(f);
+    const buckets = new Map<string, MonthlyKpi>();
+    const key = (y: number, m: number) => `${y}-${m}`;
+    for (const t of txs) {
+      const d = new Date(t.date);
+      const y = d.getFullYear();
+      const m = getLocalMonthIndex(t.date);
+      if (m == null) continue;
+      const k = key(y, m);
+      let bucket = buckets.get(k);
+      if (!bucket) {
+        bucket = {
+          year: y, monthIndex: m, monthLabel: "",
+          grossRevenue: 0, taxes: 0, commissions: 0, netRevenue: 0,
+          operationalCosts: 0, commercialExpenses: 0, adminExpenses: 0, operationalExpenses: 0,
+          financialIncome: 0, financialExpense: 0, grossProfit: 0, ebitda: 0,
+          netProfit: 0, netMargin: 0, cashIn: 0, cashOut: 0, cashBalance: 0,
+          accountsReceivable: 0, accountsPayable: 0,
+        };
+        buckets.set(k, bucket);
+      }
+      if (t.type === "revenue") {
+        bucket.grossRevenue += t.amount;
+        bucket.netRevenue += t.amount;
+        if (t.status === "Pago") bucket.cashIn += t.amount;
+        else bucket.accountsReceivable += t.amount;
+      } else {
+        bucket.operationalExpenses += t.amount;
+        if (t.status === "Pago") bucket.cashOut += t.amount;
+        else bucket.accountsPayable += t.amount;
+      }
+    }
+    const arr = [...buckets.values()].sort((a, b) => a.year - b.year || a.monthIndex - b.monthIndex);
+    let balance = 0;
+    for (const m of arr) {
+      m.grossProfit = m.netRevenue - m.operationalCosts;
+      m.ebitda = m.grossProfit - m.commercialExpenses - m.adminExpenses - m.operationalExpenses;
+      m.netProfit = m.ebitda + m.financialIncome - m.financialExpense;
+      m.netMargin = m.netRevenue > 0 ? m.netProfit / m.netRevenue : 0;
+      balance += m.cashIn - m.cashOut;
+      m.cashBalance = balance;
+    }
+    return arr;
+  }
+
+  // Fast path — combined KPIs when no company/category/cost-center filter.
   const source = hasCustomRange
     ? Object.values(KPI_BY_YEAR).flat()
     : (KPI_BY_YEAR[f.year] ?? []);
