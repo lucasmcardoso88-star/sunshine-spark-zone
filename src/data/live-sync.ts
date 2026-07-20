@@ -218,7 +218,7 @@ async function loadContaAzulData() {
   }
   for (const k of Object.keys(TRANSACTIONS_BY_YEAR)) TRANSACTIONS_BY_YEAR[Number(k)] = [];
 
-  await Promise.all(SOURCES.map((s) => loadSource(s.company, s.client)));
+  await Promise.all([...SOURCES.map((s) => loadSource(s.company, s.client)), loadD61()]);
 
   for (const year of Object.keys(KPI_BY_YEAR).map(Number).sort()) {
     let balance = 0;
