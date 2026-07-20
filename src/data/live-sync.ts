@@ -118,21 +118,9 @@ function pushUnique(list: string[], value: string | null | undefined) {
 
 const SOURCES: { company: Exclude<CompanyId, "all">; client: SupabaseClient }[] = [
   { company: "w2", client: supabaseExternal },
-  { company: "d61", client: supabaseD61 },
 ];
 
-async function loadSource(company: Exclude<CompanyId, "all">, client: SupabaseClient) {
-  const [receitas, despesas] = await Promise.all([
-    fetchAll<ReceitaRow>(client, "receitas").catch((err) => {
-      console.warn(`[live-sync:${company}] receitas failed`, err);
-      return [] as ReceitaRow[];
-    }),
-    fetchAll<DespesaRow>(client, "despesas").catch((err) => {
-      console.warn(`[live-sync:${company}] despesas failed`, err);
-      return [] as DespesaRow[];
-    }),
-  ]);
-
+function ingestReceitas(company: Exclude<CompanyId, "all">, receitas: ReceitaRow[]) {
   for (const row of receitas) {
     const dateStr = row.data_vencimento ?? row.data_competencia;
     if (!dateStr) continue;
@@ -163,7 +151,9 @@ async function loadSource(company: Exclude<CompanyId, "all">, client: SupabaseCl
     pushUnique(SERVICE_TYPES as unknown as string[], row.categoria_nome);
     pushUnique(COST_CENTERS, row.centro_de_custo_nome);
   }
+}
 
+function ingestDespesas(company: Exclude<CompanyId, "all">, despesas: DespesaRow[]) {
   for (const row of despesas) {
     const dateStr = row.data_vencimento ?? row.data_competencia;
     if (!dateStr) continue;
@@ -192,6 +182,31 @@ async function loadSource(company: Exclude<CompanyId, "all">, client: SupabaseCl
     });
     pushUnique(EXPENSE_CATEGORIES as unknown as string[], row.categoria_nome);
     pushUnique(COST_CENTERS, row.centro_de_custo_nome);
+  }
+}
+
+async function loadSource(company: Exclude<CompanyId, "all">, client: SupabaseClient) {
+  const [receitas, despesas] = await Promise.all([
+    fetchAll<ReceitaRow>(client, "receitas").catch((err) => {
+      console.warn(`[live-sync:${company}] receitas failed`, err);
+      return [] as ReceitaRow[];
+    }),
+    fetchAll<DespesaRow>(client, "despesas").catch((err) => {
+      console.warn(`[live-sync:${company}] despesas failed`, err);
+      return [] as DespesaRow[];
+    }),
+  ]);
+  ingestReceitas(company, receitas);
+  ingestDespesas(company, despesas);
+}
+
+async function loadD61() {
+  try {
+    const { receitas, despesas } = await getD61Data();
+    ingestReceitas("d61", (receitas ?? []) as ReceitaRow[]);
+    ingestDespesas("d61", (despesas ?? []) as DespesaRow[]);
+  } catch (err) {
+    console.warn("[live-sync:d61] failed", err);
   }
 }
 
