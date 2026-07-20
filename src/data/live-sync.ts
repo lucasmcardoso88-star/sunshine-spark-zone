@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabaseExternal } from "@/integrations/supabase-external/client";
-import { supabaseD61 } from "@/integrations/supabase-d61/client";
+import { getD61Data } from "@/lib/d61-data.functions";
 import type { CompanyId } from "@/data/mock";
 import { parseLocalDate } from "@/lib/date";
 import {
