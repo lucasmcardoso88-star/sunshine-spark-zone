@@ -36,7 +36,17 @@ import { toast } from "sonner";
 
 export function Header() {
   const { company, setCompany } = useFilters();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const lastUpdate = "22/jun/2026 13:00";
+
+  async function handleSignOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/login", replace: true });
+  }
+
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
