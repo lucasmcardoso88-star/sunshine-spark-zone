@@ -4,6 +4,8 @@ import { MONTHS_PT, formatBRL } from "@/lib/format";
 import type { MonthlyKpi, Transaction } from "@/data/mock";
 import { getLocalMonthIndex } from "@/lib/date";
 import { cn } from "@/lib/utils";
+import { classifyExpense, isCommissionCategory, isTaxCategory } from "@/lib/dre-classify";
+
 
 type RowKey =
   | keyof MonthlyKpi
