@@ -33,13 +33,21 @@ export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
         };
         buckets.set(k, bucket);
       }
+      const category = (t.category || "Sem categoria").toLowerCase();
       if (t.type === "revenue") {
         bucket.grossRevenue += t.amount;
-        bucket.netRevenue += t.amount;
+        if (category.includes("imposto")) bucket.taxes += t.amount;
+        else if (category.includes("comiss")) bucket.commissions += t.amount;
+        else bucket.netRevenue += t.amount;
+
         if (t.status === "Pago") bucket.cashIn += t.amount;
         else bucket.accountsReceivable += t.amount;
       } else {
-        bucket.operationalExpenses += t.amount;
+        if (category.includes("custo") || category.includes("operacional") || category.includes("produto") || category.includes("serviço")) {
+          bucket.operationalCosts += t.amount;
+        } else {
+          bucket.operationalExpenses += t.amount;
+        }
         if (t.status === "Pago") bucket.cashOut += t.amount;
         else bucket.accountsPayable += t.amount;
       }
@@ -47,6 +55,7 @@ export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
     const arr = [...buckets.values()].sort((a, b) => a.year - b.year || a.monthIndex - b.monthIndex);
     let balance = 0;
     for (const m of arr) {
+      m.netRevenue = m.grossRevenue - m.taxes - m.commissions;
       m.grossProfit = m.netRevenue - m.operationalCosts;
       m.ebitda = m.grossProfit - m.commercialExpenses - m.adminExpenses - m.operationalExpenses;
       m.netProfit = m.ebitda + m.financialIncome - m.financialExpense;

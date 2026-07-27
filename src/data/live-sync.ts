@@ -137,12 +137,19 @@ function ingestReceitas(company: Exclude<CompanyId, "all">, receitas: ReceitaRow
     month.netRevenue += total;
     month.cashIn += paid || total;
     month.accountsReceivable += open;
+    
+    // Categorize for DRE logic
+    const category = row.categoria_nome ?? "Sem categoria";
+    if (category.toLowerCase().includes("imposto")) month.taxes += total;
+    else if (category.toLowerCase().includes("comiss")) month.commissions += total;
+    else month.netRevenue += total; // Logic to segregate based on category if needed
+
     TRANSACTIONS_BY_YEAR[year].push({
       id: `${company}:${row.id}`,
       date: dateStr,
       type: "revenue",
       party: row.cliente_nome ?? "—",
-      category: row.categoria_nome ?? "Sem categoria",
+      category,
       costCenter: row.centro_de_custo_nome ?? "Não alocado",
       amount: total,
       status: normalizeStatus(row.status),
@@ -166,7 +173,15 @@ function ingestDespesas(company: Exclude<CompanyId, "all">, despesas: DespesaRow
     const paid = asNumber(row.pago);
     const open = asNumber(row.nao_pago) || (normalizeStatus(row.status) === "Pago" ? 0 : total);
 
-    month.operationalExpenses += total;
+    const category = row.categoria_nome ?? "Sem categoria";
+    const catLower = category.toLowerCase();
+    
+    if (catLower.includes("custo") || catLower.includes("operacional") || catLower.includes("produto") || catLower.includes("serviço")) {
+      month.operationalCosts += total;
+    } else {
+      month.operationalExpenses += total;
+    }
+
     month.cashOut += paid || total;
     month.accountsPayable += open;
     TRANSACTIONS_BY_YEAR[year].push({
@@ -174,7 +189,7 @@ function ingestDespesas(company: Exclude<CompanyId, "all">, despesas: DespesaRow
       date: dateStr,
       type: "expense",
       party: row.fornecedor_nome ?? "—",
-      category: row.categoria_nome ?? "Sem categoria",
+      category,
       costCenter: row.centro_de_custo_nome ?? "Não alocado",
       amount: total,
       status: normalizeStatus(row.status),
@@ -223,6 +238,7 @@ async function loadContaAzulData() {
   for (const year of Object.keys(KPI_BY_YEAR).map(Number).sort()) {
     let balance = 0;
     for (const month of KPI_BY_YEAR[year]) {
+      month.netRevenue = month.grossRevenue - month.taxes - month.commissions;
       month.grossProfit = month.netRevenue - month.operationalCosts;
       month.ebitda = month.grossProfit - month.commercialExpenses - month.adminExpenses - month.operationalExpenses;
       month.netProfit = month.ebitda + month.financialIncome - month.financialExpense;

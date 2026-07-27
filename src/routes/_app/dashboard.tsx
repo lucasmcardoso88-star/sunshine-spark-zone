@@ -39,7 +39,7 @@ import {
   AreaChart
 } from "recharts";
 import { useFilters } from "@/context/FiltersContext";
-import { getTransactions } from "@/lib/finance";
+import { getTransactions, getMonthlyKpis } from "@/lib/finance";
 import { BRL, MONTHS_PT } from "@/lib/format";
 import { YEARS } from "@/data/mock";
 import { parseLocalDate } from "@/lib/date";
@@ -67,23 +67,32 @@ function DreDashboardPage() {
   
   // Data processing (preserving existing logic)
   const stats = useMemo(() => {
-    let receita = 0;
-    let despesa = 0;
-    txs.forEach(t => {
-      if (t.type === 'revenue') receita += t.amount;
-      else despesa += t.amount;
-    });
-    const lucroBruto = receita - (despesa * 0.4); // Mocking EBITDA/Bruto logic based on available data if needed, or keeping it simple
+    const kpis = getMonthlyKpis(filters);
+    const sum = (sel: (k: any) => number) => kpis.reduce((acc: number, cur: any) => acc + sel(cur), 0);
+    
+    const grossRevenue = sum(k => k.grossRevenue);
+    const taxes = sum(k => k.taxes);
+    const commissions = sum(k => k.commissions);
+    const netRevenue = sum(k => k.netRevenue);
+    const operationalCosts = sum(k => k.operationalCosts);
+    const operationalExpenses = sum(k => k.operationalExpenses);
+    const ebitda = sum(k => k.ebitda);
+    const netProfit = sum(k => k.netProfit);
+    
     return {
-      receita,
-      despesa,
-      lucroBruto: receita - (despesa * 0.3), 
-      ebitda: receita - (despesa * 0.7),
-      lucroLiquido: receita - despesa,
-      margemLiquida: receita > 0 ? ((receita - despesa) / receita) * 100 : 0,
-      margemEbitda: receita > 0 ? ((receita - (despesa * 0.7)) / receita) * 100 : 0
+      receita: grossRevenue,
+      taxes,
+      commissions,
+      netRevenue,
+      operationalCosts,
+      despesa: operationalCosts + operationalExpenses,
+      lucroBruto: netRevenue - operationalCosts,
+      ebitda,
+      lucroLiquido: netProfit,
+      margemLiquida: netRevenue > 0 ? (netProfit / netRevenue) * 100 : 0,
+      margemEbitda: netRevenue > 0 ? (ebitda / netRevenue) * 100 : 0
     };
-  }, [txs]);
+  }, [filters]);
 
   const monthly = useMemo(() => {
     const buckets = Array.from({ length: 12 }, (_, i) => ({
@@ -107,11 +116,12 @@ function DreDashboardPage() {
   }, [txs]);
 
   const dreRows = useMemo(() => {
-    const map = new Map<string, { categoria: string; receitas: number; despesas: number }>();
+    const map = new Map<string, { categoria: string; receitas: number; despesas: number; transactions: any[] }>();
     txs.forEach(t => {
-      const cur = map.get(t.category) ?? { categoria: t.category, receitas: 0, despesas: 0 };
+      const cur = map.get(t.category) ?? { categoria: t.category, receitas: 0, despesas: 0, transactions: [] };
       if (t.type === 'revenue') cur.receitas += t.amount;
       else cur.despesas += t.amount;
+      cur.transactions.push(t);
       map.set(t.category, cur);
     });
     return [...map.values()].map(r => ({ ...r, resultado: r.receitas - r.despesas }))
@@ -247,32 +257,7 @@ function DreDashboardPage() {
                   </TableHeader>
                   <TableBody>
                     {dreRows.map((r, i) => (
-                      <TableRow key={r.categoria} className={cn(
-                        "group transition-colors border-border/30 hover:bg-primary/5",
-                        i % 2 === 0 ? "bg-transparent" : "bg-muted/10"
-                      )}>
-                        <TableCell className="py-4 font-medium flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground group-hover:bg-primary/20 group-hover:text-primary transition-colors">
-                            <PieChart size={16} />
-                          </div>
-                          {r.categoria}
-                        </TableCell>
-                        <TableCell className="text-right py-4 tabular-nums text-emerald-400 font-medium">
-                          {BRL.format(r.receitas)}
-                        </TableCell>
-                        <TableCell className="text-right py-4 tabular-nums text-rose-400 font-medium">
-                          {BRL.format(r.despesas)}
-                        </TableCell>
-                        <TableCell className={cn(
-                          "text-right py-4 tabular-nums font-bold",
-                          r.resultado >= 0 ? "text-emerald-500" : "text-rose-500"
-                        )}>
-                          {BRL.format(r.resultado)}
-                        </TableCell>
-                        <TableCell>
-                          <ChevronRight size={16} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-all transform group-hover:translate-x-1" />
-                        </TableCell>
-                      </TableRow>
+                      <DreTableRow key={r.categoria} row={r} index={i} />
                     ))}
                   </TableBody>
                 </Table>
@@ -285,11 +270,13 @@ function DreDashboardPage() {
             <Card className="p-6 border-border bg-card shadow-sm space-y-6">
               <h3 className="text-lg font-bold border-b border-border pb-4">Resumo do Exercício</h3>
               <div className="space-y-4">
-                <SummaryItem label="Receita Líquida" value={BRL.format(stats.receita)} />
-                <SummaryItem label="Custos" value={BRL.format(stats.despesa * 0.4)} dim />
+                <SummaryItem label="Faturamento Bruto" value={BRL.format(stats.receita)} />
+                <SummaryItem label="Impostos sobre Venda" value={BRL.format(stats.taxes)} dim />
+                <SummaryItem label="Comissões sobre Venda" value={BRL.format(stats.commissions)} dim />
+                <SummaryItem label="Receita Líquida" value={BRL.format(stats.netRevenue)} highlight />
+                <SummaryItem label="CPV / Custos Operacionais" value={BRL.format(stats.operationalCosts)} dim />
                 <SummaryItem label="Lucro Bruto" value={BRL.format(stats.lucroBruto)} highlight />
                 <SummaryItem label="EBITDA" value={BRL.format(stats.ebitda)} />
-                <SummaryItem label="Resultado Operacional" value={BRL.format(stats.lucroLiquido * 1.1)} />
                 <SummaryItem label="Lucro Líquido" value={BRL.format(stats.lucroLiquido)} highlight large />
               </div>
 
@@ -321,6 +308,78 @@ function DreDashboardPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+function DreTableRow({ row, index }: { row: any, index: number }) {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  // Group by sub-entity (party/description)
+  const subRows = useMemo(() => {
+    const subMap = new Map<string, number>();
+    row.transactions.forEach((t: any) => {
+      const key = t.party || "Outros";
+      subMap.set(key, (subMap.get(key) || 0) + t.amount);
+    });
+    return [...subMap.entries()].map(([name, amount]) => ({ name, amount }))
+      .sort((a, b) => b.amount - a.amount);
+  }, [row.transactions]);
+
+  return (
+    <>
+      <TableRow 
+        className={cn(
+          "group transition-colors border-border/30 hover:bg-primary/5 cursor-pointer",
+          index % 2 === 0 ? "bg-transparent" : "bg-muted/10",
+          isOpen && "bg-primary/5"
+        )}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <TableCell className="py-4 font-medium flex items-center gap-3">
+          <div className="h-8 w-8 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+            <PieChart size={16} />
+          </div>
+          <span className="flex items-center gap-2">
+            {row.categoria}
+            <ChevronRight size={14} className={cn("transition-transform duration-200", isOpen && "rotate-90")} />
+          </span>
+        </TableCell>
+        <TableCell className="text-right py-4 tabular-nums text-emerald-500 font-semibold">
+          {BRL.format(row.receitas)}
+        </TableCell>
+        <TableCell className="text-right py-4 tabular-nums text-rose-500 font-semibold">
+          {BRL.format(row.despesas)}
+        </TableCell>
+        <TableCell className={cn(
+          "text-right py-4 tabular-nums font-bold",
+          row.resultado >= 0 ? "text-emerald-500" : "text-rose-500"
+        )}>
+          {BRL.format(row.resultado)}
+        </TableCell>
+        <TableCell>
+          <ChevronRight size={16} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-all transform group-hover:translate-x-1" />
+        </TableCell>
+      </TableRow>
+      
+      {isOpen && subRows.map((sub, si) => (
+        <TableRow key={`${row.categoria}-${sub.name}`} className="bg-muted/5 border-border/10 animate-in slide-in-from-top-1 duration-200">
+          <TableCell className="py-3 pl-14 text-sm text-muted-foreground italic flex items-center gap-2">
+            <div className="w-1 h-1 rounded-full bg-border" />
+            {sub.name}
+          </TableCell>
+          <TableCell className="text-right py-3 tabular-nums text-xs text-emerald-500/70 font-medium">
+            {row.receitas > 0 ? BRL.format(sub.amount) : "—"}
+          </TableCell>
+          <TableCell className="text-right py-3 tabular-nums text-xs text-rose-500/70 font-medium">
+            {row.despesas > 0 ? BRL.format(sub.amount) : "—"}
+          </TableCell>
+          <TableCell className="text-right py-3 tabular-nums text-xs text-muted-foreground font-medium">
+            {BRL.format(sub.amount)}
+          </TableCell>
+          <TableCell />
+        </TableRow>
+      ))}
+    </>
   );
 }
 
