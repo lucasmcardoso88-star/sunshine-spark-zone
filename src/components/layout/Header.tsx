@@ -2,10 +2,14 @@ import {
   CheckCircle2,
   ChevronDown,
   Clock3,
+  LogOut,
   RefreshCw,
   Settings,
   User,
 } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import somusLogo from "@/assets/somus-logo.png.asset.json";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
