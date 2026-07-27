@@ -3,6 +3,8 @@ import { COMPANY_OPTIONS, type AccountingBasis, type CompanyId } from "@/data/mo
 
 export type Quarter = 1 | 2 | 3 | 4 | "all";
 
+export type PaymentStatusFilter = "all" | "paid" | "open";
+
 export type FiltersState = {
   year: number;
   quarter: Quarter;
@@ -13,6 +15,7 @@ export type FiltersState = {
   customEnd: string;
   costCenter: string;
   category: string;
+  payment: PaymentStatusFilter;
 };
 
 type Ctx = FiltersState & {
@@ -25,6 +28,7 @@ type Ctx = FiltersState & {
   setCustomEnd: (date: string) => void;
   setCostCenter: (costCenter: string) => void;
   setCategory: (category: string) => void;
+  setPayment: (p: PaymentStatusFilter) => void;
   resetFilters: () => void;
   activeFilterCount: number;
   companyLabel: string;
@@ -42,6 +46,7 @@ export const DEFAULT_FILTERS: FiltersState = {
   customEnd: "",
   costCenter: "all",
   category: "all",
+  payment: "all",
 };
 
 export function FiltersProvider({ children }: { children: ReactNode }) {
@@ -54,6 +59,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
   const [customEnd, setCustomEnd] = useState(DEFAULT_FILTERS.customEnd);
   const [costCenter, setCostCenter] = useState(DEFAULT_FILTERS.costCenter);
   const [category, setCategory] = useState(DEFAULT_FILTERS.category);
+  const [payment, setPayment] = useState<PaymentStatusFilter>(DEFAULT_FILTERS.payment);
 
   const resetFilters = () => {
     setYear(DEFAULT_FILTERS.year);
@@ -65,6 +71,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     setCustomEnd(DEFAULT_FILTERS.customEnd);
     setCostCenter(DEFAULT_FILTERS.costCenter);
     setCategory(DEFAULT_FILTERS.category);
+    setPayment(DEFAULT_FILTERS.payment);
   };
 
   const activeFilterCount = [
@@ -77,6 +84,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
     Boolean(customEnd),
     costCenter !== DEFAULT_FILTERS.costCenter,
     category !== DEFAULT_FILTERS.category,
+    payment !== DEFAULT_FILTERS.payment,
   ].filter(Boolean).length;
 
   const value = useMemo<Ctx>(
@@ -90,6 +98,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
       customEnd,
       costCenter,
       category,
+      payment,
       setYear,
       setQuarter,
       setMonth,
@@ -99,6 +108,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
       setCustomEnd,
       setCostCenter,
       setCategory,
+      setPayment,
       resetFilters,
       activeFilterCount,
       companyLabel: COMPANY_OPTIONS.find((c) => c.id === company)?.name ?? "Todas",
@@ -113,6 +123,7 @@ export function FiltersProvider({ children }: { children: ReactNode }) {
       customEnd,
       costCenter,
       category,
+      payment,
       activeFilterCount,
     ],
   );
