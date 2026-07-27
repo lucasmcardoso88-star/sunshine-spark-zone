@@ -52,7 +52,19 @@ export const KPI_BY_YEAR: Record<number, MonthlyKpi[]> = {
 
 export const YEARS = [2023, 2024, 2025, 2026, 2027] as const;
 
-export type Transaction = { id: string; date: string; type: "revenue" | "expense"; party: string; category: string; costCenter: string; amount: number; status: "Pago" | "Pendente" | "Atrasado"; company: Exclude<CompanyId, "all">; };
+export type Transaction = { 
+  id: string; 
+  date: string; 
+  competencyDate?: string;
+  paymentDate?: string;
+  type: "revenue" | "expense"; 
+  party: string; 
+  category: string; 
+  costCenter: string; 
+  amount: number; 
+  status: "Pago" | "Pendente" | "Atrasado"; 
+  company: Exclude<CompanyId, "all">; 
+};
 
 export const TRANSACTIONS_BY_YEAR: Record<number, Transaction[]> = {
   2023: [],
