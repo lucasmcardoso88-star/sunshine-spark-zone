@@ -53,7 +53,7 @@ export function SidebarFilters() {
   return (
     <aside
       className={cn(
-        "shrink-0 border-b border-white/5 bg-[#0B1220] transition-all duration-300 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:border-b-0 lg:border-r lg:border-white/5",
+        "shrink-0 border-b border-border bg-sidebar transition-all duration-300 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:border-b-0 lg:border-r lg:border-border",
         collapsed ? "lg:w-20" : "lg:w-80",
       )}
     >
@@ -62,7 +62,7 @@ export function SidebarFilters() {
           {!collapsed && (
             <div className="flex items-center gap-2">
               <div className="h-2 w-2 rounded-full bg-primary shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
                 Filtros Inteligentes
               </p>
             </div>
@@ -71,7 +71,7 @@ export function SidebarFilters() {
             type="button"
             variant="ghost"
             size="icon"
-            className="h-8 w-8 rounded-lg hover:bg-white/5 text-slate-400"
+            className="h-8 w-8 rounded-lg hover:bg-accent text-muted-foreground"
             onClick={() => setCollapsed((v) => !v)}
           >
             {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
@@ -83,7 +83,7 @@ export function SidebarFilters() {
             <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
               <Filter size={18} />
             </div>
-            <div className="h-8 w-8 rounded-full bg-white/5 flex items-center justify-center text-[10px] font-bold text-slate-400 border border-white/10">
+            <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-[10px] font-bold text-muted-foreground border border-border">
               {activeFilterCount}
             </div>
           </div>
@@ -97,7 +97,7 @@ export function SidebarFilters() {
                 variant="ghost"
                 size="sm"
                 onClick={resetFilters}
-                className="h-7 text-[10px] font-bold uppercase tracking-wider text-slate-500 hover:text-white"
+                className="h-7 text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground"
               >
                 Resetar
               </Button>
@@ -106,10 +106,10 @@ export function SidebarFilters() {
             <div className="space-y-5">
               <FilterField label="Empresa Principal">
                 <Select value={company} onValueChange={(v) => setCompany(v as CompanyId)}>
-                  <SelectTrigger className="h-11 rounded-xl bg-white/5 border-white/10 text-white font-medium focus:ring-primary/20">
+                  <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground font-medium focus:ring-primary/20">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#111827] border-white/10 text-white">
+                  <SelectContent className="bg-card border-border text-foreground">
                     {COMPANY_OPTIONS.map((c) => (
                       <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                     ))}
@@ -120,10 +120,10 @@ export function SidebarFilters() {
               <div className="grid grid-cols-2 gap-4">
                 <FilterField label="Ano Fiscal">
                   <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
-                    <SelectTrigger className="h-11 rounded-xl bg-white/5 border-white/10 text-white">
+                    <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#111827] border-white/10 text-white">
+                    <SelectContent className="bg-card border-border text-foreground">
                       {YEARS.map((y) => (
                         <SelectItem key={y} value={String(y)}>{y}</SelectItem>
                       ))}
@@ -133,10 +133,10 @@ export function SidebarFilters() {
 
                 <FilterField label="Mês">
                   <Select value={String(month)} onValueChange={(v) => setMonth(v === "all" ? "all" : Number(v))}>
-                    <SelectTrigger className="h-11 rounded-xl bg-white/5 border-white/10 text-white">
+                    <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#111827] border-white/10 text-white">
+                    <SelectContent className="bg-card border-border text-foreground">
                       <SelectItem value="all">Todos</SelectItem>
                       {MONTHS_PT.map((m, i) => (
                         <SelectItem key={m} value={String(i + 1)}>{m.substring(0, 3)}</SelectItem>
@@ -148,10 +148,10 @@ export function SidebarFilters() {
 
               <FilterField label="Base de Cálculo">
                 <Select value={basis} onValueChange={(v) => setBasis(v as "cash" | "accrual")}>
-                  <SelectTrigger className="h-11 rounded-xl bg-white/5 border-white/10 text-white uppercase text-[10px] font-bold tracking-widest">
+                  <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground uppercase text-[10px] font-bold tracking-widest">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#111827] border-white/10 text-white">
+                  <SelectContent className="bg-card border-border text-foreground">
                     <SelectItem value="accrual">Competência (DRE)</SelectItem>
                     <SelectItem value="cash">Caixa (Fluxo)</SelectItem>
                   </SelectContent>
@@ -160,10 +160,10 @@ export function SidebarFilters() {
 
               <FilterField label="Categoria Financeira">
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger className="h-11 rounded-xl bg-white/5 border-white/10 text-white">
+                  <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#111827] border-white/10 text-white">
+                  <SelectContent className="bg-card border-border text-foreground">
                     <SelectItem value="all">Todas as Categorias</SelectItem>
                     {categories.map((c) => (
                       <SelectItem key={c} value={c}>{c}</SelectItem>
@@ -172,8 +172,8 @@ export function SidebarFilters() {
                 </Select>
               </FilterField>
               
-              <div className="pt-4 border-t border-white/5">
-                <p className="text-[10px] font-medium text-slate-500 italic leading-relaxed">
+              <div className="pt-4 border-t border-border">
+                <p className="text-[10px] font-medium text-muted-foreground italic leading-relaxed">
                   * Os dados são processados em tempo real de acordo com as normas internacionais de controladoria.
                 </p>
               </div>
@@ -188,7 +188,7 @@ export function SidebarFilters() {
 function FilterField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-2">
-      <Label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">{label}</Label>
+      <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1">{label}</Label>
       {children}
     </div>
   );
