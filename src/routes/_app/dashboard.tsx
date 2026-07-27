@@ -265,17 +265,13 @@ function DashboardPage() {
 
   return (
     <>
-      <PageHeader
-        title="Financeira"
-        description="Visão geral das finanças"
-      />
-      <div className="mt-2 mb-6">
-        <p className="text-sm text-foreground font-medium">Olá, Gestor! 👋</p>
-        <p className="text-xs text-muted-foreground">Aqui está o resumo financeiro da sua empresa.</p>
+      <div className="mb-8 flex flex-col gap-1">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Painel Gerencial</h1>
+        <p className="text-muted-foreground font-medium">Seja bem-vindo, Gestor! 👋</p>
       </div>
 
       {/* Filters */}
-      <Card className="mb-6 grid grid-cols-2 md:grid-cols-6 gap-3 rounded-2xl p-4">
+      <Card className="mb-6 grid grid-cols-2 md:grid-cols-6 gap-3 rounded-2xl p-4 bg-muted/30 border-none shadow-none">
         <FilterSelect
           label="Ano"
           value={String(filters.year)}
@@ -325,23 +321,23 @@ function DashboardPage() {
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <Kpi label="Receitas Totais" value={totalReceitas} icon={<TrendingUp className="h-5 w-5" />} tone="positive" />
-        <Kpi label="Despesas Totais" value={totalDespesas} icon={<TrendingDown className="h-5 w-5" />} tone="critical" />
+        <Kpi label="Faturamento Bruto" value={totalReceitas} icon={<TrendingUp className="h-5 w-5" />} tone="positive" />
+        <Kpi label="Total de Custos" value={totalDespesas} icon={<TrendingDown className="h-5 w-5" />} tone="critical" />
         <Kpi
-          label="Resultado Líquido"
+          label="Lucro Líquido"
           value={resultado}
           icon={<Scale className="h-5 w-5" />}
           tone={resultado >= 0 ? "positive" : "critical"}
         />
-        <Kpi label="A Receber" value={aReceber} icon={<ArrowDownCircle className="h-5 w-5" />} tone="primary" />
-        <Kpi label="A Pagar" value={aPagar} icon={<ArrowUpCircle className="h-5 w-5" />} tone="warning" />
+        <Kpi label="Contas a Receber" value={aReceber} icon={<ArrowDownCircle className="h-5 w-5" />} tone="primary" />
+        <Kpi label="Contas a Pagar" value={aPagar} icon={<ArrowUpCircle className="h-5 w-5" />} tone="warning" />
       </div>
 
       {/* Monthly chart */}
       <div className="mt-6">
         <ChartCard
-          title="Receitas vs Despesas por mês"
-          subtitle={`${filters.customStart || filters.customEnd ? `${filters.customStart || "início"} a ${filters.customEnd || "hoje"}` : `Ano ${filters.year}`} • linha = saldo acumulado`}
+          title="Evolução Financeira"
+          subtitle="Acompanhamento mensal de receitas, despesas e saldo"
         >
           {monthly.every((m) => m.Receitas === 0 && m.Despesas === 0) ? (
             <EmptyState title="Sem dados no período" description="Aguarde sincronização ou ajuste filtros." />
@@ -364,7 +360,7 @@ function DashboardPage() {
 
       {/* DRE */}
       <Card className="mt-6 rounded-2xl p-5">
-        <h3 className="text-sm font-semibold text-foreground mb-3">DRE simplificado por categoria</h3>
+        <h3 className="text-lg font-bold text-foreground mb-4">Demonstrativo de Resultados (DRE)</h3>
         {dre.length === 0 ? (
           <EmptyState />
         ) : (
@@ -403,10 +399,10 @@ function DashboardPage() {
 
       {/* Top rankings */}
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ChartCard title="Top despesas por categoria">
+        <ChartCard title="Maiores Despesas">
           <HorizontalBarsChart data={topDespesaCat} />
         </ChartCard>
-        <ChartCard title="Top clientes por receita">
+        <ChartCard title="Maiores Clientes">
           <HorizontalBarsChart data={topClientes} />
         </ChartCard>
       </div>
