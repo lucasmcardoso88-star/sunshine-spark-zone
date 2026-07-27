@@ -265,13 +265,9 @@ function DashboardPage() {
 
   return (
     <>
-      <PageHeader
-        title="Financeira"
-        description="Visão geral das finanças"
-      />
-      <div className="mt-2 mb-6">
-        <p className="text-sm text-foreground font-medium">Olá, Gestor! 👋</p>
-        <p className="text-xs text-muted-foreground">Aqui está o resumo financeiro da sua empresa.</p>
+      <div className="mb-8 flex flex-col gap-1">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Painel Gerencial</h1>
+        <p className="text-muted-foreground font-medium">Seja bem-vindo, Gestor! 👋</p>
       </div>
 
       {/* Filters */}
