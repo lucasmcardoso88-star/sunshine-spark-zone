@@ -176,13 +176,12 @@ function ingestDespesas(company: Exclude<CompanyId, "all">, despesas: DespesaRow
     const open = asNumber(row.nao_pago) || (normalizeStatus(row.status) === "Pago" ? 0 : total);
 
     const category = row.categoria_nome ?? "Sem categoria";
-    const catLower = category.toLowerCase();
-    
-    if (catLower.includes("custo") || catLower.includes("operacional") || catLower.includes("produto") || catLower.includes("serviço")) {
-      month.operationalCosts += total;
-    } else {
-      month.operationalExpenses += total;
-    }
+    const bucket = classifyExpense(category);
+    if (bucket === "taxes") month.taxes += total;
+    else if (bucket === "commissions") month.commissions += total;
+    else if (bucket === "operationalCosts") month.operationalCosts += total;
+    else month.operationalExpenses += total;
+
 
     month.cashOut += paid || total;
     month.accountsPayable += open;
