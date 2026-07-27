@@ -4,6 +4,8 @@ import { supabaseExternal } from "@/integrations/supabase-external/client";
 import { getD61Data } from "@/lib/d61-data.functions";
 import type { CompanyId } from "@/data/mock";
 import { parseLocalDate } from "@/lib/date";
+import { classifyExpense, isCommissionCategory, isTaxCategory } from "@/lib/dre-classify";
+
 import {
   KPI_BY_YEAR,
   TRANSACTIONS_BY_YEAR,
