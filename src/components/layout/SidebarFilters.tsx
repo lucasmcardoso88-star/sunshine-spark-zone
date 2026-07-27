@@ -108,7 +108,7 @@ export function SidebarFilters() {
             <div className="space-y-5">
               <FilterField label="Empresa Principal">
                 <Select value={company} onValueChange={(v) => setCompany(v as CompanyId)}>
-                  <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground font-medium focus:ring-primary/20">
+                  <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground text-sm font-normal focus:ring-primary/20 normal-case">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border text-foreground">
@@ -122,7 +122,7 @@ export function SidebarFilters() {
               <div className="grid grid-cols-2 gap-4">
                 <FilterField label="Ano Fiscal">
                   <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
-                    <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground">
+                    <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground text-sm font-normal normal-case">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-card border-border text-foreground">
@@ -135,7 +135,7 @@ export function SidebarFilters() {
 
                 <FilterField label="Mês">
                   <Select value={String(month)} onValueChange={(v) => setMonth(v === "all" ? "all" : Number(v))}>
-                    <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground">
+                    <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground text-sm font-normal normal-case">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-card border-border text-foreground">
@@ -150,7 +150,7 @@ export function SidebarFilters() {
 
               <FilterField label="Base de Cálculo">
                 <Select value={basis} onValueChange={(v) => setBasis(v as "cash" | "accrual")}>
-                  <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground text-sm font-medium">
+                  <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground text-sm font-normal normal-case">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border text-foreground">
@@ -162,7 +162,7 @@ export function SidebarFilters() {
 
               <FilterField label="Categoria Financeira">
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground">
+                  <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground text-sm font-normal normal-case">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border text-foreground">
@@ -176,7 +176,7 @@ export function SidebarFilters() {
               
               <FilterField label="Situação">
                 <Select value={payment} onValueChange={(v) => setPayment(v as PaymentStatusFilter)}>
-                  <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground">
+                  <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground text-sm font-normal normal-case">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border text-foreground">
