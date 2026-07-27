@@ -145,10 +145,10 @@ function LoginPage() {
   }
 
   const fieldClass =
-    "h-14 w-full rounded-xl border border-[#1b2c42] bg-[#0b1725] pl-14 pr-12 text-[15px] text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-[#2f8ef4] focus:ring-2 focus:ring-[#2f8ef4]/25";
+    "h-12 w-full rounded-xl border border-[#1b2c42] bg-[#0b1725] pl-12 pr-11 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-[#2f8ef4] focus:ring-2 focus:ring-[#2f8ef4]/25";
 
   const submitBtn =
-    "group mt-2 flex h-14 w-full items-center justify-between rounded-xl bg-gradient-to-r from-[#0b63d6] to-[#2b9bf6] px-6 text-[15px] font-semibold text-white shadow-[0_18px_40px_-14px_rgba(43,155,246,0.9)] transition hover:brightness-110 disabled:opacity-60";
+    "group mt-2 flex h-12 w-full items-center justify-between rounded-xl bg-gradient-to-r from-[#0b63d6] to-[#2b9bf6] px-5 text-sm font-semibold text-white shadow-[0_18px_40px_-14px_rgba(43,155,246,0.9)] transition hover:brightness-110 disabled:opacity-60";
 
   return (
     <div className="relative min-h-screen bg-[#04080f] text-slate-200">
@@ -210,7 +210,7 @@ function LoginPage() {
 
 
             {/* Tabs */}
-            <div className="mt-8 grid grid-cols-2 border-b border-[#152437] text-[15px]">
+            <div className="mt-8 grid grid-cols-2 border-b border-[#152437] text-sm">
               <button
                 type="button"
                 onClick={() => setTab("login")}
@@ -238,11 +238,11 @@ function LoginPage() {
             {tab === "login" ? (
               <form onSubmit={handleCredentials} className="mt-7 space-y-5">
                 <div className="space-y-2.5">
-                  <label htmlFor="email" className="text-[15px] text-slate-200">
+                  <label htmlFor="email" className="text-sm text-slate-200">
                     E-mail
                   </label>
                   <div className="relative">
-                    <Mail className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-[#3b9df6]" />
+                    <Mail className="pointer-events-none absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#3b9df6]" />
                     <input
                       id="email"
                       type="email"
@@ -257,11 +257,11 @@ function LoginPage() {
                 </div>
 
                 <div className="space-y-2.5">
-                  <label htmlFor="password" className="text-[15px] text-slate-200">
+                  <label htmlFor="password" className="text-sm text-slate-200">
                     Senha
                   </label>
                   <div className="relative">
-                    <Lock className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-[#3b9df6]" />
+                    <Lock className="pointer-events-none absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#3b9df6]" />
                     <input
                       id="password"
                       type={showPassword ? "text" : "password"}
@@ -276,7 +276,7 @@ function LoginPage() {
                       type="button"
                       onClick={() => setShowPassword((v) => !v)}
                       aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-                      className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-200"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-200"
                     >
                       {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
@@ -316,11 +316,11 @@ function LoginPage() {
             ) : (
               <form onSubmit={otpSent ? handleOtp : sendCode} className="mt-7 space-y-5">
                 <div className="space-y-2.5">
-                  <label htmlFor="email-code" className="text-[15px] text-slate-200">
+                  <label htmlFor="email-code" className="text-sm text-slate-200">
                     E-mail
                   </label>
                   <div className="relative">
-                    <Mail className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-[#3b9df6]" />
+                    <Mail className="pointer-events-none absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#3b9df6]" />
                     <input
                       id="email-code"
                       type="email"
@@ -336,7 +336,7 @@ function LoginPage() {
 
                 {otpSent && (
                   <div className="space-y-2.5">
-                    <label htmlFor="otp" className="text-[15px] text-slate-200">
+                    <label htmlFor="otp" className="text-sm text-slate-200">
                       Código de verificação
                     </label>
                     <input
