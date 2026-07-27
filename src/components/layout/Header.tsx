@@ -86,6 +86,7 @@ export function Header() {
             <RefreshCw className="h-4 w-4 mr-2" />
             Sync Now
           </Button>
+          <ThemeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
