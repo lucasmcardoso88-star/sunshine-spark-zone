@@ -188,7 +188,7 @@ function DreDashboardPage() {
 
             {/* Main Combined Chart */}
             <div className="grid grid-cols-1 gap-6 xl:grid-cols-4">
-              <Card className="p-6 xl:col-span-3 border-border bg-card shadow-xl overflow-hidden group">
+              <Card className="p-6 xl:col-span-3 border-border bg-card shadow-sm overflow-hidden group">
                 <div className="mb-6 flex items-center justify-between">
                   <h3 className="text-xl font-bold">Evolução de Resultados</h3>
                   <Maximize2 className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" />
@@ -202,11 +202,13 @@ function DreDashboardPage() {
                           <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" opacity={0.3} />
                       <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fill: '#94A3B8', fontSize: 12}} dy={10} />
                       <YAxis axisLine={false} tickLine={false} tick={{fill: '#94A3B8', fontSize: 12}} tickFormatter={tickFmt} />
                       <Tooltip 
-                        contentStyle={{ backgroundColor: '#111827', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.5)' }}
+                        contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: '12px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                        itemStyle={{ color: 'var(--foreground)' }}
+                        labelStyle={{ color: 'var(--muted-foreground)' }}
                         formatter={tooltipFmt}
                       />
                       <Legend verticalAlign="top" align="right" iconType="circle" wrapperStyle={{ paddingBottom: '20px' }} />
@@ -228,7 +230,7 @@ function DreDashboardPage() {
             </div>
 
             {/* Premium DRE Table */}
-            <Card className="overflow-hidden border-border bg-card shadow-2xl">
+            <Card className="overflow-hidden border-border bg-card shadow-sm">
               <div className="p-6 pb-0">
                 <h3 className="text-xl font-bold">Detalhamento por Categoria</h3>
               </div>
@@ -280,7 +282,7 @@ function DreDashboardPage() {
 
           {/* Right Summary Sidebar Area */}
           <aside className="space-y-8">
-            <Card className="p-6 border-border bg-card/80 backdrop-blur-sm shadow-xl space-y-6">
+            <Card className="p-6 border-border bg-card shadow-sm space-y-6">
               <h3 className="text-lg font-bold border-b border-border pb-4">Resumo do Exercício</h3>
               <div className="space-y-4">
                 <SummaryItem label="Receita Líquida" value={BRL.format(stats.receita)} />
@@ -307,7 +309,7 @@ function DreDashboardPage() {
               </div>
             </Card>
 
-            <Card className="p-6 border-none bg-gradient-to-br from-primary/20 to-violet-500/20 shadow-xl overflow-hidden relative">
+            <Card className="p-6 border-none bg-primary/5 shadow-sm overflow-hidden relative">
               <div className="relative z-10">
                 <h4 className="font-bold text-foreground">Relatório Executivo</h4>
                 <p className="text-xs text-muted-foreground mt-1 mb-4">Seu lucro cresceu 22% este mês.</p>

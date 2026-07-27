@@ -34,28 +34,28 @@ export function Header() {
   const lastUpdate = "22/jun/2026 13:00";
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/5 bg-[#0B1220]/80 backdrop-blur-xl supports-[backdrop-filter]:bg-[#0B1220]/60">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
       <div className="grid min-h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-6 py-4 lg:flex">
         <div className="flex min-w-0 items-center gap-4">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-white shadow-[0_0_20px_rgba(59,130,246,0.3)]">
             <BarChart3 className="h-6 w-6" />
           </div>
           <div className="min-w-0 leading-tight">
-            <p className="truncate text-lg font-bold tracking-tight text-white">Controladoria Agência</p>
-            <p className="text-xs text-slate-400 font-medium">Enterprise Intelligence</p>
+            <p className="truncate text-lg font-bold tracking-tight text-foreground">Controladoria Agência</p>
+            <p className="text-xs text-muted-foreground font-medium">Enterprise Intelligence</p>
           </div>
         </div>
 
         <div className="col-span-2 flex min-w-0 flex-wrap items-center gap-4 lg:col-span-1 lg:ml-12 lg:flex-nowrap">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Unidade</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted border border-border">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Unidade</span>
             <Select value={company} onValueChange={(v) => setCompany(v as CompanyId)}>
-              <SelectTrigger className="h-7 w-auto min-w-[140px] border-none bg-transparent p-0 text-sm font-bold text-white shadow-none focus:ring-0">
+              <SelectTrigger className="h-7 w-auto min-w-[140px] border-none bg-transparent p-0 text-sm font-bold text-foreground shadow-none focus:ring-0">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-[#111827] border-white/10">
+              <SelectContent className="bg-card border-border text-foreground">
                 {COMPANY_OPTIONS.map((c) => (
-                  <SelectItem key={c.id} value={c.id} className="text-white hover:bg-white/10">
+                  <SelectItem key={c.id} value={c.id} className="text-foreground focus:bg-accent focus:text-accent-foreground">
                     {c.name}
                   </SelectItem>
                 ))}
@@ -73,13 +73,13 @@ export function Header() {
 
         <div className="flex items-center justify-end gap-4 lg:ml-auto">
           <div className="hidden text-right xl:block">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Última Sincronização</p>
-            <p className="text-xs font-bold text-slate-300">{lastUpdate}</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Última Sincronização</p>
+            <p className="text-xs font-bold text-foreground/80">{lastUpdate}</p>
           </div>
           <Button
             variant="outline"
             size="sm"
-            className="h-10 rounded-xl border-white/10 bg-white/5 px-4 text-xs font-bold text-white transition-all hover:bg-white/10"
+            className="h-10 rounded-xl border-border bg-card px-4 text-xs font-bold text-foreground transition-all hover:bg-accent"
             onClick={() => toast.success("Sincronização iniciada...")}
           >
             <RefreshCw className="h-4 w-4 mr-2" />
@@ -90,31 +90,31 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-10 w-10 rounded-xl hover:bg-white/5"
+                className="h-10 w-10 rounded-xl hover:bg-accent"
               >
-                <Avatar className="h-9 w-9 border border-white/10">
+                <Avatar className="h-9 w-9 border border-border">
                   <AvatarFallback className="bg-primary/20 text-xs font-bold text-primary">
                     GA
                   </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64 bg-[#111827] border-white/10 text-white p-2">
+            <DropdownMenuContent align="end" className="w-64 bg-card border-border text-foreground p-2">
               <DropdownMenuLabel className="px-3 py-4">
                 <div className="leading-tight">
                   <p className="font-bold text-lg">Gestor Financeiro</p>
-                  <p className="text-xs font-medium text-slate-400">gestor@agencia.com</p>
+                  <p className="text-xs font-medium text-muted-foreground">gestor@agencia.com</p>
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-white/10" />
-              <DropdownMenuItem className="rounded-lg py-3 focus:bg-white/5 cursor-pointer">
-                <User className="mr-3 h-5 w-5 text-slate-400" /> Perfil Executivo
+              <DropdownMenuSeparator className="bg-border" />
+              <DropdownMenuItem className="rounded-lg py-3 focus:bg-accent cursor-pointer">
+                <User className="mr-3 h-5 w-5 text-muted-foreground" /> Perfil Executivo
               </DropdownMenuItem>
-              <DropdownMenuItem className="rounded-lg py-3 focus:bg-white/5 cursor-pointer">
-                <Settings className="mr-3 h-5 w-5 text-slate-400" /> Preferências
+              <DropdownMenuItem className="rounded-lg py-3 focus:bg-accent cursor-pointer">
+                <Settings className="mr-3 h-5 w-5 text-muted-foreground" /> Preferências
               </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-white/10" />
-              <DropdownMenuItem className="rounded-lg py-3 focus:bg-white/5 text-rose-400 cursor-pointer">
+              <DropdownMenuSeparator className="bg-border" />
+              <DropdownMenuItem className="rounded-lg py-3 focus:bg-accent text-rose-500 cursor-pointer">
                 Sair do Sistema
               </DropdownMenuItem>
             </DropdownMenuContent>
