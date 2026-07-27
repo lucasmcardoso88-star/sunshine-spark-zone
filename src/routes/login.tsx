@@ -96,10 +96,10 @@ function LoginPage() {
       <Toaster richColors position="top-right" />
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <ShieldCheck className="h-7 w-7" />
+          <div className="mx-auto mb-5 flex h-20 w-full items-center justify-center rounded-2xl bg-black px-6 py-4">
+            <img src={somusLogo.url} alt="SOMUS" className="h-10 w-auto object-contain" />
           </div>
-          <h1 className="text-2xl font-semibold text-foreground">Controladoria W2</h1>
+          <h1 className="text-2xl font-semibold text-foreground">BPO Controladoria</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {step === "credentials"
               ? "Entre com seu usuário e senha"
