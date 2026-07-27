@@ -266,9 +266,13 @@ function DashboardPage() {
   return (
     <>
       <PageHeader
-        title="Dashboard Financeiro"
-        description="Receitas, despesas e contas em aberto com sincronização ao vivo."
+        title="Financeira"
+        description="Visão geral das finanças"
       />
+      <div className="mt-2 mb-6">
+        <p className="text-sm text-foreground font-medium">Olá, Gestor! 👋</p>
+        <p className="text-xs text-muted-foreground">Aqui está o resumo financeiro da sua empresa.</p>
+      </div>
 
       {/* Filters */}
       <Card className="mb-6 grid grid-cols-2 md:grid-cols-6 gap-3 rounded-2xl p-4">
@@ -321,15 +325,15 @@ function DashboardPage() {
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <Kpi label="Total Receitas" value={totalReceitas} icon={<TrendingUp className="h-5 w-5" />} tone="positive" />
-        <Kpi label="Total Despesas" value={totalDespesas} icon={<TrendingDown className="h-5 w-5" />} tone="critical" />
+        <Kpi label="Receitas Totais" value={totalReceitas} icon={<TrendingUp className="h-5 w-5" />} tone="positive" />
+        <Kpi label="Despesas Totais" value={totalDespesas} icon={<TrendingDown className="h-5 w-5" />} tone="critical" />
         <Kpi
           label="Resultado Líquido"
           value={resultado}
           icon={<Scale className="h-5 w-5" />}
           tone={resultado >= 0 ? "positive" : "critical"}
         />
-        <Kpi label="A Receber" value={aReceber} icon={<ArrowDownCircle className="h-5 w-5" />} tone="warning" />
+        <Kpi label="A Receber" value={aReceber} icon={<ArrowDownCircle className="h-5 w-5" />} tone="primary" />
         <Kpi label="A Pagar" value={aPagar} icon={<ArrowUpCircle className="h-5 w-5" />} tone="warning" />
       </div>
 
@@ -478,7 +482,7 @@ function Kpi({
   label: string;
   value: number;
   icon: React.ReactNode;
-  tone: "positive" | "critical" | "warning" | "neutral";
+  tone: "positive" | "critical" | "warning" | "neutral" | "primary";
 }) {
   const color =
     tone === "positive"
@@ -487,7 +491,9 @@ function Kpi({
         ? "text-destructive"
         : tone === "warning"
           ? "text-[color:var(--warning)]"
-          : "text-primary";
+          : tone === "primary"
+            ? "text-primary"
+            : "text-muted-foreground";
   return (
     <Card className="rounded-2xl border-border p-5">
       <div className="flex items-center justify-between">
