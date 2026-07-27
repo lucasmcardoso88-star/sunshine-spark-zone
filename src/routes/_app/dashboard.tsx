@@ -395,12 +395,12 @@ function KpiPremium({ label, value, trend, icon, sparklineColor }: { label: stri
           trend >= 0 ? "bg-emerald-500/10 text-emerald-500" : "bg-rose-500/10 text-rose-500"
         )}>
           {trend >= 0 ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-          {Math.abs(trend)}%
+          {trend < 0 ? "-" : ""}{Math.abs(trend)}%
         </div>
       </div>
       <div>
         <p className="text-sm font-medium text-muted-foreground mb-1">{label}</p>
-        <h4 className="text-2xl font-bold tabular-nums">{BRL.format(value)}</h4>
+        <h4 className={cn("text-2xl font-bold tabular-nums", value < 0 && "text-rose-500")}>{BRL.format(value)}</h4>
       </div>
       {/* Mini Sparkline Mock */}
       <div className="absolute bottom-0 left-0 right-0 h-1">
@@ -412,7 +412,7 @@ function KpiPremium({ label, value, trend, icon, sparklineColor }: { label: stri
   );
 }
 
-function IndicatorCard({ label, value, sub, icon }: { label: string, value: string, sub: string, icon: React.ReactNode }) {
+function IndicatorCard({ label, value, sub, icon, numeric }: { label: string, value: string, sub: string, icon: React.ReactNode, numeric?: number }) {
   return (
     <Card className="p-4 border-border bg-card/50 transition-all hover:bg-secondary/50 flex items-center gap-4">
       <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center">
@@ -420,14 +420,15 @@ function IndicatorCard({ label, value, sub, icon }: { label: string, value: stri
       </div>
       <div>
         <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">{label}</p>
-        <p className="text-lg font-bold">{value}</p>
+        <p className={cn("text-lg font-bold tabular-nums", numeric != null && numeric < 0 && "text-rose-500")}>{value}</p>
         <p className="text-[10px] text-muted-foreground font-medium">{sub}</p>
       </div>
     </Card>
   );
 }
 
-function SummaryItem({ label, value, highlight = false, dim = false, large = false }: { label: string, value: string, highlight?: boolean, dim?: boolean, large?: boolean }) {
+function SummaryItem({ label, value, highlight = false, dim = false, large = false, numeric }: { label: string, value: string, highlight?: boolean, dim?: boolean, large?: boolean, numeric?: number }) {
+  const isNegative = numeric != null && numeric < 0;
   return (
     <div className="flex items-center justify-between">
       <span className={cn(
@@ -437,7 +438,8 @@ function SummaryItem({ label, value, highlight = false, dim = false, large = fal
       <span className={cn(
         "tabular-nums font-bold",
         highlight && !large ? "text-primary" : "",
-        large ? "text-xl text-primary" : "text-sm"
+        large ? "text-xl text-primary" : "text-sm",
+        isNegative && "text-rose-500"
       )}>{value}</span>
     </div>
   );
