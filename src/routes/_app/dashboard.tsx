@@ -271,7 +271,7 @@ function DashboardPage() {
       </div>
 
       {/* Filters */}
-      <Card className="mb-6 grid grid-cols-2 md:grid-cols-6 gap-3 rounded-2xl p-4">
+      <Card className="mb-6 grid grid-cols-2 md:grid-cols-6 gap-3 rounded-2xl p-4 bg-muted/30 border-none shadow-none">
         <FilterSelect
           label="Ano"
           value={String(filters.year)}
@@ -336,8 +336,8 @@ function DashboardPage() {
       {/* Monthly chart */}
       <div className="mt-6">
         <ChartCard
-          title="Receitas vs Despesas por mês"
-          subtitle={`${filters.customStart || filters.customEnd ? `${filters.customStart || "início"} a ${filters.customEnd || "hoje"}` : `Ano ${filters.year}`} • linha = saldo acumulado`}
+          title="Evolução Financeira"
+          subtitle="Acompanhamento mensal de receitas, despesas e saldo"
         >
           {monthly.every((m) => m.Receitas === 0 && m.Despesas === 0) ? (
             <EmptyState title="Sem dados no período" description="Aguarde sincronização ou ajuste filtros." />
@@ -360,7 +360,7 @@ function DashboardPage() {
 
       {/* DRE */}
       <Card className="mt-6 rounded-2xl p-5">
-        <h3 className="text-sm font-semibold text-foreground mb-3">DRE simplificado por categoria</h3>
+        <h3 className="text-lg font-bold text-foreground mb-4">Demonstrativo de Resultados (DRE)</h3>
         {dre.length === 0 ? (
           <EmptyState />
         ) : (
@@ -399,10 +399,10 @@ function DashboardPage() {
 
       {/* Top rankings */}
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ChartCard title="Top despesas por categoria">
+        <ChartCard title="Maiores Despesas">
           <HorizontalBarsChart data={topDespesaCat} />
         </ChartCard>
-        <ChartCard title="Top clientes por receita">
+        <ChartCard title="Maiores Clientes">
           <HorizontalBarsChart data={topClientes} />
         </ChartCard>
       </div>
