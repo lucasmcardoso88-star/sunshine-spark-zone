@@ -127,44 +127,35 @@ function PainelGerencial() {
         description={`Visão consolidada • ${filters.year} • ${filters.basis === "accrual" ? "Competência" : "Caixa"}`}
       />
 
-      <section className="mb-6 grid gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm lg:grid-cols-[220px_1fr] lg:items-center">
-        <div>
-          <p className="text-sm font-semibold text-foreground">Leitura rápida do mês</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Sinais executivos para priorizar a análise.
-          </p>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {quickRead.map((item) => (
-            <div key={item.label} className="rounded-xl border border-border bg-background p-3">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-medium text-muted-foreground">{item.label}</span>
-                <StatusBadge tone={item.tone}>
-                  {item.tone === "positive" ? (
-                    <CheckCircle2 className="h-3 w-3" />
-                  ) : (
-                    <AlertTriangle className="h-3 w-3" />
-                  )}{" "}
-                  {item.status}
-                </StatusBadge>
-              </div>
-              <p className="mt-2 text-xs text-muted-foreground">{item.detail}</p>
-            </div>
-          ))}
-        </div>
+      {/* Leitura rápida — chips executivos */}
+      <section className="mb-6 flex flex-wrap items-center gap-2">
+        <span className="mr-1 text-xs font-medium text-muted-foreground">Leitura rápida:</span>
+        {quickRead.map((item) => (
+          <TooltipProvider key={item.label}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="cursor-default rounded-full border border-border/70 bg-card px-3 py-1.5 text-xs">
+                  <span className="mr-2 font-medium text-muted-foreground">{item.label}</span>
+                  <StatusBadge tone={item.tone} className="border-0 px-1.5 py-0">
+                    {item.tone === "positive" ? (
+                      <CheckCircle2 className="h-3 w-3" />
+                    ) : (
+                      <AlertTriangle className="h-3 w-3" />
+                    )}
+                    {item.status}
+                  </StatusBadge>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-64">{item.detail}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ))}
       </section>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      {/* Indicadores principais */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard
-          label="Receita Bruta"
-          value={agg.grossRevenue}
-          icon={Receipt}
-          variation={getVariation(filters, "grossRevenue")}
-          tone={toneFor(getVariation(filters, "grossRevenue"))}
-          formula="Soma das receitas brutas no período filtrado."
-          trend={allYear.map((k) => k.grossRevenue)}
-        />
-        <KpiCard
+          size="lg"
           label="Receita Líquida"
           value={agg.netRevenue}
           icon={BadgeDollarSign}
@@ -174,24 +165,7 @@ function PainelGerencial() {
           trend={allYear.map((k) => k.netRevenue)}
         />
         <KpiCard
-          label="Custos Operacionais"
-          value={agg.operationalCosts}
-          icon={Calculator}
-          variation={getVariation(filters, "operationalCosts")}
-          tone={toneFor(getVariation(filters, "operationalCosts"), true)}
-          formula="Custos diretos dos serviços prestados no período."
-          trend={allYear.map((k) => k.operationalCosts)}
-        />
-        <KpiCard
-          label="Despesas Operacionais"
-          value={agg.operationalExpenses}
-          icon={TrendingDown}
-          variation={getVariation(filters, "operationalExpenses")}
-          tone={toneFor(getVariation(filters, "operationalExpenses"), true)}
-          formula="Despesas comerciais, administrativas e operacionais somadas."
-          trend={allYear.map((k) => k.operationalExpenses + k.commercialExpenses + k.adminExpenses)}
-        />
-        <KpiCard
+          size="lg"
           label="EBITDA"
           value={agg.ebitda}
           icon={TrendingUp}
@@ -201,6 +175,7 @@ function PainelGerencial() {
           trend={allYear.map((k) => k.ebitda)}
         />
         <KpiCard
+          size="lg"
           label="Lucro Líquido"
           value={agg.netProfit}
           icon={PiggyBank}
@@ -210,12 +185,44 @@ function PainelGerencial() {
           trend={allYear.map((k) => k.netProfit)}
         />
         <KpiCard
+          size="lg"
           label="Margem Líquida"
           value={agg.netMargin}
           icon={Percent}
           formatValue={(n) => formatPercent(n)}
           tone={agg.netMargin >= 0.15 ? "positive" : agg.netMargin >= 0.08 ? "warning" : "critical"}
           formula="Lucro líquido dividido pela receita líquida."
+        />
+      </div>
+
+      {/* Indicadores complementares */}
+      <p className="mb-3 mt-8 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        Detalhamento
+      </p>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <KpiCard
+          label="Receita Bruta"
+          value={agg.grossRevenue}
+          icon={Receipt}
+          variation={getVariation(filters, "grossRevenue")}
+          tone={toneFor(getVariation(filters, "grossRevenue"))}
+          formula="Soma das receitas brutas no período filtrado."
+        />
+        <KpiCard
+          label="Custos Operacionais"
+          value={agg.operationalCosts}
+          icon={Calculator}
+          variation={getVariation(filters, "operationalCosts")}
+          tone={toneFor(getVariation(filters, "operationalCosts"), true)}
+          formula="Custos diretos dos serviços prestados no período."
+        />
+        <KpiCard
+          label="Despesas Operacionais"
+          value={agg.operationalExpenses}
+          icon={TrendingDown}
+          variation={getVariation(filters, "operationalExpenses")}
+          tone={toneFor(getVariation(filters, "operationalExpenses"), true)}
+          formula="Despesas comerciais, administrativas e operacionais somadas."
         />
         <KpiCard
           label="Saldo de Caixa"
@@ -241,7 +248,7 @@ function PainelGerencial() {
       </div>
 
       {monthly.length === 0 ? (
-        <Card className="mt-6 rounded-2xl border-border p-5 shadow-sm">
+        <Card className="mt-6 rounded-2xl border-border/70 p-5 shadow-none">
           <EmptyState
             title="Sem metas cadastradas para o período"
             description="Cadastre metas ou selecione outro intervalo para comparar previsto x realizado."
@@ -250,7 +257,10 @@ function PainelGerencial() {
         </Card>
       ) : null}
 
-      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <p className="mb-3 mt-8 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        Análises
+      </p>
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <ChartCard title="Receita x Despesas x Lucro" subtitle="Visão mensal do ano">
           <MultiBarChart
             data={monthChartData}
@@ -258,11 +268,11 @@ function PainelGerencial() {
             series={[
               { key: "Receita", name: "Receita Líquida", color: "var(--chart-1)" },
               { key: "Despesas", name: "Despesas + Custos", color: "var(--chart-3)" },
-              { key: "Lucro", name: "Lucro Líquido", color: "var(--chart-4)" },
+              { key: "Lucro", name: "Lucro Líquido", color: "var(--chart-2)" },
             ]}
           />
         </ChartCard>
-        <ChartCard title="Entradas x Saídas x Geração de Caixa">
+        <ChartCard title="Entradas x Saídas x Geração de Caixa" subtitle="Visão mensal do ano">
           <MultiBarChart
             data={cashChartData}
             xKey="month"
@@ -276,10 +286,11 @@ function PainelGerencial() {
         <ChartCard title="Top 5 clientes por receita" subtitle="Período selecionado">
           <HorizontalBarsChart data={topClients} />
         </ChartCard>
-        <ChartCard title="Top 5 categorias de despesa">
+        <ChartCard title="Top 5 categorias de despesa" subtitle="Período selecionado">
           <HorizontalBarsChart data={topExpenseCategories} />
         </ChartCard>
       </div>
     </>
   );
 }
+
