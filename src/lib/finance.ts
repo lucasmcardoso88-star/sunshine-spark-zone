@@ -16,7 +16,9 @@ export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
     const buckets = new Map<string, MonthlyKpi>();
     const key = (y: number, m: number) => `${y}-${m}`;
     for (const t of txs) {
-      const dateStr = f.basis === "cash" && t.status === "Pago" ? (t.date) : t.date; // Use specific date if we had one for payment, but for now we use transaction date
+      const dateStr = f.basis === "cash" 
+        ? (t.paymentDate || t.date) 
+        : (t.competencyDate || t.date);
       const d = new Date(dateStr);
       const y = d.getFullYear();
       const m = getLocalMonthIndex(dateStr);
