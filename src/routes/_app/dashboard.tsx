@@ -321,16 +321,16 @@ function DashboardPage() {
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <Kpi label="Receitas Totais" value={totalReceitas} icon={<TrendingUp className="h-5 w-5" />} tone="positive" />
-        <Kpi label="Despesas Totais" value={totalDespesas} icon={<TrendingDown className="h-5 w-5" />} tone="critical" />
+        <Kpi label="Faturamento Bruto" value={totalReceitas} icon={<TrendingUp className="h-5 w-5" />} tone="positive" />
+        <Kpi label="Total de Custos" value={totalDespesas} icon={<TrendingDown className="h-5 w-5" />} tone="critical" />
         <Kpi
-          label="Resultado Líquido"
+          label="Lucro Líquido"
           value={resultado}
           icon={<Scale className="h-5 w-5" />}
           tone={resultado >= 0 ? "positive" : "critical"}
         />
-        <Kpi label="A Receber" value={aReceber} icon={<ArrowDownCircle className="h-5 w-5" />} tone="primary" />
-        <Kpi label="A Pagar" value={aPagar} icon={<ArrowUpCircle className="h-5 w-5" />} tone="warning" />
+        <Kpi label="Contas a Receber" value={aReceber} icon={<ArrowDownCircle className="h-5 w-5" />} tone="primary" />
+        <Kpi label="Contas a Pagar" value={aPagar} icon={<ArrowUpCircle className="h-5 w-5" />} tone="warning" />
       </div>
 
       {/* Monthly chart */}
