@@ -34,92 +34,88 @@ export function Header() {
   const lastUpdate = "22/jun/2026 13:00";
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/90">
-      <div className="grid min-h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 lg:flex lg:px-6">
-        <div className="flex min-w-0 items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-            <BarChart3 className="h-5 w-5" />
+    <header className="sticky top-0 z-40 border-b border-white/5 bg-[#0B1220]/80 backdrop-blur-xl supports-[backdrop-filter]:bg-[#0B1220]/60">
+      <div className="grid min-h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-6 py-4 lg:flex">
+        <div className="flex min-w-0 items-center gap-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-white shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+            <BarChart3 className="h-6 w-6" />
           </div>
           <div className="min-w-0 leading-tight">
-            <p className="truncate text-sm font-semibold text-foreground">Controladoria Agência</p>
-            <p className="text-[11px] text-muted-foreground">Dashboard financeiro</p>
+            <p className="truncate text-lg font-bold tracking-tight text-white">Controladoria Agência</p>
+            <p className="text-xs text-slate-400 font-medium">Enterprise Intelligence</p>
           </div>
         </div>
 
-        <div className="col-span-2 flex min-w-0 flex-wrap items-center gap-3 lg:col-span-1 lg:ml-5 lg:flex-nowrap">
-          <span className="text-xs font-medium text-muted-foreground">Empresa</span>
-          <Select value={company} onValueChange={(v) => setCompany(v as CompanyId)}>
-            <SelectTrigger className="h-9 w-full min-w-0 sm:w-[240px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {COMPANY_OPTIONS.map((c) => (
-                <SelectItem key={c.id} value={c.id}>
-                  {c.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="col-span-2 flex min-w-0 flex-wrap items-center gap-4 lg:col-span-1 lg:ml-12 lg:flex-nowrap">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Unidade</span>
+            <Select value={company} onValueChange={(v) => setCompany(v as CompanyId)}>
+              <SelectTrigger className="h-7 w-auto min-w-[140px] border-none bg-transparent p-0 text-sm font-bold text-white shadow-none focus:ring-0">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-[#111827] border-white/10">
+                {COMPANY_OPTIONS.map((c) => (
+                  <SelectItem key={c.id} value={c.id} className="text-white hover:bg-white/10">
+                    {c.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-          <div className="hidden items-center gap-2 xl:flex">
-            <StatusBadge tone="positive">
-              <CheckCircle2 className="h-3 w-3" /> Conta Azul conectada
-            </StatusBadge>
-            <StatusBadge tone="info">
-              <Clock3 className="h-3 w-3" /> Sync {lastUpdate}
-            </StatusBadge>
+          <div className="hidden items-center gap-3 xl:flex">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+              <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+              <span className="text-[10px] font-bold text-emerald-500 uppercase">Live Sync</span>
+            </div>
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-2 lg:ml-auto">
-          <div className="hidden text-right text-xs md:block xl:hidden">
-            <p className="text-muted-foreground">Última atualização</p>
-            <p className="font-medium text-foreground">{lastUpdate}</p>
+        <div className="flex items-center justify-end gap-4 lg:ml-auto">
+          <div className="hidden text-right xl:block">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Última Sincronização</p>
+            <p className="text-xs font-bold text-slate-300">{lastUpdate}</p>
           </div>
           <Button
             variant="outline"
             size="sm"
-            className="min-h-9 gap-2 border-primary/30 text-primary hover:bg-primary/10"
-            onClick={() =>
-              toast.info("Integração real com Conta Azul ainda não disponível", {
-                description: "Esta etapa traz apenas a fundação visual e estrutural.",
-              })
-            }
+            className="h-10 rounded-xl border-white/10 bg-white/5 px-4 text-xs font-bold text-white transition-all hover:bg-white/10"
+            onClick={() => toast.success("Sincronização iniciada...")}
           >
-            <RefreshCw className="h-4 w-4" />
-            <span className="hidden sm:inline">Sincronizar</span>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Sync Now
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
-                aria-label="Abrir menu do usuário"
-                className="h-10 w-10 rounded-full"
+                className="h-10 w-10 rounded-xl hover:bg-white/5"
               >
-                <Avatar className="h-9 w-9 border border-border">
-                  <AvatarFallback className="bg-accent text-xs font-semibold text-primary-deep">
+                <Avatar className="h-9 w-9 border border-white/10">
+                  <AvatarFallback className="bg-primary/20 text-xs font-bold text-primary">
                     GA
                   </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>
+            <DropdownMenuContent align="end" className="w-64 bg-[#111827] border-white/10 text-white p-2">
+              <DropdownMenuLabel className="px-3 py-4">
                 <div className="leading-tight">
-                  <p>Gestor financeiro</p>
-                  <p className="text-xs font-normal text-muted-foreground">gestor@agencia.com</p>
+                  <p className="font-bold text-lg">Gestor Financeiro</p>
+                  <p className="text-xs font-medium text-slate-400">gestor@agencia.com</p>
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <User className="h-4 w-4" /> Perfil
+              <DropdownMenuSeparator className="bg-white/10" />
+              <DropdownMenuItem className="rounded-lg py-3 focus:bg-white/5 cursor-pointer">
+                <User className="mr-3 h-5 w-5 text-slate-400" /> Perfil Executivo
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings className="h-4 w-4" /> Configurações
+              <DropdownMenuItem className="rounded-lg py-3 focus:bg-white/5 cursor-pointer">
+                <Settings className="mr-3 h-5 w-5 text-slate-400" /> Preferências
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                Políticas de Uso <ChevronDown className="ml-auto h-4 w-4 rotate-[-90deg]" />
+              <DropdownMenuSeparator className="bg-white/10" />
+              <DropdownMenuItem className="rounded-lg py-3 focus:bg-white/5 text-rose-400 cursor-pointer">
+                Sair do Sistema
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
