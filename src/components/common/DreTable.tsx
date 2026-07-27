@@ -4,7 +4,7 @@ import { MONTHS_PT, formatBRL } from "@/lib/format";
 import type { MonthlyKpi, Transaction } from "@/data/mock";
 import { getLocalMonthIndex } from "@/lib/date";
 import { cn } from "@/lib/utils";
-import { classifyExpense, isCommissionCategory, isTaxCategory } from "@/lib/dre-classify";
+import { classifyTransaction, type DreLine } from "@/lib/dre-classify";
 
 
 type RowKey =
@@ -21,23 +21,23 @@ type Row = {
   label: string;
   key: RowKey;
   emphasis?: "subtotal" | "total";
-  /** sign applied to the detail values of this row */
-  detail?: "revenue" | "taxes" | "commissions" | "costs" | "opex";
+  /** linha do DRE usada para abrir o detalhamento por categoria */
+  detail?: DreLine;
 };
 
 const ROWS: Row[] = [
-  { label: "Receita Bruta", key: "grossRevenue", detail: "revenue" },
+  { label: "Receita Bruta", key: "grossRevenue", detail: "grossRevenue" },
   { label: "(-) Impostos sobre vendas", key: "_negTaxes", detail: "taxes" },
   { label: "(-) Comissões sobre vendas", key: "_negCommissions", detail: "commissions" },
   { label: "(=) Receita Líquida", key: "netRevenue", emphasis: "subtotal" },
-  { label: "(-) Custo dos serviços prestados", key: "_negCosts", detail: "costs" },
+  { label: "(-) Custo dos serviços prestados", key: "_negCosts", detail: "operationalCosts" },
   { label: "(=) Lucro Bruto", key: "grossProfit", emphasis: "subtotal" },
-  { label: "(-) Despesas Comerciais", key: "_negCommercial" },
-  { label: "(-) Despesas Administrativas", key: "_negAdmin" },
-  { label: "(-) Despesas Operacionais", key: "_negOpEx", detail: "opex" },
+  { label: "(-) Despesas Comerciais", key: "_negCommercial", detail: "commercialExpenses" },
+  { label: "(-) Despesas Administrativas", key: "_negAdmin", detail: "adminExpenses" },
+  { label: "(-) Despesas Operacionais", key: "_negOpEx", detail: "operationalExpenses" },
   { label: "(=) EBITDA", key: "ebitda", emphasis: "subtotal" },
-  { label: "(-) Despesas Financeiras", key: "_negFinExp" },
-  { label: "(+) Receitas Financeiras", key: "financialIncome" },
+  { label: "(-) Despesas Financeiras", key: "_negFinExp", detail: "financialExpense" },
+  { label: "(+) Receitas Financeiras", key: "financialIncome", detail: "financialIncome" },
   { label: "(=) Lucro Líquido", key: "netProfit", emphasis: "total" },
 ];
 
@@ -62,20 +62,13 @@ function valueFor(k: MonthlyKpi, key: RowKey): number {
   }
 }
 
-/** Mirrors the classification used in src/lib/finance.ts */
-function bucketOf(t: Transaction): Row["detail"] {
-  const category = t.category || "Sem categoria";
-  if (t.type === "revenue") {
-    if (isTaxCategory(category)) return "taxes";
-    if (isCommissionCategory(category)) return "commissions";
-    return "revenue";
-  }
-  const b = classifyExpense(category);
-  if (b === "taxes") return "taxes";
-  if (b === "commissions") return "commissions";
-  if (b === "operationalCosts") return "costs";
-  return "opex";
+/** Mesma classificação usada em src/lib/finance.ts */
+function bucketOf(t: Transaction): DreLine {
+  return classifyTransaction(t.type, t.category || "Sem categoria");
 }
+
+const POSITIVE_LINES: DreLine[] = ["grossRevenue", "financialIncome"];
+
 
 
 function amountClass(v: number) {
