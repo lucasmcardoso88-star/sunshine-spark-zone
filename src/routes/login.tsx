@@ -190,18 +190,18 @@ function LoginPage() {
               <img
                 src={coinAsset.url}
                 alt="Ícone financeiro"
-                width={300}
-                height={175}
-                className="h-auto w-64 object-contain drop-shadow-[0_18px_40px_rgba(59,157,246,0.35)]"
+                width={340}
+                height={198}
+                className="h-auto w-72 object-contain drop-shadow-[0_18px_40px_rgba(59,157,246,0.35)]"
               />
 
-              <p className="mt-5 text-lg font-medium text-[#3b9df6]">BPO</p>
-              <h2 className="mt-1 text-[28px] font-normal leading-tight text-white">
-                Controladoria
+              <h2 className="mt-4 text-xl font-medium leading-tight text-white">
+                <span className="text-[#3b9df6]">BPO</span> Controladoria
               </h2>
               <p className="mt-2 text-sm text-slate-400">
                 Acesse sua conta para <span className="text-[#3b9df6]">continuar</span>
               </p>
+
             </div>
 
 
