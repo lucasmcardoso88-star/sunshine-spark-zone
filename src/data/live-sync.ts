@@ -135,16 +135,17 @@ function ingestReceitas(company: Exclude<CompanyId, "all">, receitas: ReceitaRow
     const paid = asNumber(row.pago);
     const open = asNumber(row.nao_pago) || (normalizeStatus(row.status) === "Pago" ? 0 : total);
 
-    month.grossRevenue += total;
-    month.netRevenue += total;
+    const category = row.categoria_nome ?? "Sem categoria";
+    const isTax = isTaxCategory(category);
+    const isCommission = !isTax && isCommissionCategory(category);
+
+    if (isTax) month.taxes += total;
+    else if (isCommission) month.commissions += total;
+    else month.grossRevenue += total;
+
     month.cashIn += paid || total;
     month.accountsReceivable += open;
-    
-    // Categorize for DRE logic
-    const category = row.categoria_nome ?? "Sem categoria";
-    if (category.toLowerCase().includes("imposto")) month.taxes += total;
-    else if (category.toLowerCase().includes("comiss")) month.commissions += total;
-    else month.netRevenue += total; // Logic to segregate based on category if needed
+
 
     TRANSACTIONS_BY_YEAR[year].push({
       id: `${company}:${row.id}`,
