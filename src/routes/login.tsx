@@ -166,7 +166,7 @@ function LoginPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-[#04080f]/80 via-transparent to-[#04080f]/45" />
 
           <div className="relative z-10 px-10 pt-12 lg:px-16 lg:pt-14">
-            <img src={somusLogo.url} alt="SOMUS" className="h-16 w-auto object-contain lg:h-20" />
+            <img src={somusLogo.url} alt="SOMUS" className="h-8 w-auto object-contain lg:h-10" />
 
             <h1 className="mt-14 max-w-lg text-[38px] font-normal leading-[1.15] text-white lg:text-[44px]">
               Inteligência que
