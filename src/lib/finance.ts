@@ -1,7 +1,7 @@
 import { KPI_BY_YEAR, TRANSACTIONS_BY_YEAR, type MonthlyKpi, type Transaction } from "@/data/mock";
 import { monthsForFilters, type FiltersState } from "@/context/FiltersContext";
 import { dateIsInRange, getLocalMonthIndex, monthOverlapsRange } from "@/lib/date";
-import { classifyExpense, isCommissionCategory, isTaxCategory } from "@/lib/dre-classify";
+import { classifyTransaction } from "@/lib/dre-classify";
 
 
 export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
@@ -39,24 +39,27 @@ export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
         buckets.set(k, bucket);
       }
       const category = t.category || "Sem categoria";
-      const isTax = isTaxCategory(category);
-      const isCommission = !isTax && isCommissionCategory(category);
+      const line = classifyTransaction(t.type, category);
       if (t.type === "revenue") {
-        if (isTax) bucket.taxes += t.amount;
-        else if (isCommission) bucket.commissions += t.amount;
+        if (line === "financialIncome") bucket.financialIncome += t.amount;
+        else if (line === "taxes") bucket.taxes += t.amount;
+        else if (line === "commissions") bucket.commissions += t.amount;
         else bucket.grossRevenue += t.amount;
 
         if (t.status === "Pago") bucket.cashIn += t.amount;
         else bucket.accountsReceivable += t.amount;
       } else {
-        const b = classifyExpense(category);
-        if (b === "taxes") bucket.taxes += t.amount;
-        else if (b === "commissions") bucket.commissions += t.amount;
-        else if (b === "operationalCosts") bucket.operationalCosts += t.amount;
+        if (line === "taxes") bucket.taxes += t.amount;
+        else if (line === "commissions") bucket.commissions += t.amount;
+        else if (line === "operationalCosts") bucket.operationalCosts += t.amount;
+        else if (line === "commercialExpenses") bucket.commercialExpenses += t.amount;
+        else if (line === "adminExpenses") bucket.adminExpenses += t.amount;
+        else if (line === "financialExpense") bucket.financialExpense += t.amount;
         else bucket.operationalExpenses += t.amount;
         if (t.status === "Pago") bucket.cashOut += t.amount;
         else bucket.accountsPayable += t.amount;
       }
+
 
     }
     const arr = [...buckets.values()].sort((a, b) => a.year - b.year || a.monthIndex - b.monthIndex);
