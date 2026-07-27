@@ -173,7 +173,15 @@ function ingestDespesas(company: Exclude<CompanyId, "all">, despesas: DespesaRow
     const paid = asNumber(row.pago);
     const open = asNumber(row.nao_pago) || (normalizeStatus(row.status) === "Pago" ? 0 : total);
 
-    month.operationalExpenses += total;
+    const category = row.categoria_nome ?? "Sem categoria";
+    const catLower = category.toLowerCase();
+    
+    if (catLower.includes("custo") || catLower.includes("operacional") || catLower.includes("produto") || catLower.includes("serviço")) {
+      month.operationalCosts += total;
+    } else {
+      month.operationalExpenses += total;
+    }
+
     month.cashOut += paid || total;
     month.accountsPayable += open;
     TRANSACTIONS_BY_YEAR[year].push({
@@ -181,7 +189,7 @@ function ingestDespesas(company: Exclude<CompanyId, "all">, despesas: DespesaRow
       date: dateStr,
       type: "expense",
       party: row.fornecedor_nome ?? "—",
-      category: row.categoria_nome ?? "Sem categoria",
+      category,
       costCenter: row.centro_de_custo_nome ?? "Não alocado",
       amount: total,
       status: normalizeStatus(row.status),
