@@ -195,9 +195,9 @@ function LoginPage() {
               <img
                 src={coinDollar}
                 alt="Ícone financeiro"
-                width={816}
-                height={816}
-                className="h-24 w-24 rounded-full object-cover drop-shadow-[0_0_45px_rgba(43,155,246,0.55)]"
+                width={1024}
+                height={1024}
+                className="h-24 w-24 object-contain drop-shadow-[0_0_45px_rgba(43,155,246,0.55)]"
               />
               <p className="mt-5 text-lg font-medium text-[#3b9df6]">BPO</p>
               <h2 className="mt-1 text-[28px] font-normal leading-tight text-white">
