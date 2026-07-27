@@ -232,8 +232,8 @@ function DreDashboardPage() {
 
               {/* Side Indicators */}
               <div className="space-y-4">
-                <IndicatorCard label="Margem Líquida" value={stats.margemLiquida.toFixed(1) + "%"} sub="vs 24.2% anterior" icon={<Target className="text-blue-500" />} />
-                <IndicatorCard label="Margem EBITDA" value={stats.margemEbitda.toFixed(1) + "%"} sub="vs 31.0% anterior" icon={<Activity className="text-emerald-500" />} />
+                <IndicatorCard label="Margem Líquida" value={stats.margemLiquida.toFixed(1) + "%"} numeric={stats.margemLiquida} sub="vs 24.2% anterior" icon={<Target className="text-blue-500" />} />
+                <IndicatorCard label="Margem EBITDA" value={stats.margemEbitda.toFixed(1) + "%"} numeric={stats.margemEbitda} sub="vs 31.0% anterior" icon={<Activity className="text-emerald-500" />} />
                 <IndicatorCard label="Ponto de Equilíbrio" value={BRL.format(stats.despesa * 1.2)} sub="Estimado" icon={<ScalePremium className="text-amber-500" />} />
                 <IndicatorCard label="Rentabilidade" value="18.5%" sub="Retorno s/ invest." icon={<PieChart className="text-violet-500" />} />
               </div>
@@ -270,14 +270,14 @@ function DreDashboardPage() {
             <Card className="p-6 border-border bg-card shadow-sm space-y-6">
               <h3 className="text-lg font-bold border-b border-border pb-4">Resumo do Exercício</h3>
               <div className="space-y-4">
-                <SummaryItem label="Faturamento Bruto" value={BRL.format(stats.receita)} />
-                <SummaryItem label="Impostos sobre Venda" value={BRL.format(stats.taxes)} dim />
-                <SummaryItem label="Comissões sobre Venda" value={BRL.format(stats.commissions)} dim />
-                <SummaryItem label="Receita Líquida" value={BRL.format(stats.netRevenue)} highlight />
-                <SummaryItem label="CPV / Custos Operacionais" value={BRL.format(stats.operationalCosts)} dim />
-                <SummaryItem label="Lucro Bruto" value={BRL.format(stats.lucroBruto)} highlight />
-                <SummaryItem label="EBITDA" value={BRL.format(stats.ebitda)} />
-                <SummaryItem label="Lucro Líquido" value={BRL.format(stats.lucroLiquido)} highlight large />
+                <SummaryItem label="Faturamento Bruto" value={BRL.format(stats.receita)} numeric={stats.receita} />
+                <SummaryItem label="(-) Impostos sobre Venda" value={BRL.format(-Math.abs(stats.taxes))} numeric={-Math.abs(stats.taxes)} dim />
+                <SummaryItem label="(-) Comissões sobre Venda" value={BRL.format(-Math.abs(stats.commissions))} numeric={-Math.abs(stats.commissions)} dim />
+                <SummaryItem label="Receita Líquida" value={BRL.format(stats.netRevenue)} numeric={stats.netRevenue} highlight />
+                <SummaryItem label="(-) CPV / Custos Operacionais" value={BRL.format(-Math.abs(stats.operationalCosts))} numeric={-Math.abs(stats.operationalCosts)} dim />
+                <SummaryItem label="Lucro Bruto" value={BRL.format(stats.lucroBruto)} numeric={stats.lucroBruto} highlight />
+                <SummaryItem label="EBITDA" value={BRL.format(stats.ebitda)} numeric={stats.ebitda} />
+                <SummaryItem label="Lucro Líquido" value={BRL.format(stats.lucroLiquido)} numeric={stats.lucroLiquido} highlight large />
               </div>
 
               <div className="pt-6 border-t border-border space-y-4">
@@ -395,12 +395,12 @@ function KpiPremium({ label, value, trend, icon, sparklineColor }: { label: stri
           trend >= 0 ? "bg-emerald-500/10 text-emerald-500" : "bg-rose-500/10 text-rose-500"
         )}>
           {trend >= 0 ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-          {Math.abs(trend)}%
+          {trend < 0 ? "-" : ""}{Math.abs(trend)}%
         </div>
       </div>
       <div>
         <p className="text-sm font-medium text-muted-foreground mb-1">{label}</p>
-        <h4 className="text-2xl font-bold tabular-nums">{BRL.format(value)}</h4>
+        <h4 className={cn("text-2xl font-bold tabular-nums", value < 0 && "text-rose-500")}>{BRL.format(value)}</h4>
       </div>
       {/* Mini Sparkline Mock */}
       <div className="absolute bottom-0 left-0 right-0 h-1">
@@ -412,7 +412,7 @@ function KpiPremium({ label, value, trend, icon, sparklineColor }: { label: stri
   );
 }
 
-function IndicatorCard({ label, value, sub, icon }: { label: string, value: string, sub: string, icon: React.ReactNode }) {
+function IndicatorCard({ label, value, sub, icon, numeric }: { label: string, value: string, sub: string, icon: React.ReactNode, numeric?: number }) {
   return (
     <Card className="p-4 border-border bg-card/50 transition-all hover:bg-secondary/50 flex items-center gap-4">
       <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center">
@@ -420,14 +420,15 @@ function IndicatorCard({ label, value, sub, icon }: { label: string, value: stri
       </div>
       <div>
         <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">{label}</p>
-        <p className="text-lg font-bold">{value}</p>
+        <p className={cn("text-lg font-bold tabular-nums", numeric != null && numeric < 0 && "text-rose-500")}>{value}</p>
         <p className="text-[10px] text-muted-foreground font-medium">{sub}</p>
       </div>
     </Card>
   );
 }
 
-function SummaryItem({ label, value, highlight = false, dim = false, large = false }: { label: string, value: string, highlight?: boolean, dim?: boolean, large?: boolean }) {
+function SummaryItem({ label, value, highlight = false, dim = false, large = false, numeric }: { label: string, value: string, highlight?: boolean, dim?: boolean, large?: boolean, numeric?: number }) {
+  const isNegative = numeric != null && numeric < 0;
   return (
     <div className="flex items-center justify-between">
       <span className={cn(
@@ -437,7 +438,8 @@ function SummaryItem({ label, value, highlight = false, dim = false, large = fal
       <span className={cn(
         "tabular-nums font-bold",
         highlight && !large ? "text-primary" : "",
-        large ? "text-xl text-primary" : "text-sm"
+        large ? "text-xl text-primary" : "text-sm",
+        isNegative && "text-rose-500"
       )}>{value}</span>
     </div>
   );

@@ -30,3 +30,10 @@ export const MONTHS_PT = [
   "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
   "Jul", "Ago", "Set", "Out", "Nov", "Dez",
 ];
+/** Tailwind class for accounting values: negatives always red. */
+export const signClass = (n: number | null | undefined) =>
+  n == null ? "text-muted-foreground" : n < 0 ? "text-rose-500" : "text-emerald-500";
+
+/** Same rule but keeps neutral (foreground) color for positives. */
+export const negativeClass = (n: number | null | undefined) =>
+  n != null && n < 0 ? "text-rose-500" : "";

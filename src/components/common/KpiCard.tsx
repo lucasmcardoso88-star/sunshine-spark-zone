@@ -64,7 +64,7 @@ export function KpiCard({
         </div>
         {Icon ? <Icon className="h-4 w-4 shrink-0 text-primary" /> : null}
       </div>
-      <p className="mt-3 text-2xl font-semibold text-foreground">
+      <p className={cn("mt-3 text-2xl font-semibold", (value ?? 0) < 0 ? "text-destructive" : "text-foreground")}>
         {value == null ? "—" : formatValue ? formatValue(value) : formatBRL(value)}
       </p>
       {trend?.length ? (
