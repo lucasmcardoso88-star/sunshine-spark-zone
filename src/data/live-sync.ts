@@ -137,12 +137,19 @@ function ingestReceitas(company: Exclude<CompanyId, "all">, receitas: ReceitaRow
     month.netRevenue += total;
     month.cashIn += paid || total;
     month.accountsReceivable += open;
+    
+    // Categorize for DRE logic
+    const category = row.categoria_nome ?? "Sem categoria";
+    if (category.toLowerCase().includes("imposto")) month.taxes += total;
+    else if (category.toLowerCase().includes("comiss")) month.commissions += total;
+    else month.netRevenue += total; // Logic to segregate based on category if needed
+
     TRANSACTIONS_BY_YEAR[year].push({
       id: `${company}:${row.id}`,
       date: dateStr,
       type: "revenue",
       party: row.cliente_nome ?? "—",
-      category: row.categoria_nome ?? "Sem categoria",
+      category,
       costCenter: row.centro_de_custo_nome ?? "Não alocado",
       amount: total,
       status: normalizeStatus(row.status),
