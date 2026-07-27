@@ -129,7 +129,7 @@ export function DreTable({
             const subs = row.detail ? details.get(row.detail) : undefined;
             const canExpand = Boolean(subs && subs.size > 0);
             const isOpen = Boolean(open[row.label]);
-            const sign = row.detail && row.detail !== "revenue" ? -1 : 1;
+            const sign = row.detail && !POSITIVE_LINES.includes(row.detail) ? -1 : 1;
 
             return (
               <Fragment key={row.label}>
