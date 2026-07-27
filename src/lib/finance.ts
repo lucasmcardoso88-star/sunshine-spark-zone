@@ -1,6 +1,8 @@
 import { KPI_BY_YEAR, TRANSACTIONS_BY_YEAR, type MonthlyKpi, type Transaction } from "@/data/mock";
 import { monthsForFilters, type FiltersState } from "@/context/FiltersContext";
 import { dateIsInRange, getLocalMonthIndex, monthOverlapsRange } from "@/lib/date";
+import { classifyExpense, isCommissionCategory, isTaxCategory } from "@/lib/dre-classify";
+
 
 export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
   const hasCustomRange = Boolean(f.customStart || f.customEnd);
@@ -36,24 +38,26 @@ export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
         };
         buckets.set(k, bucket);
       }
-      const category = (t.category || "Sem categoria").toLowerCase();
+      const category = t.category || "Sem categoria";
+      const isTax = isTaxCategory(category);
+      const isCommission = !isTax && isCommissionCategory(category);
       if (t.type === "revenue") {
-        bucket.grossRevenue += t.amount;
-        if (category.includes("imposto")) bucket.taxes += t.amount;
-        else if (category.includes("comiss")) bucket.commissions += t.amount;
-        else bucket.netRevenue += t.amount;
+        if (isTax) bucket.taxes += t.amount;
+        else if (isCommission) bucket.commissions += t.amount;
+        else bucket.grossRevenue += t.amount;
 
         if (t.status === "Pago") bucket.cashIn += t.amount;
         else bucket.accountsReceivable += t.amount;
       } else {
-        if (category.includes("custo") || category.includes("operacional") || category.includes("produto") || category.includes("serviço")) {
-          bucket.operationalCosts += t.amount;
-        } else {
-          bucket.operationalExpenses += t.amount;
-        }
+        const b = classifyExpense(category);
+        if (b === "taxes") bucket.taxes += t.amount;
+        else if (b === "commissions") bucket.commissions += t.amount;
+        else if (b === "operationalCosts") bucket.operationalCosts += t.amount;
+        else bucket.operationalExpenses += t.amount;
         if (t.status === "Pago") bucket.cashOut += t.amount;
         else bucket.accountsPayable += t.amount;
       }
+
     }
     const arr = [...buckets.values()].sort((a, b) => a.year - b.year || a.monthIndex - b.monthIndex);
     let balance = 0;
