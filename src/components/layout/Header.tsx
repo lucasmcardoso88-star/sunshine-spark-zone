@@ -116,8 +116,14 @@ export function Header() {
                 <Settings className="mr-3 h-5 w-5 text-muted-foreground" /> Preferências
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-border" />
-              <DropdownMenuItem className="rounded-lg py-3 focus:bg-accent text-rose-500 cursor-pointer">
-                Sair do Sistema
+              <DropdownMenuItem
+                className="rounded-lg py-3 focus:bg-accent text-rose-500 cursor-pointer"
+                onSelect={(e) => {
+                  e.preventDefault();
+                  handleSignOut();
+                }}
+              >
+                <LogOut className="mr-3 h-5 w-5" /> Sair do Sistema
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
