@@ -53,215 +53,144 @@ export function SidebarFilters() {
   return (
     <aside
       className={cn(
-        "shrink-0 border-b border-border bg-card/70 transition-[width] lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:border-b-0 lg:border-r",
-        collapsed ? "lg:w-20" : "lg:w-72",
+        "shrink-0 border-b border-white/5 bg-[#0B1220] transition-all duration-300 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:border-b-0 lg:border-r lg:border-white/5",
+        collapsed ? "lg:w-20" : "lg:w-80",
       )}
     >
-      <div className="p-4 space-y-4 lg:sticky lg:top-16">
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-          <div className="flex min-w-0 items-center gap-2">
-            <Filter className="h-4 w-4 shrink-0 text-primary" />
-            {!collapsed && (
-              <p className="truncate text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Filtros
+      <div className="p-6 space-y-6 lg:sticky lg:top-16">
+        <div className="flex items-center justify-between">
+          {!collapsed && (
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-primary shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+                Filtros Inteligentes
               </p>
-            )}
-          </div>
+            </div>
+          )}
           <Button
             type="button"
             variant="ghost"
             size="icon"
-            aria-label={collapsed ? "Expandir filtros" : "Recolher filtros"}
-            className="hidden h-9 w-9 lg:inline-flex"
+            className="h-8 w-8 rounded-lg hover:bg-white/5 text-slate-400"
             onClick={() => setCollapsed((v) => !v)}
           >
-            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </Button>
         </div>
 
         {collapsed ? (
-          <div className="hidden justify-center lg:flex">
-            <StatusBadge tone={activeFilterCount ? "info" : "neutral"}>
+          <div className="flex flex-col items-center gap-4">
+            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+              <Filter size={18} />
+            </div>
+            <div className="h-8 w-8 rounded-full bg-white/5 flex items-center justify-center text-[10px] font-bold text-slate-400 border border-white/10">
               {activeFilterCount}
-            </StatusBadge>
+            </div>
           </div>
         ) : (
-          <>
-            <div className="flex items-center justify-between gap-2">
-              <StatusBadge tone={activeFilterCount ? "info" : "neutral"}>
-                Filtros aplicados: {activeFilterCount}
-              </StatusBadge>
+          <div className="space-y-6 animate-in fade-in slide-in-from-left-2 duration-300">
+            <div className="flex items-center justify-between">
+              <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+                <span className="text-[10px] font-bold text-primary uppercase">{activeFilterCount} Ativos</span>
+              </div>
               <Button
-                type="button"
                 variant="ghost"
                 size="sm"
                 onClick={resetFilters}
-                className="gap-1 text-muted-foreground"
+                className="h-7 text-[10px] font-bold uppercase tracking-wider text-slate-500 hover:text-white"
               >
-                <RotateCcw className="h-3.5 w-3.5" /> Limpar filtros
+                Resetar
               </Button>
             </div>
 
-            <Card className="grid gap-4 rounded-2xl border-border p-4 shadow-none sm:grid-cols-2 lg:grid-cols-1">
-              <div className="space-y-2">
-                <Label className="text-xs">Empresa</Label>
+            <div className="space-y-5">
+              <FilterField label="Empresa Principal">
                 <Select value={company} onValueChange={(v) => setCompany(v as CompanyId)}>
-                  <SelectTrigger className="h-10">
+                  <SelectTrigger className="h-11 rounded-xl bg-white/5 border-white/10 text-white font-medium focus:ring-primary/20">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-[#111827] border-white/10 text-white">
                     {COMPANY_OPTIONS.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>
-                        {c.name}
-                      </SelectItem>
+                      <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+              </FilterField>
+
+              <div className="grid grid-cols-2 gap-4">
+                <FilterField label="Ano Fiscal">
+                  <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
+                    <SelectTrigger className="h-11 rounded-xl bg-white/5 border-white/10 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#111827] border-white/10 text-white">
+                      {YEARS.map((y) => (
+                        <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FilterField>
+
+                <FilterField label="Mês">
+                  <Select value={String(month)} onValueChange={(v) => setMonth(v === "all" ? "all" : Number(v))}>
+                    <SelectTrigger className="h-11 rounded-xl bg-white/5 border-white/10 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#111827] border-white/10 text-white">
+                      <SelectItem value="all">Todos</SelectItem>
+                      {MONTHS_PT.map((m, i) => (
+                        <SelectItem key={m} value={String(i + 1)}>{m.substring(0, 3)}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FilterField>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-xs">Ano</Label>
-                <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
-                  <SelectTrigger className="h-10">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {YEARS.map((y) => (
-                      <SelectItem key={y} value={String(y)}>
-                        {y}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-xs">Trimestre</Label>
-                <Select
-                  value={String(quarter)}
-                  onValueChange={(v) => setQuarter(v === "all" ? "all" : (Number(v) as Quarter))}
-                >
-                  <SelectTrigger className="h-10">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos os trimestres</SelectItem>
-                    <SelectItem value="1">1º Trimestre</SelectItem>
-                    <SelectItem value="2">2º Trimestre</SelectItem>
-                    <SelectItem value="3">3º Trimestre</SelectItem>
-                    <SelectItem value="4">4º Trimestre</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-xs">Mês</Label>
-                <Select
-                  value={String(month)}
-                  onValueChange={(v) => setMonth(v === "all" ? "all" : Number(v))}
-                >
-                  <SelectTrigger className="h-10">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos os meses</SelectItem>
-                    {MONTHS_PT.map((m, i) => (
-                      <SelectItem key={m} value={String(i + 1)}>
-                        {m}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-xs">Tipo</Label>
+              <FilterField label="Base de Cálculo">
                 <Select value={basis} onValueChange={(v) => setBasis(v as "cash" | "accrual")}>
-                  <SelectTrigger className="h-10">
+                  <SelectTrigger className="h-11 rounded-xl bg-white/5 border-white/10 text-white uppercase text-[10px] font-bold tracking-widest">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="accrual">Competência</SelectItem>
-                    <SelectItem value="cash">Caixa</SelectItem>
+                  <SelectContent className="bg-[#111827] border-white/10 text-white">
+                    <SelectItem value="accrual">Competência (DRE)</SelectItem>
+                    <SelectItem value="cash">Caixa (Fluxo)</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
+              </FilterField>
 
-              <div className="space-y-2">
-                <Label className="text-xs">Centro de custo</Label>
-                <Select value={costCenter} onValueChange={setCostCenter}>
-                  <SelectTrigger className="h-10">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos os centros</SelectItem>
-                    {COST_CENTERS.map((c) => (
-                      <SelectItem key={c} value={c}>
-                        {c}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-xs">Categoria</Label>
+              <FilterField label="Categoria Financeira">
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger className="h-10">
+                  <SelectTrigger className="h-11 rounded-xl bg-white/5 border-white/10 text-white">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todas as categorias</SelectItem>
+                  <SelectContent className="bg-[#111827] border-white/10 text-white">
+                    <SelectItem value="all">Todas as Categorias</SelectItem>
                     {categories.map((c) => (
-                      <SelectItem key={c} value={c}>
-                        {c}
-                      </SelectItem>
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+              </FilterField>
+              
+              <div className="pt-4 border-t border-white/5">
+                <p className="text-[10px] font-medium text-slate-500 italic leading-relaxed">
+                  * Os dados são processados em tempo real de acordo com as normas internacionais de controladoria.
+                </p>
               </div>
-
-              <div className="space-y-2">
-                <Label className="text-xs">Início personalizado</Label>
-                <Input
-                  type="date"
-                  value={customStart}
-                  onChange={(e) => {
-                    const v = e.target.value;
-                    setCustomStart(v);
-                    if (v) {
-                      const y = Number(v.slice(0, 4));
-                      if (!Number.isNaN(y)) setYear(y);
-                    }
-                  }}
-                  className="h-10"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-xs">Fim personalizado</Label>
-                <Input
-                  type="date"
-                  value={customEnd}
-                  onChange={(e) => {
-                    const v = e.target.value;
-                    setCustomEnd(v);
-                    if (v) {
-                      const y = Number(v.slice(0, 4));
-                      if (!Number.isNaN(y)) setYear(y);
-                    }
-                  }}
-                  className="h-10"
-                />
-              </div>
-            </Card>
-
-            <p className="text-[11px] text-muted-foreground leading-relaxed px-1">
-              Dados reais sincronizados do Conta Azul — W2 Publicidade · base 2023
-            </p>
-          </>
+            </div>
+          </div>
         )}
       </div>
     </aside>
+  );
+}
+
+function FilterField({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-2">
+      <Label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">{label}</Label>
+      {children}
+    </div>
+  );
   );
 }
