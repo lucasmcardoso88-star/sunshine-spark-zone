@@ -1,38 +1,45 @@
+import { Fragment, useMemo, useState } from "react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { MONTHS_PT, formatBRL } from "@/lib/format";
-import type { MonthlyKpi } from "@/data/mock";
+import type { MonthlyKpi, Transaction } from "@/data/mock";
+import { getLocalMonthIndex } from "@/lib/date";
 import { cn } from "@/lib/utils";
+
+type RowKey =
+  | keyof MonthlyKpi
+  | "_negTaxes"
+  | "_negCommissions"
+  | "_negCosts"
+  | "_negCommercial"
+  | "_negAdmin"
+  | "_negOpEx"
+  | "_negFinExp";
 
 type Row = {
   label: string;
-  key:
-    | keyof MonthlyKpi
-    | "_negTaxes"
-    | "_negCommissions"
-    | "_negCosts"
-    | "_negCommercial"
-    | "_negAdmin"
-    | "_negOpEx"
-    | "_negFinExp";
+  key: RowKey;
   emphasis?: "subtotal" | "total";
+  /** sign applied to the detail values of this row */
+  detail?: "revenue" | "taxes" | "commissions" | "costs" | "opex";
 };
 
 const ROWS: Row[] = [
-  { label: "Receita Bruta", key: "grossRevenue" },
-  { label: "(-) Impostos sobre vendas", key: "_negTaxes" },
-  { label: "(-) Comissões sobre vendas", key: "_negCommissions" },
+  { label: "Receita Bruta", key: "grossRevenue", detail: "revenue" },
+  { label: "(-) Impostos sobre vendas", key: "_negTaxes", detail: "taxes" },
+  { label: "(-) Comissões sobre vendas", key: "_negCommissions", detail: "commissions" },
   { label: "(=) Receita Líquida", key: "netRevenue", emphasis: "subtotal" },
-  { label: "(-) Custo dos serviços prestados", key: "_negCosts" },
+  { label: "(-) Custo dos serviços prestados", key: "_negCosts", detail: "costs" },
   { label: "(=) Lucro Bruto", key: "grossProfit", emphasis: "subtotal" },
   { label: "(-) Despesas Comerciais", key: "_negCommercial" },
   { label: "(-) Despesas Administrativas", key: "_negAdmin" },
-  { label: "(-) Despesas Operacionais", key: "_negOpEx" },
+  { label: "(-) Despesas Operacionais", key: "_negOpEx", detail: "opex" },
   { label: "(=) EBITDA", key: "ebitda", emphasis: "subtotal" },
   { label: "(-) Despesas Financeiras", key: "_negFinExp" },
   { label: "(+) Receitas Financeiras", key: "financialIncome" },
   { label: "(=) Lucro Líquido", key: "netProfit", emphasis: "total" },
 ];
 
-function valueFor(k: MonthlyKpi, key: Row["key"]): number {
+function valueFor(k: MonthlyKpi, key: RowKey): number {
   switch (key) {
     case "_negTaxes":
       return -k.taxes;
@@ -53,8 +60,60 @@ function valueFor(k: MonthlyKpi, key: Row["key"]): number {
   }
 }
 
-export function DreTable({ data }: { data: MonthlyKpi[] }) {
+/** Mirrors the classification used in src/lib/finance.ts */
+function bucketOf(t: Transaction): Row["detail"] {
+  const category = (t.category || "Sem categoria").toLowerCase();
+  if (t.type === "revenue") {
+    if (category.includes("imposto")) return "taxes";
+    if (category.includes("comiss")) return "commissions";
+    return "revenue";
+  }
+  if (
+    category.includes("custo") ||
+    category.includes("operacional") ||
+    category.includes("produto") ||
+    category.includes("serviço")
+  ) {
+    return "costs";
+  }
+  return "opex";
+}
+
+function amountClass(v: number) {
+  if (v > 0) return "text-success";
+  if (v < 0) return "text-destructive";
+  return "text-muted-foreground";
+}
+
+export function DreTable({
+  data,
+  transactions = [],
+}: {
+  data: MonthlyKpi[];
+  transactions?: Transaction[];
+}) {
   const months = data.map((d) => MONTHS_PT[d.monthIndex]);
+  const monthIndexes = data.map((d) => d.monthIndex);
+  const [open, setOpen] = useState<Record<string, boolean>>({});
+
+  /** detail bucket -> category -> monthIndex -> amount */
+  const details = useMemo(() => {
+    const map = new Map<string, Map<string, Map<number, number>>>();
+    for (const t of transactions) {
+      const bucket = bucketOf(t);
+      if (!bucket) continue;
+      const m = getLocalMonthIndex(t.date);
+      if (m == null) continue;
+      const cat = t.category || "Sem categoria";
+      const byCat = map.get(bucket) ?? new Map();
+      map.set(bucket, byCat);
+      const byMonth = byCat.get(cat) ?? new Map<number, number>();
+      byCat.set(cat, byMonth);
+      byMonth.set(m, (byMonth.get(m) ?? 0) + t.amount);
+    }
+    return map;
+  }, [transactions]);
+
   return (
     <div className="max-h-[70vh] overflow-auto rounded-2xl border border-border bg-card shadow-sm">
       <table className="w-full min-w-[920px] text-sm">
@@ -66,7 +125,7 @@ export function DreTable({ data }: { data: MonthlyKpi[] }) {
                 {m}
               </th>
             ))}
-            <th className="bg-primary/10 px-4 py-3 text-right whitespace-nowrap text-primary-deep">
+            <th className="bg-primary/10 px-4 py-3 text-right whitespace-nowrap text-primary">
               Total
             </th>
           </tr>
@@ -75,45 +134,99 @@ export function DreTable({ data }: { data: MonthlyKpi[] }) {
           {ROWS.map((row, rowIndex) => {
             const cells = data.map((k) => valueFor(k, row.key));
             const total = cells.reduce((a, b) => a + b, 0);
+            const subs = row.detail ? details.get(row.detail) : undefined;
+            const canExpand = Boolean(subs && subs.size > 0);
+            const isOpen = Boolean(open[row.label]);
+            const sign = row.detail && row.detail !== "revenue" ? -1 : 1;
+
             return (
-              <tr
-                key={row.label}
-                className={cn(
-                  "border-t border-border odd:bg-secondary/20",
-                  row.emphasis === "subtotal" && "bg-primary/5 font-medium",
-                  row.emphasis === "total" && "bg-primary/10 font-semibold",
-                )}
-              >
-                <td
+              <Fragment key={row.label}>
+                <tr
+                  onClick={() => canExpand && setOpen((s) => ({ ...s, [row.label]: !s[row.label] }))}
                   className={cn(
-                    "sticky left-0 z-10 px-4 py-2 bg-card",
-                    rowIndex % 2 === 0 && "bg-secondary/20",
-                    row.emphasis === "subtotal" && "bg-primary/5",
-                    row.emphasis === "total" && "bg-primary/10",
+                    "border-t border-border odd:bg-secondary/20 transition-colors",
+                    canExpand && "cursor-pointer hover:bg-accent/40",
+                    row.emphasis === "subtotal" && "bg-primary/5 font-medium",
+                    row.emphasis === "total" && "bg-primary/10 font-semibold",
                   )}
                 >
-                  {row.label}
-                </td>
-                {cells.map((v, i) => (
                   <td
-                    key={i}
                     className={cn(
-                      "px-3 py-2 text-right tabular-nums whitespace-nowrap",
-                      v < 0 ? "text-destructive" : "text-primary-deep",
+                      "sticky left-0 z-10 px-4 py-2 bg-card text-foreground",
+                      rowIndex % 2 === 0 && "bg-secondary/20",
+                      row.emphasis === "subtotal" && "bg-primary/5",
+                      row.emphasis === "total" && "bg-primary/10",
                     )}
                   >
-                    {formatBRL(v)}
+                    <span className="flex items-center gap-1.5">
+                      {canExpand ? (
+                        isOpen ? (
+                          <ChevronDown size={14} className="text-primary" />
+                        ) : (
+                          <ChevronRight size={14} className="text-muted-foreground" />
+                        )
+                      ) : (
+                        <span className="w-[14px]" />
+                      )}
+                      {row.label}
+                    </span>
                   </td>
-                ))}
-                <td
-                  className={cn(
-                    "bg-primary/10 px-4 py-2 text-right tabular-nums whitespace-nowrap font-semibold",
-                    total < 0 ? "text-destructive" : "text-primary-deep",
-                  )}
-                >
-                  {formatBRL(total)}
-                </td>
-              </tr>
+                  {cells.map((v, i) => (
+                    <td
+                      key={i}
+                      className={cn(
+                        "px-3 py-2 text-right tabular-nums whitespace-nowrap font-medium",
+                        amountClass(v),
+                      )}
+                    >
+                      {formatBRL(v)}
+                    </td>
+                  ))}
+                  <td
+                    className={cn(
+                      "bg-primary/10 px-4 py-2 text-right tabular-nums whitespace-nowrap font-semibold",
+                      amountClass(total),
+                    )}
+                  >
+                    {formatBRL(total)}
+                  </td>
+                </tr>
+
+                {isOpen && subs
+                  ? [...subs.entries()]
+                      .map(([cat, byMonth]) => {
+                        const values = monthIndexes.map((m) => sign * (byMonth.get(m) ?? 0));
+                        return { cat, values, total: values.reduce((a, b) => a + b, 0) };
+                      })
+                      .sort((a, b) => Math.abs(b.total) - Math.abs(a.total))
+                      .map((sub) => (
+                        <tr key={`${row.label}-${sub.cat}`} className="border-t border-border/60 bg-muted/30">
+                          <td className="sticky left-0 z-10 bg-muted/60 px-4 py-1.5 pl-10 text-xs text-muted-foreground">
+                            {sub.cat}
+                          </td>
+                          {sub.values.map((v, i) => (
+                            <td
+                              key={i}
+                              className={cn(
+                                "px-3 py-1.5 text-right text-xs tabular-nums whitespace-nowrap",
+                                amountClass(v),
+                              )}
+                            >
+                              {v === 0 ? "—" : formatBRL(v)}
+                            </td>
+                          ))}
+                          <td
+                            className={cn(
+                              "bg-primary/5 px-4 py-1.5 text-right text-xs tabular-nums whitespace-nowrap font-medium",
+                              amountClass(sub.total),
+                            )}
+                          >
+                            {formatBRL(sub.total)}
+                          </td>
+                        </tr>
+                      ))
+                  : null}
+              </Fragment>
             );
           })}
         </tbody>
