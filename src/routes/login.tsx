@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import somusLogo from "@/assets/somus-logo.png.asset.json";
 import loginHero from "@/assets/login-hero.jpg";
-import coinDollar from "@/assets/coin-dollar.jpg";
+import coinDollar from "@/assets/coin-dollar.png";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureDefaultUser } from "@/lib/auth.functions";
 import { toast } from "sonner";
