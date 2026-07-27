@@ -1,5 +1,4 @@
 import {
-  BarChart3,
   CheckCircle2,
   ChevronDown,
   Clock3,
@@ -7,6 +6,7 @@ import {
   Settings,
   User,
 } from "lucide-react";
+import somusLogo from "@/assets/somus-logo.png.asset.json";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
