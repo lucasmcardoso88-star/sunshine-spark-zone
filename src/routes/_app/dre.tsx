@@ -22,7 +22,7 @@ function DrePage() {
   const transactions = getTransactions({ ...filters, month: "all" });
   return (
     <>
-      <PageHeader title="DRE" description={`Demonstração de Resultados • ${filters.year}`} />
+      <PageHeader title="DRE" description={`Demonstração de Resultados • ${filters.year === 0 ? "Todos os anos" : filters.year}`} />
       {data.length === 0 ? <EmptyState /> : <DreTable data={data} transactions={transactions} />}
     </>
   );
