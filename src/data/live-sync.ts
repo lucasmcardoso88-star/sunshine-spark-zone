@@ -238,6 +238,7 @@ async function loadContaAzulData() {
   for (const year of Object.keys(KPI_BY_YEAR).map(Number).sort()) {
     let balance = 0;
     for (const month of KPI_BY_YEAR[year]) {
+      month.netRevenue = month.grossRevenue - month.taxes - month.commissions;
       month.grossProfit = month.netRevenue - month.operationalCosts;
       month.ebitda = month.grossProfit - month.commercialExpenses - month.adminExpenses - month.operationalExpenses;
       month.netProfit = month.ebitda + month.financialIncome - month.financialExpense;
