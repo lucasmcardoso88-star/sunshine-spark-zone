@@ -232,8 +232,8 @@ function DreDashboardPage() {
 
               {/* Side Indicators */}
               <div className="space-y-4">
-                <IndicatorCard label="Margem Líquida" value={stats.margemLiquida.toFixed(1) + "%"} sub="vs 24.2% anterior" icon={<Target className="text-blue-500" />} />
-                <IndicatorCard label="Margem EBITDA" value={stats.margemEbitda.toFixed(1) + "%"} sub="vs 31.0% anterior" icon={<Activity className="text-emerald-500" />} />
+                <IndicatorCard label="Margem Líquida" value={stats.margemLiquida.toFixed(1) + "%"} numeric={stats.margemLiquida} sub="vs 24.2% anterior" icon={<Target className="text-blue-500" />} />
+                <IndicatorCard label="Margem EBITDA" value={stats.margemEbitda.toFixed(1) + "%"} numeric={stats.margemEbitda} sub="vs 31.0% anterior" icon={<Activity className="text-emerald-500" />} />
                 <IndicatorCard label="Ponto de Equilíbrio" value={BRL.format(stats.despesa * 1.2)} sub="Estimado" icon={<ScalePremium className="text-amber-500" />} />
                 <IndicatorCard label="Rentabilidade" value="18.5%" sub="Retorno s/ invest." icon={<PieChart className="text-violet-500" />} />
               </div>
