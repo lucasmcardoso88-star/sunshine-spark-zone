@@ -136,15 +136,15 @@ function ingestReceitas(company: Exclude<CompanyId, "all">, receitas: ReceitaRow
     const open = asNumber(row.nao_pago) || (normalizeStatus(row.status) === "Pago" ? 0 : total);
 
     const category = row.categoria_nome ?? "Sem categoria";
-    const isTax = isTaxCategory(category);
-    const isCommission = !isTax && isCommissionCategory(category);
-
-    if (isTax) month.taxes += total;
-    else if (isCommission) month.commissions += total;
+    const line = classifyRevenue(category);
+    if (line === "financialIncome") month.financialIncome += total;
+    else if (line === "taxes") month.taxes += total;
+    else if (line === "commissions") month.commissions += total;
     else month.grossRevenue += total;
 
     month.cashIn += paid || total;
     month.accountsReceivable += open;
+
 
 
     TRANSACTIONS_BY_YEAR[year].push({
