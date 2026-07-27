@@ -1,6 +1,8 @@
 import { KPI_BY_YEAR, TRANSACTIONS_BY_YEAR, type MonthlyKpi, type Transaction } from "@/data/mock";
 import { monthsForFilters, type FiltersState } from "@/context/FiltersContext";
 import { dateIsInRange, getLocalMonthIndex, monthOverlapsRange } from "@/lib/date";
+import { classifyExpense, isCommissionCategory, isTaxCategory } from "@/lib/dre-classify";
+
 
 export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
   const hasCustomRange = Boolean(f.customStart || f.customEnd);
