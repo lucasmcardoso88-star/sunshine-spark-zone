@@ -167,9 +167,6 @@ function LoginPage() {
 
           <div className="relative z-10 px-10 pt-12 lg:px-16 lg:pt-14">
             <img src={somusLogo.url} alt="SOMUS" className="h-16 w-auto object-contain lg:h-20" />
-            <p className="mt-1 text-[15px] font-medium uppercase tracking-[0.45em] text-[#3b9df6] lg:text-[17px]">
-              BPO Controladoria
-            </p>
 
             <h1 className="mt-14 max-w-lg text-[38px] font-normal leading-[1.15] text-white lg:text-[44px]">
               Inteligência que
