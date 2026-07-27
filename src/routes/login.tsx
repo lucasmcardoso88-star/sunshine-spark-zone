@@ -8,9 +8,7 @@ import {
   Loader2,
   Lock,
   Mail,
-  QrCode,
   ShieldCheck,
-  UserRound,
 } from "lucide-react";
 import somusLogo from "@/assets/somus-logo.png.asset.json";
 import loginHero from "@/assets/login-hero.jpg";
