@@ -150,7 +150,7 @@ export function SidebarFilters() {
 
               <FilterField label="Base de Cálculo">
                 <Select value={basis} onValueChange={(v) => setBasis(v as "cash" | "accrual")}>
-                  <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground text-sm font-medium">
+                  <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground text-sm font-normal normal-case">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border text-foreground">
