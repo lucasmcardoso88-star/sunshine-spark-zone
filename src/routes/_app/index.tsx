@@ -20,6 +20,13 @@ import { ChartCard, MultiBarChart, HorizontalBarsChart } from "@/components/comm
 import { EmptyState } from "@/components/common/EmptyState";
 import { StatusBadge, type Tone } from "@/components/common/StatusBadge";
 import { Card } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 import { useFilters } from "@/context/FiltersContext";
 import {
   getAggregateKpis,
