@@ -192,5 +192,4 @@ function FilterField({ label, children }: { label: string; children: React.React
       {children}
     </div>
   );
-  );
 }
