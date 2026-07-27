@@ -147,6 +147,8 @@ function ingestReceitas(company: Exclude<CompanyId, "all">, receitas: ReceitaRow
     TRANSACTIONS_BY_YEAR[year].push({
       id: `${company}:${row.id}`,
       date: dateStr,
+      competencyDate: row.data_competencia || dateStr,
+      paymentDate: row.data_vencimento || dateStr,
       type: "revenue",
       party: row.cliente_nome ?? "—",
       category,
@@ -187,6 +189,8 @@ function ingestDespesas(company: Exclude<CompanyId, "all">, despesas: DespesaRow
     TRANSACTIONS_BY_YEAR[year].push({
       id: `${company}:${row.id}`,
       date: dateStr,
+      competencyDate: row.data_competencia || dateStr,
+      paymentDate: row.data_vencimento || dateStr,
       type: "expense",
       party: row.fornecedor_nome ?? "—",
       category,
