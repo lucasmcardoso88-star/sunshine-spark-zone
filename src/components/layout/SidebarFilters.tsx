@@ -182,7 +182,7 @@ export function SidebarFilters() {
                   <SelectContent className="bg-card border-border text-foreground">
                     <SelectItem value="all">Todas</SelectItem>
                     <SelectItem value="paid">Pago / Liquidado</SelectItem>
-                    <SelectItem value="open">EM ABERTO / EM ATRASO</SelectItem>
+                    <SelectItem value="open">Em aberto / Em atraso</SelectItem>
                   </SelectContent>
                 </Select>
               </FilterField>
