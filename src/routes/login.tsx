@@ -3,20 +3,18 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
   ArrowRight,
-  BarChart3,
   Eye,
   EyeOff,
-  FileText,
   Loader2,
   Lock,
   Mail,
-  PieChart,
   QrCode,
   ShieldCheck,
   UserRound,
 } from "lucide-react";
 import somusLogo from "@/assets/somus-logo.png.asset.json";
 import loginHero from "@/assets/login-hero.jpg";
+import coinDollar from "@/assets/coin-dollar.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureDefaultUser } from "@/lib/auth.functions";
 import { toast } from "sonner";
@@ -34,7 +32,7 @@ export const Route = createFileRoute("/login")({
       { property: "og:title", content: "Acessar — BPO Controladoria SOMUS" },
       {
         property: "og:description",
-        content: "Gestão inteligente, decisões que constroem resultados.",
+        content: "Inteligência que transforma gestão em resultados.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -44,29 +42,6 @@ export const Route = createFileRoute("/login")({
 });
 
 type Tab = "login" | "code";
-
-const FEATURES = [
-  {
-    icon: BarChart3,
-    title: "Segurança e confiabilidade",
-    text: "Informações claras e com criptografia avançada.",
-  },
-  {
-    icon: PieChart,
-    title: "Análises completas",
-    text: "Visão 360º do desempenho do seu negócio.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Segurança avançada",
-    text: "Proteção de dados com criptografia de ponta.",
-  },
-  {
-    icon: FileText,
-    title: "Controle total",
-    text: "Organização e controle em um só lugar.",
-  },
-];
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -170,95 +145,103 @@ function LoginPage() {
   }
 
   const fieldClass =
-    "h-12 w-full rounded-lg border border-[#1e2d42] bg-[#0d1826] pl-11 pr-11 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-[#22a7f0] focus:ring-2 focus:ring-[#22a7f0]/25";
+    "h-14 w-full rounded-xl border border-[#1b2c42] bg-[#0b1725] pl-14 pr-12 text-[15px] text-slate-100 placeholder:text-slate-500 outline-none transition focus:border-[#2f8ef4] focus:ring-2 focus:ring-[#2f8ef4]/25";
+
+  const submitBtn =
+    "group mt-2 flex h-14 w-full items-center justify-between rounded-xl bg-gradient-to-r from-[#0b63d6] to-[#2b9bf6] px-6 text-[15px] font-semibold text-white shadow-[0_18px_40px_-14px_rgba(43,155,246,0.9)] transition hover:brightness-110 disabled:opacity-60";
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#050a12] text-slate-200">
+    <div className="relative min-h-screen bg-[#04080f] text-slate-200">
       <Toaster richColors position="top-right" />
 
-      <div className="mx-auto grid min-h-screen w-full max-w-[1400px] grid-cols-1 lg:grid-cols-[1.05fr_0.95fr]">
-        {/* ---------- Left / brand + hero ---------- */}
-        <div className="relative flex flex-col justify-between overflow-hidden px-8 pt-10 lg:px-14">
-          <div className="relative z-10">
-            <img src={somusLogo.url} alt="SOMUS" className="h-9 w-auto object-contain" />
-            <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.35em] text-[#22a7f0]">
+      <div className="grid min-h-screen grid-cols-1 lg:grid-cols-[1.15fr_0.85fr]">
+        {/* ---------- Left: full-bleed hero ---------- */}
+        <div className="relative min-h-[420px] overflow-hidden">
+          <img
+            src={loginHero}
+            alt="Painel financeiro holográfico com gráficos"
+            width={1200}
+            height={1408}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#04080f]/90 via-[#04080f]/45 to-[#04080f]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#04080f]/95 via-transparent to-[#04080f]/80" />
+
+          <div className="relative z-10 px-10 pt-12 lg:px-16 lg:pt-16">
+            <img src={somusLogo.url} alt="SOMUS" className="h-10 w-auto object-contain" />
+            <p className="mt-2 text-[12px] font-medium uppercase tracking-[0.42em] text-[#3b9df6]">
               BPO Controladoria
             </p>
 
-            <h1 className="mt-10 max-w-md text-3xl font-semibold leading-tight text-white lg:text-[34px]">
-              Gestão inteligente,
+            <h1 className="mt-12 max-w-lg text-[38px] font-normal leading-[1.15] text-white lg:text-[42px]">
+              Inteligência que
               <br />
-              decisões que constroem
+              transforma gestão
               <br />
-              <span className="text-[#22a7f0]">resultados.</span>
+              em <span className="text-[#3b9df6]">resultados.</span>
             </h1>
-            <p className="mt-4 max-w-sm text-xs leading-relaxed text-slate-400">
-              Acompanhe indicadores, analise cenários e tenha o controle total do seu negócio.
+            <p className="mt-6 max-w-md text-sm leading-relaxed text-slate-400">
+              Acompanhe indicadores, analise cenários
+              <br />e tome decisões com segurança e precisão.
             </p>
-          </div>
-
-          <div className="pointer-events-none relative z-0 -mx-8 mt-8 lg:-mx-14">
-            <img
-              src={loginHero}
-              alt="Painel financeiro holográfico com gráficos"
-              width={1200}
-              height={1408}
-              className="h-[420px] w-full object-cover object-center opacity-90"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#050a12] via-transparent to-[#050a12]" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#050a12]/60 via-transparent to-[#050a12]" />
+            <span className="mt-6 block h-[3px] w-12 rounded-full bg-[#3b9df6]" />
           </div>
         </div>
 
-        {/* ---------- Right / auth card ---------- */}
+        {/* ---------- Right: auth card ---------- */}
         <div className="flex items-center justify-center px-6 py-12 lg:px-12">
-          <div className="w-full max-w-[420px] rounded-2xl border border-[#16263c] bg-[#0a1420]/90 p-8 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)] backdrop-blur">
-            <div className="flex flex-col items-center">
-              <div className="relative flex h-20 w-20 items-center justify-center rounded-full border border-[#22a7f0]/50 bg-[#0d1c2e] shadow-[0_0_35px_rgba(34,167,240,0.45)]">
-                <span className="absolute inset-2 rounded-full border border-[#22a7f0]/30" />
-                <span className="text-3xl font-semibold text-[#22a7f0]">$</span>
-              </div>
-              <p className="mt-5 text-lg font-medium text-[#22a7f0]">BPO</p>
-              <h2 className="text-3xl font-semibold tracking-tight text-white">Controladoria</h2>
-              <p className="mt-2 text-sm text-slate-400">
-                Acesse sua conta para <span className="text-[#22a7f0]">continuar</span>
+          <div className="w-full max-w-[480px] rounded-3xl border border-[#152437] bg-[#070f1a]/95 px-8 py-10 shadow-[0_40px_100px_-30px_rgba(0,0,0,1)] backdrop-blur lg:px-10">
+            <div className="flex flex-col items-center text-center">
+              <img
+                src={coinDollar}
+                alt="Ícone financeiro"
+                width={816}
+                height={816}
+                className="h-28 w-28 rounded-full object-cover drop-shadow-[0_0_45px_rgba(43,155,246,0.55)]"
+              />
+              <p className="mt-6 text-xl font-medium text-[#3b9df6]">BPO</p>
+              <h2 className="mt-1 text-[34px] font-normal leading-tight text-white">
+                Controladoria
+              </h2>
+              <p className="mt-3 text-[15px] text-slate-400">
+                Acesse sua conta para <span className="text-[#3b9df6]">continuar</span>
               </p>
             </div>
 
             {/* Tabs */}
-            <div className="mt-7 grid grid-cols-2 border-b border-[#16263c] text-sm">
+            <div className="mt-8 grid grid-cols-2 border-b border-[#152437] text-[15px]">
               <button
                 type="button"
                 onClick={() => setTab("login")}
-                className={`flex items-center justify-center gap-2 pb-3 transition ${
+                className={`flex items-center justify-center gap-2 pb-4 transition ${
                   tab === "login"
-                    ? "border-b-2 border-[#22a7f0] font-medium text-[#22a7f0]"
+                    ? "-mb-px border-b-2 border-[#3b9df6] text-[#3b9df6]"
                     : "text-slate-400 hover:text-slate-200"
                 }`}
               >
-                <UserRound className="h-4 w-4" /> Login
+                <UserRound className="h-[18px] w-[18px]" /> Login
               </button>
               <button
                 type="button"
                 onClick={() => setTab("code")}
-                className={`flex items-center justify-center gap-2 pb-3 transition ${
+                className={`flex items-center justify-center gap-2 pb-4 transition ${
                   tab === "code"
-                    ? "border-b-2 border-[#22a7f0] font-medium text-[#22a7f0]"
+                    ? "-mb-px border-b-2 border-[#3b9df6] text-[#3b9df6]"
                     : "text-slate-400 hover:text-slate-200"
                 }`}
               >
-                <QrCode className="h-4 w-4" /> Acesso por código
+                <QrCode className="h-[18px] w-[18px]" /> Acesso por código
               </button>
             </div>
 
             {tab === "login" ? (
-              <form onSubmit={handleCredentials} className="mt-6 space-y-5">
-                <div className="space-y-2">
-                  <label htmlFor="email" className="text-sm text-slate-300">
+              <form onSubmit={handleCredentials} className="mt-7 space-y-5">
+                <div className="space-y-2.5">
+                  <label htmlFor="email" className="text-[15px] text-slate-200">
                     E-mail
                   </label>
                   <div className="relative">
-                    <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                    <Mail className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-[#3b9df6]" />
                     <input
                       id="email"
                       type="email"
@@ -272,12 +255,12 @@ function LoginPage() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="password" className="text-sm text-slate-300">
+                <div className="space-y-2.5">
+                  <label htmlFor="password" className="text-[15px] text-slate-200">
                     Senha
                   </label>
                   <div className="relative">
-                    <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                    <Lock className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-[#3b9df6]" />
                     <input
                       id="password"
                       type={showPassword ? "text" : "password"}
@@ -292,55 +275,51 @@ function LoginPage() {
                       type="button"
                       onClick={() => setShowPassword((v) => !v)}
                       aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-slate-300"
+                      className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-200"
                     >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-xs">
-                  <label className="flex cursor-pointer items-center gap-2 text-slate-400">
+                <div className="flex items-center justify-between pt-1 text-sm">
+                  <label className="flex cursor-pointer items-center gap-2.5 text-slate-300">
                     <input
                       type="checkbox"
                       checked={remember}
                       onChange={(e) => setRemember(e.target.checked)}
-                      className="h-4 w-4 rounded border-[#22405f] bg-[#0d1826] accent-[#22a7f0]"
+                      className="h-[18px] w-[18px] rounded border-[#22405f] bg-[#0b1725] accent-[#3b9df6]"
                     />
                     Lembrar meu acesso
                   </label>
                   <button
                     type="button"
                     onClick={handleForgot}
-                    className="text-[#22a7f0] transition hover:underline"
+                    className="text-[#3b9df6] transition hover:underline"
                   >
                     Esqueci minha senha
                   </button>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="group flex h-12 w-full items-center justify-center gap-3 rounded-lg bg-gradient-to-r from-[#1e88e5] to-[#22c9f0] font-medium text-white shadow-[0_10px_30px_-10px_rgba(34,167,240,0.8)] transition hover:brightness-110 disabled:opacity-60"
-                >
+                <button type="submit" disabled={loading} className={submitBtn}>
                   {loading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="mx-auto h-5 w-5 animate-spin" />
                   ) : (
                     <>
-                      Entrar
-                      <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                      <span className="flex-1 text-center">Entrar</span>
+                      <ArrowRight className="h-5 w-5 transition group-hover:translate-x-1" />
                     </>
                   )}
                 </button>
               </form>
             ) : (
-              <form onSubmit={otpSent ? handleOtp : sendCode} className="mt-6 space-y-5">
-                <div className="space-y-2">
-                  <label htmlFor="email-code" className="text-sm text-slate-300">
+              <form onSubmit={otpSent ? handleOtp : sendCode} className="mt-7 space-y-5">
+                <div className="space-y-2.5">
+                  <label htmlFor="email-code" className="text-[15px] text-slate-200">
                     E-mail
                   </label>
                   <div className="relative">
-                    <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                    <Mail className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-[#3b9df6]" />
                     <input
                       id="email-code"
                       type="email"
@@ -355,8 +334,8 @@ function LoginPage() {
                 </div>
 
                 {otpSent && (
-                  <div className="space-y-2">
-                    <label htmlFor="otp" className="text-sm text-slate-300">
+                  <div className="space-y-2.5">
+                    <label htmlFor="otp" className="text-[15px] text-slate-200">
                       Código de verificação
                     </label>
                     <input
@@ -367,7 +346,7 @@ function LoginPage() {
                       onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
                       placeholder="000000"
                       required
-                      className="h-12 w-full rounded-lg border border-[#1e2d42] bg-[#0d1826] px-4 text-center text-lg tracking-[0.5em] text-slate-100 placeholder:text-slate-600 outline-none focus:border-[#22a7f0] focus:ring-2 focus:ring-[#22a7f0]/25"
+                      className="h-14 w-full rounded-xl border border-[#1b2c42] bg-[#0b1725] px-4 text-center text-lg tracking-[0.5em] text-slate-100 placeholder:text-slate-600 outline-none focus:border-[#2f8ef4] focus:ring-2 focus:ring-[#2f8ef4]/25"
                     />
                     <p className="text-xs text-slate-500">
                       Enviamos um código para <strong className="text-slate-300">{email}</strong>.
@@ -376,46 +355,36 @@ function LoginPage() {
                   </div>
                 )}
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="group flex h-12 w-full items-center justify-center gap-3 rounded-lg bg-gradient-to-r from-[#1e88e5] to-[#22c9f0] font-medium text-white shadow-[0_10px_30px_-10px_rgba(34,167,240,0.8)] transition hover:brightness-110 disabled:opacity-60"
-                >
+                <button type="submit" disabled={loading} className={submitBtn}>
                   {loading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="mx-auto h-5 w-5 animate-spin" />
                   ) : (
                     <>
-                      {otpSent ? "Confirmar acesso" : "Enviar código"}
-                      <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                      <span className="flex-1 text-center">
+                        {otpSent ? "Confirmar acesso" : "Enviar código"}
+                      </span>
+                      <ArrowRight className="h-5 w-5 transition group-hover:translate-x-1" />
                     </>
                   )}
                 </button>
               </form>
             )}
 
-            <div className="mt-8 flex items-center gap-4">
-              <span className="h-px flex-1 bg-[#16263c]" />
-              <span className="text-[11px] tracking-[0.45em] text-slate-500">SOMUS</span>
-              <span className="h-px flex-1 bg-[#16263c]" />
+            <div className="mt-9 flex items-center gap-5">
+              <span className="h-px flex-1 bg-[#152437]" />
+              <span className="text-[13px] tracking-[0.5em] text-slate-400">SOMUS</span>
+              <span className="h-px flex-1 bg-[#152437]" />
             </div>
-          </div>
-        </div>
-      </div>
 
-      {/* ---------- Feature strip ---------- */}
-      <div className="border-t border-[#101d2e] bg-[#050a12]">
-        <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-6 px-8 py-8 sm:grid-cols-2 lg:grid-cols-4 lg:px-14">
-          {FEATURES.map(({ icon: Icon, title, text }) => (
-            <div key={title} className="flex items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#16263c] bg-[#0a1420] text-[#22a7f0]">
-                <Icon className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">{title}</p>
-                <p className="mt-1 text-xs leading-relaxed text-slate-500">{text}</p>
-              </div>
-            </div>
-          ))}
+            <p className="mt-6 flex items-start justify-center gap-2 text-center text-[13px] leading-relaxed text-slate-500">
+              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#3b9df6]" />
+              <span>
+                Seus dados estão protegidos com
+                <br />
+                tecnologia de ponta e criptografia avançada.
+              </span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
