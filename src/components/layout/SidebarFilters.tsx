@@ -108,7 +108,7 @@ export function SidebarFilters() {
             <div className="space-y-5">
               <FilterField label="Empresa Principal">
                 <Select value={company} onValueChange={(v) => setCompany(v as CompanyId)}>
-                  <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground font-medium focus:ring-primary/20">
+                  <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground text-sm font-normal focus:ring-primary/20 normal-case">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border text-foreground">
