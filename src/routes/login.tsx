@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Loader2, Lock, Mail, ShieldCheck } from "lucide-react";
+import { Loader2, Lock, Mail } from "lucide-react";
+import somusLogo from "@/assets/somus-logo.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureDefaultUser } from "@/lib/auth.functions";
 import { Button } from "@/components/ui/button";
