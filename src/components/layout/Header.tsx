@@ -2,10 +2,14 @@ import {
   CheckCircle2,
   ChevronDown,
   Clock3,
+  LogOut,
   RefreshCw,
   Settings,
   User,
 } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import somusLogo from "@/assets/somus-logo.png.asset.json";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -32,7 +36,17 @@ import { toast } from "sonner";
 
 export function Header() {
   const { company, setCompany } = useFilters();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const lastUpdate = "22/jun/2026 13:00";
+
+  async function handleSignOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/login", replace: true });
+  }
+
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
@@ -116,8 +130,14 @@ export function Header() {
                 <Settings className="mr-3 h-5 w-5 text-muted-foreground" /> Preferências
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-border" />
-              <DropdownMenuItem className="rounded-lg py-3 focus:bg-accent text-rose-500 cursor-pointer">
-                Sair do Sistema
+              <DropdownMenuItem
+                className="rounded-lg py-3 focus:bg-accent text-rose-500 cursor-pointer"
+                onSelect={(e) => {
+                  e.preventDefault();
+                  handleSignOut();
+                }}
+              >
+                <LogOut className="mr-3 h-5 w-5" /> Sair do Sistema
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
