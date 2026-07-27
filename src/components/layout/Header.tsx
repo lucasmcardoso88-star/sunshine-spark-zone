@@ -51,7 +51,7 @@ export function Header() {
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted border border-border">
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Unidade</span>
             <Select value={company} onValueChange={(v) => setCompany(v as CompanyId)}>
-              <SelectTrigger className="h-7 w-auto min-w-[140px] border-none bg-transparent p-0 text-sm font-bold text-foreground shadow-none focus:ring-0">
+              <SelectTrigger className="h-7 w-auto min-w-[140px] border-none bg-transparent p-0 text-sm font-normal text-foreground shadow-none focus:ring-0 normal-case">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-card border-border text-foreground">
