@@ -62,22 +62,19 @@ function valueFor(k: MonthlyKpi, key: RowKey): number {
 
 /** Mirrors the classification used in src/lib/finance.ts */
 function bucketOf(t: Transaction): Row["detail"] {
-  const category = (t.category || "Sem categoria").toLowerCase();
+  const category = t.category || "Sem categoria";
   if (t.type === "revenue") {
-    if (category.includes("imposto")) return "taxes";
-    if (category.includes("comiss")) return "commissions";
+    if (isTaxCategory(category)) return "taxes";
+    if (isCommissionCategory(category)) return "commissions";
     return "revenue";
   }
-  if (
-    category.includes("custo") ||
-    category.includes("operacional") ||
-    category.includes("produto") ||
-    category.includes("serviço")
-  ) {
-    return "costs";
-  }
+  const b = classifyExpense(category);
+  if (b === "taxes") return "taxes";
+  if (b === "commissions") return "commissions";
+  if (b === "operationalCosts") return "costs";
   return "opex";
 }
+
 
 function amountClass(v: number) {
   if (v > 0) return "text-success";
