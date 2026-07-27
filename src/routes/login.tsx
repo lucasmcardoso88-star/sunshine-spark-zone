@@ -8,9 +8,7 @@ import {
   Loader2,
   Lock,
   Mail,
-  QrCode,
   ShieldCheck,
-  UserRound,
 } from "lucide-react";
 import somusLogo from "@/assets/somus-logo.png.asset.json";
 import loginHero from "@/assets/login-hero.jpg";
@@ -209,31 +207,7 @@ function LoginPage() {
             </div>
 
 
-            {/* Tabs */}
-            <div className="mt-8 grid grid-cols-2 border-b border-[#152437] text-sm">
-              <button
-                type="button"
-                onClick={() => setTab("login")}
-                className={`flex items-center justify-center gap-2 pb-4 transition ${
-                  tab === "login"
-                    ? "-mb-px border-b-2 border-[#3b9df6] text-[#3b9df6]"
-                    : "text-slate-400 hover:text-slate-200"
-                }`}
-              >
-                <UserRound className="h-[18px] w-[18px]" /> Login
-              </button>
-              <button
-                type="button"
-                onClick={() => setTab("code")}
-                className={`flex items-center justify-center gap-2 pb-4 transition ${
-                  tab === "code"
-                    ? "-mb-px border-b-2 border-[#3b9df6] text-[#3b9df6]"
-                    : "text-slate-400 hover:text-slate-200"
-                }`}
-              >
-                <QrCode className="h-[18px] w-[18px]" /> Acesso por código
-              </button>
-            </div>
+
 
             {tab === "login" ? (
               <form onSubmit={handleCredentials} className="mt-7 space-y-5">
