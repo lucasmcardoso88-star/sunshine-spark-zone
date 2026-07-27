@@ -77,7 +77,7 @@ function PrevistoRealizadoPage() {
     { key: "diff", header: "Diferença R$", className: "text-right", cell: (r) =>
       <span className={"tabular-nums " + (r.diff < 0 ? "text-destructive" : "text-[color:var(--success)]")}>{formatBRL(r.diff)}</span> },
     { key: "diffp", header: "Diferença %", className: "text-right", cell: (r) =>
-      <span className="tabular-nums">{formatPercent(r.diffPct)}</span> },
+      <span className={"tabular-nums " + ((r.diffPct ?? 0) < 0 ? "text-destructive" : "text-[color:var(--success)]")}>{formatPercent(r.diffPct)}</span> },
     { key: "status", header: "Status", cell: (r) => {
       const s = statusOf(r); return <StatusBadge tone={s.tone}>{s.label}</StatusBadge>;
     }},
