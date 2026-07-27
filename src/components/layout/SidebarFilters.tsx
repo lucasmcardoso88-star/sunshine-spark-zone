@@ -126,6 +126,7 @@ export function SidebarFilters() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-card border-border text-foreground">
+                      <SelectItem value="0">Todos os anos</SelectItem>
                       {YEARS.map((y) => (
                         <SelectItem key={y} value={String(y)}>{y}</SelectItem>
                       ))}

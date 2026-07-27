@@ -131,7 +131,7 @@ function PainelGerencial() {
     <>
       <PageHeader
         title="Painel Gerencial"
-        description={`Visão consolidada • ${filters.year} • ${filters.basis === "accrual" ? "Competência" : "Caixa"}`}
+        description={`Visão consolidada • ${filters.year === 0 ? "Todos os anos" : filters.year} • ${filters.basis === "accrual" ? "Competência" : "Caixa"}`}
       />
 
       {/* Leitura rápida — chips executivos */}

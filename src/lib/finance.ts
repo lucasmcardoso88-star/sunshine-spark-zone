@@ -77,7 +77,8 @@ export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
   }
 
   // Fast path — combined KPIs when no company/category/cost-center filter.
-  const source = hasCustomRange
+  const allYears = f.year === 0;
+  const source = hasCustomRange || allYears
     ? Object.values(KPI_BY_YEAR).flat()
     : (KPI_BY_YEAR[f.year] ?? []);
   const months = hasCustomRange
@@ -93,7 +94,8 @@ export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
 
 export function getTransactions(f: FiltersState): Transaction[] {
   const hasCustomRange = Boolean(f.customStart || f.customEnd);
-  const list = hasCustomRange
+  const allYears = f.year === 0;
+  const list = hasCustomRange || allYears
     ? Object.values(TRANSACTIONS_BY_YEAR).flat()
     : (TRANSACTIONS_BY_YEAR[f.year] ?? []);
   const months = hasCustomRange
