@@ -4,7 +4,7 @@ import { supabaseExternal } from "@/integrations/supabase-external/client";
 import { getD61Data } from "@/lib/d61-data.functions";
 import type { CompanyId } from "@/data/mock";
 import { parseLocalDate } from "@/lib/date";
-import { classifyExpense, isCommissionCategory, isTaxCategory } from "@/lib/dre-classify";
+import { classifyExpense, classifyRevenue } from "@/lib/dre-classify";
 
 import {
   KPI_BY_YEAR,
@@ -179,11 +179,15 @@ function ingestDespesas(company: Exclude<CompanyId, "all">, despesas: DespesaRow
     const open = asNumber(row.nao_pago) || (normalizeStatus(row.status) === "Pago" ? 0 : total);
 
     const category = row.categoria_nome ?? "Sem categoria";
-    const bucket = classifyExpense(category);
-    if (bucket === "taxes") month.taxes += total;
-    else if (bucket === "commissions") month.commissions += total;
-    else if (bucket === "operationalCosts") month.operationalCosts += total;
+    const line = classifyExpense(category);
+    if (line === "taxes") month.taxes += total;
+    else if (line === "commissions") month.commissions += total;
+    else if (line === "operationalCosts") month.operationalCosts += total;
+    else if (line === "commercialExpenses") month.commercialExpenses += total;
+    else if (line === "adminExpenses") month.adminExpenses += total;
+    else if (line === "financialExpense") month.financialExpense += total;
     else month.operationalExpenses += total;
+
 
 
     month.cashOut += paid || total;
