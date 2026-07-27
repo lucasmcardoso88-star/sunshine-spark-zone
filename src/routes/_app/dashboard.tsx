@@ -39,7 +39,7 @@ import {
   AreaChart
 } from "recharts";
 import { useFilters } from "@/context/FiltersContext";
-import { getTransactions } from "@/lib/finance";
+import { getTransactions, getMonthlyKpis } from "@/lib/finance";
 import { BRL, MONTHS_PT } from "@/lib/format";
 import { YEARS } from "@/data/mock";
 import { parseLocalDate } from "@/lib/date";
