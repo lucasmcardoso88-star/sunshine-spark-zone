@@ -14,7 +14,7 @@ import { Toaster } from "@/components/ui/sonner";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Acessar — Controladoria Agência W2" },
+      { title: "Acessar — BPO Controladoria" },
       { name: "description", content: "Faça login na plataforma de controladoria financeira." },
     ],
   }),
