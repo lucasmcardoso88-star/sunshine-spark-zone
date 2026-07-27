@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import somusLogo from "@/assets/somus-logo.png.asset.json";
 import loginHero from "@/assets/login-hero.jpg";
-import coinAsset from "@/assets/coin-logo.png.asset.json";
+import coinAsset from "@/assets/coin-clean.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureDefaultUser } from "@/lib/auth.functions";
 import { toast } from "sonner";
