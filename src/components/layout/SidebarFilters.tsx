@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { StatusBadge } from "@/components/common/StatusBadge";
-import { useFilters, type Quarter } from "@/context/FiltersContext";
+import { useFilters, type PaymentStatusFilter, type Quarter } from "@/context/FiltersContext";
 import {
   COMPANY_OPTIONS,
   COST_CENTERS,
@@ -45,6 +45,8 @@ export function SidebarFilters() {
     setCostCenter,
     category,
     setCategory,
+    payment,
+    setPayment,
     resetFilters,
     activeFilterCount,
   } = useFilters();
@@ -172,6 +174,19 @@ export function SidebarFilters() {
                 </Select>
               </FilterField>
               
+              <FilterField label="Situação">
+                <Select value={payment} onValueChange={(v) => setPayment(v as PaymentStatusFilter)}>
+                  <SelectTrigger className="h-11 rounded-xl bg-muted border-border text-foreground">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-card border-border text-foreground">
+                    <SelectItem value="all">Todas</SelectItem>
+                    <SelectItem value="paid">Pago / Liquidado</SelectItem>
+                    <SelectItem value="open">Em aberto</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FilterField>
+
               <div className="pt-4 border-t border-border">
                 <p className="text-[10px] font-medium text-muted-foreground italic leading-relaxed">
                   * Os dados são processados em tempo real de acordo com as normas internacionais de controladoria.

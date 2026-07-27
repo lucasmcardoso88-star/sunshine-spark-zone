@@ -98,6 +98,8 @@ export function getTransactions(f: FiltersState): Transaction[] {
     if (hasCustomRange && !dateIsInRange(t.date, f.customStart, f.customEnd)) return false;
     if (f.costCenter !== "all" && t.costCenter !== f.costCenter) return false;
     if (f.category !== "all" && t.category !== f.category) return false;
+    if (f.payment === "paid" && t.status !== "Pago") return false;
+    if (f.payment === "open" && t.status === "Pago") return false;
     return true;
   });
 }
