@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import somusLogo from "@/assets/somus-logo.png.asset.json";
 import loginHero from "@/assets/login-hero.jpg";
-import coinDollar from "@/assets/coin-dollar.png";
+import coinAsset from "@/assets/coin-dollar-ref.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureDefaultUser } from "@/lib/auth.functions";
 import { toast } from "sonner";
@@ -193,11 +193,11 @@ function LoginPage() {
           <div className="w-full max-w-[430px] rounded-3xl border border-[#152437] bg-[#070f1a]/95 px-8 py-9 shadow-[0_40px_100px_-30px_rgba(0,0,0,1)] backdrop-blur">
             <div className="flex flex-col items-center text-center">
               <img
-                src={coinDollar}
+                src={coinAsset.url}
                 alt="Ícone financeiro"
-                width={1024}
-                height={1024}
-                className="h-24 w-24 object-contain drop-shadow-[0_0_45px_rgba(43,155,246,0.55)]"
+                width={106}
+                height={88}
+                className="h-28 w-28 object-contain drop-shadow-[0_0_45px_rgba(43,155,246,0.55)]"
               />
               <p className="mt-5 text-lg font-medium text-[#3b9df6]">BPO</p>
               <h2 className="mt-1 text-[28px] font-normal leading-tight text-white">
