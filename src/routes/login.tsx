@@ -96,8 +96,8 @@ function LoginPage() {
       <Toaster richColors position="top-right" />
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-5 flex h-20 w-full items-center justify-center rounded-2xl bg-black px-6 py-4">
-            <img src={somusLogo.url} alt="SOMUS" className="h-10 w-auto object-contain" />
+          <div className="mx-auto mb-5 flex h-20 w-full items-center justify-center rounded-2xl bg-white dark:bg-black px-6 py-4 border border-border transition-colors duration-200 shadow-sm">
+            <img src={somusLogo.url} alt="SOMUS" className="h-10 w-auto object-contain brightness-0 dark:brightness-100" />
           </div>
           <h1 className="text-2xl font-semibold text-foreground">BPO Controladoria</h1>
           <p className="mt-1 text-sm text-muted-foreground">
