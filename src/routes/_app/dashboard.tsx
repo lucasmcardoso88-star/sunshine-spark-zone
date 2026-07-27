@@ -68,7 +68,7 @@ function DreDashboardPage() {
   // Data processing (preserving existing logic)
   const stats = useMemo(() => {
     const kpis = getMonthlyKpis(filters);
-    const sum = (sel: (k: any) => number) => kpis.reduce((a, b) => a + sel(b), 0);
+    const sum = (sel: (k: any) => number) => kpis.reduce((acc: number, cur: any) => acc + sel(cur), 0);
     
     const grossRevenue = sum(k => k.grossRevenue);
     const taxes = sum(k => k.taxes);
