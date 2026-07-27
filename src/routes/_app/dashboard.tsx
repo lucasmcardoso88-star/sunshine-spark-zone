@@ -270,14 +270,14 @@ function DreDashboardPage() {
             <Card className="p-6 border-border bg-card shadow-sm space-y-6">
               <h3 className="text-lg font-bold border-b border-border pb-4">Resumo do Exercício</h3>
               <div className="space-y-4">
-                <SummaryItem label="Faturamento Bruto" value={BRL.format(stats.receita)} />
-                <SummaryItem label="Impostos sobre Venda" value={BRL.format(stats.taxes)} dim />
-                <SummaryItem label="Comissões sobre Venda" value={BRL.format(stats.commissions)} dim />
-                <SummaryItem label="Receita Líquida" value={BRL.format(stats.netRevenue)} highlight />
-                <SummaryItem label="CPV / Custos Operacionais" value={BRL.format(stats.operationalCosts)} dim />
-                <SummaryItem label="Lucro Bruto" value={BRL.format(stats.lucroBruto)} highlight />
-                <SummaryItem label="EBITDA" value={BRL.format(stats.ebitda)} />
-                <SummaryItem label="Lucro Líquido" value={BRL.format(stats.lucroLiquido)} highlight large />
+                <SummaryItem label="Faturamento Bruto" value={BRL.format(stats.receita)} numeric={stats.receita} />
+                <SummaryItem label="(-) Impostos sobre Venda" value={BRL.format(-Math.abs(stats.taxes))} numeric={-Math.abs(stats.taxes)} dim />
+                <SummaryItem label="(-) Comissões sobre Venda" value={BRL.format(-Math.abs(stats.commissions))} numeric={-Math.abs(stats.commissions)} dim />
+                <SummaryItem label="Receita Líquida" value={BRL.format(stats.netRevenue)} numeric={stats.netRevenue} highlight />
+                <SummaryItem label="(-) CPV / Custos Operacionais" value={BRL.format(-Math.abs(stats.operationalCosts))} numeric={-Math.abs(stats.operationalCosts)} dim />
+                <SummaryItem label="Lucro Bruto" value={BRL.format(stats.lucroBruto)} numeric={stats.lucroBruto} highlight />
+                <SummaryItem label="EBITDA" value={BRL.format(stats.ebitda)} numeric={stats.ebitda} />
+                <SummaryItem label="Lucro Líquido" value={BRL.format(stats.lucroLiquido)} numeric={stats.lucroLiquido} highlight large />
               </div>
 
               <div className="pt-6 border-t border-border space-y-4">
