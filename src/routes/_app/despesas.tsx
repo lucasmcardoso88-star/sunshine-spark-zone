@@ -30,6 +30,11 @@ function DespesasPage() {
   txs.forEach((t) => counts.set(t.party, (counts.get(t.party) ?? 0) + 1));
   const recurring = topByAmount(txs.filter((t) => (counts.get(t.party) ?? 0) > 2), 5);
   const newExpenses = topByAmount(txs.filter((t) => (counts.get(t.party) ?? 0) <= 2), 5);
+  const byCostCenter = (() => {
+    const m = new Map<string, number>();
+    for (const t of txs) m.set(t.costCenter, (m.get(t.costCenter) ?? 0) + t.amount);
+    return [...m.entries()].map(([name, amount]) => ({ name, amount }));
+  })();
   const byCategory = groupByCategory(txs);
 
   const cols: Column<Transaction>[] = [
@@ -47,8 +52,8 @@ function DespesasPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <ChartCard title="Top fornecedores recorrentes"><HorizontalBarsChart data={recurring} /></ChartCard>
         <ChartCard title="Top novas despesas"><HorizontalBarsChart data={newExpenses} /></ChartCard>
+        <ChartCard title="Despesas por centro de custo"><HorizontalBarsChart data={byCostCenter} /></ChartCard>
         <ChartCard title="Despesas por categoria"><DonutChart data={byCategory} /></ChartCard>
-        <ChartCard title="Distribuição em barras"><HorizontalBarsChart data={byCategory} /></ChartCard>
       </div>
       <div className="mt-6">
         <h3 className="mb-3 text-sm font-semibold text-foreground">Detalhamento</h3>
