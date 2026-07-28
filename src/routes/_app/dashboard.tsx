@@ -141,8 +141,8 @@ function DreDashboardPage() {
         {/* Header Executive Area */}
         <header className="mb-10 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
           <div>
-            <h1 className="text-4xl font-bold tracking-tight text-foreground">DRE Financeiro</h1>
-            <p className="text-muted-foreground text-lg">Demonstrativo de Resultados do Exercício</p>
+            <h1 className="text-4xl font-bold tracking-tight text-foreground">Dashboard</h1>
+            <p className="text-muted-foreground text-lg">Visão geral financeira</p>
           </div>
           <div className="flex items-center gap-3">
             <Button variant="outline" className="h-11 rounded-xl border-border bg-card/50 px-4 transition-all hover:bg-secondary">
