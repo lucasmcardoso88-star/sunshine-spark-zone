@@ -26,7 +26,6 @@ function ReceitasPage() {
   const filters = useFilters();
   const txs = getTransactions(filters).filter((t) => t.type === "revenue");
 
-  // Recurring = appears more than once; new = appears once
   const counts = new Map<string, number>();
   txs.forEach((t) => counts.set(t.party, (counts.get(t.party) ?? 0) + 1));
   const recurring = topByAmount(txs.filter((t) => (counts.get(t.party) ?? 0) > 2), 5);
@@ -48,18 +47,20 @@ function ReceitasPage() {
   ];
 
   return (
-    <>
-      <PageHeader title="Receitas" description="Receita por cliente, tipo de serviço e centro de custo." />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ChartCard title="Top clientes recorrentes"><HorizontalBarsChart data={recurring} /></ChartCard>
-        <ChartCard title="Top novos clientes"><HorizontalBarsChart data={newClients} /></ChartCard>
-        <ChartCard title="Receita por centro de custo"><HorizontalBarsChart data={byCostCenter} /></ChartCard>
-        <ChartCard title="Receita por tipo de serviço"><DonutChart data={byService} /></ChartCard>
-      </div>
-      <div className="mt-6">
-        <h3 className="mb-3 text-sm font-semibold text-foreground">Detalhamento</h3>
-        <DataTable columns={cols} rows={txs.slice(0, 50)} emptyTitle="Sem receitas no período" />
-      </div>
-    </>
+    <div className="flex min-h-screen animate-in fade-in duration-500">
+      <main className="flex-1 p-8 pt-6">
+        <PageHeader title="Receitas" description="Análise de receita por cliente, categoria e centro de custo." />
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+          <ChartCard title="Top clientes recorrentes"><HorizontalBarsChart data={recurring} /></ChartCard>
+          <ChartCard title="Top novos clientes"><HorizontalBarsChart data={newClients} /></ChartCard>
+          <ChartCard title="Receita por centro de custo"><HorizontalBarsChart data={byCostCenter} /></ChartCard>
+          <ChartCard title="Receita por tipo de serviço"><DonutChart data={byService} /></ChartCard>
+        </div>
+        <div className="rounded-xl border border-border bg-card shadow-sm p-6">
+          <h3 className="mb-6 text-xl font-bold">Detalhamento de Receitas</h3>
+          <DataTable columns={cols} rows={txs.slice(0, 100)} emptyTitle="Sem receitas no período" />
+        </div>
+      </main>
+    </div>
   );
 }

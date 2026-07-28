@@ -47,18 +47,20 @@ function DespesasPage() {
   ];
 
   return (
-    <>
-      <PageHeader title="Despesas" description="Despesas por fornecedor, categoria e centro de custo." />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ChartCard title="Top fornecedores recorrentes"><HorizontalBarsChart data={recurring} /></ChartCard>
-        <ChartCard title="Top novas despesas"><HorizontalBarsChart data={newExpenses} /></ChartCard>
-        <ChartCard title="Despesas por centro de custo"><HorizontalBarsChart data={byCostCenter} /></ChartCard>
-        <ChartCard title="Despesas por categoria"><DonutChart data={byCategory} /></ChartCard>
-      </div>
-      <div className="mt-6">
-        <h3 className="mb-3 text-sm font-semibold text-foreground">Detalhamento</h3>
-        <DataTable columns={cols} rows={txs.slice(0, 50)} emptyTitle="Sem despesas no período" />
-      </div>
-    </>
+    <div className="flex min-h-screen animate-in fade-in duration-500">
+      <main className="flex-1 p-8 pt-6">
+        <PageHeader title="Despesas" description="Análise de despesas por fornecedor, categoria e centro de custo." />
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+          <ChartCard title="Top fornecedores recorrentes"><HorizontalBarsChart data={recurring} /></ChartCard>
+          <ChartCard title="Top novas despesas"><HorizontalBarsChart data={newExpenses} /></ChartCard>
+          <ChartCard title="Despesas por centro de custo"><HorizontalBarsChart data={byCostCenter} /></ChartCard>
+          <ChartCard title="Despesas por categoria"><DonutChart data={byCategory} /></ChartCard>
+        </div>
+        <div className="rounded-xl border border-border bg-card shadow-sm p-6">
+          <h3 className="mb-6 text-xl font-bold">Detalhamento de Despesas</h3>
+          <DataTable columns={cols} rows={txs.slice(0, 100)} emptyTitle="Sem despesas no período" />
+        </div>
+      </main>
+    </div>
   );
 }
