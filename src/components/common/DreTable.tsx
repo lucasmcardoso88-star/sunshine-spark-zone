@@ -72,10 +72,11 @@ const POSITIVE_LINES: DreLine[] = ["grossRevenue", "financialIncome"];
 
 
 function amountClass(v: number) {
-  if (v > 0) return "text-success";
-  if (v < 0) return "text-destructive";
+  if (v > 0) return "neon-pos";
+  if (v < 0) return "neon-neg";
   return "text-muted-foreground";
 }
+
 
 export function DreTable({
   data,
