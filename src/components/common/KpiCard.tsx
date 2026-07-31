@@ -36,7 +36,7 @@ export function KpiCard({
 }) {
   const positive = (variation ?? 0) >= 0;
   const accent = TONE_ACCENT[tone];
-  const max = trend?.length ? Math.max(...trend.map((n) => Math.abs(n)), 1) : 1;
+  const max = trend?.length ? trend.reduce((acc, n) => Math.max(acc, Math.abs(Number(n) || 0)), 1) : 1;
 
   return (
     <Card className="group relative overflow-hidden rounded-2xl border-border/70 bg-card p-5 shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:border-border hover:shadow-[0_16px_40px_-24px_rgb(0_0_0/0.45)]">
