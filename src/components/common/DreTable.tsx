@@ -157,7 +157,7 @@ export function DreTable({
                     <span className="flex items-center gap-1.5">
                       {canExpand ? (
                         isOpen ? (
-                          <ChevronDown size={14} className="text-primary" />
+                          <ChevronDown size={14} className="text-[color:var(--neon)]" />
                         ) : (
                           <ChevronRight size={14} className="text-muted-foreground" />
                         )
@@ -180,7 +180,7 @@ export function DreTable({
                   ))}
                   <td
                     className={cn(
-                      "bg-primary/10 px-4 py-2 text-right tabular-nums whitespace-nowrap font-semibold",
+                      "bg-[color:var(--neon)]/12 px-4 py-2 text-right tabular-nums whitespace-nowrap font-semibold",
                       amountClass(total),
                     )}
                   >
@@ -195,11 +195,16 @@ export function DreTable({
                         return { cat, values, total: values.reduce((a, b) => a + b, 0) };
                       })
                       .sort((a, b) => Math.abs(b.total) - Math.abs(a.total))
-                      .map((sub) => (
-                        <tr key={`${row.label}-${sub.cat}`} className="border-t border-border/60 bg-muted/30">
-                          <td className="sticky left-0 z-10 bg-muted/60 px-4 py-1.5 pl-10 text-xs text-muted-foreground">
+                      .map((sub, si) => (
+                        <tr
+                          key={`${row.label}-${sub.cat}`}
+                          style={{ animationDelay: `${Math.min(si, 16) * 25}ms` }}
+                          className="hud-row border-t border-border/40 bg-muted/20 transition-colors hover:bg-[color:var(--neon)]/6"
+                        >
+                          <td className="hud-sticky-col px-4 py-1.5 pl-10 text-xs text-muted-foreground">
                             {sub.cat}
                           </td>
+
                           {sub.values.map((v, i) => (
                             <td
                               key={i}
