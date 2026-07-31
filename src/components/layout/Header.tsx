@@ -10,7 +10,7 @@ import {
 import { useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import somusLogoWhite from "@/assets/somus-logo-white.png.asset.json";
+import somusLogoWhite from "@/assets/somus-logo-white-pad.png.asset.json";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,13 +52,14 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
       <div className="grid min-h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-6 py-4 lg:flex">
         <div className="flex min-w-0 items-center gap-4">
-          <div className="flex h-11 shrink-0 items-center justify-center rounded-xl border border-border bg-muted px-3">
+          <div className="flex h-10 shrink-0 items-center justify-center rounded-xl border border-border bg-muted px-2.5">
             <img
               src={somusLogoWhite.url}
               alt="SOMUS"
-              className="h-6 w-auto object-contain invert dark:invert-0"
+              className="h-5 w-auto object-contain invert dark:invert-0"
             />
           </div>
+
 
           <div className="min-w-0 leading-tight">
             <p className="truncate text-lg font-bold tracking-tight text-foreground">BPO Controladoria</p>
