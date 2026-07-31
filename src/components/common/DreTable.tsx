@@ -137,21 +137,23 @@ export function DreTable({
               <Fragment key={row.label}>
                 <tr
                   onClick={() => canExpand && setOpen((s) => ({ ...s, [row.label]: !s[row.label] }))}
+                  style={{ animationDelay: `${Math.min(rowIndex, 20) * 30}ms` }}
                   className={cn(
-                    "border-t border-border odd:bg-secondary/20 transition-colors",
-                    canExpand && "cursor-pointer hover:bg-accent/40",
-                    row.emphasis === "subtotal" && "bg-primary/5 font-medium",
-                    row.emphasis === "total" && "bg-primary/10 font-semibold",
+                    "hud-row border-t border-border/50 transition-all duration-200",
+                    canExpand &&
+                      "cursor-pointer hover:bg-[color:var(--neon)]/8 hover:shadow-[inset_0_0_30px_-14px_var(--hud-glow)]",
+                    row.emphasis === "subtotal" && "bg-[color:var(--neon)]/6 font-medium",
+                    row.emphasis === "total" && "bg-[color:var(--neon)]/12 font-semibold",
                   )}
                 >
                   <td
                     className={cn(
-                      "sticky left-0 z-10 px-4 py-2 bg-card text-foreground",
-                      rowIndex % 2 === 0 && "bg-secondary/20",
-                      row.emphasis === "subtotal" && "bg-primary/5",
-                      row.emphasis === "total" && "bg-primary/10",
+                      "hud-sticky-col px-4 py-2 text-foreground",
+                      row.emphasis === "subtotal" && "font-medium",
+                      row.emphasis === "total" && "font-semibold neon-text",
                     )}
                   >
+
                     <span className="flex items-center gap-1.5">
                       {canExpand ? (
                         isOpen ? (
