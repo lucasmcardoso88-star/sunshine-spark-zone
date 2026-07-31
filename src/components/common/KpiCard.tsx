@@ -40,12 +40,7 @@ export function KpiCard({
   const max = trend?.length ? trend.reduce((acc, n) => Math.max(acc, Math.abs(Number(n) || 0)), 1) : 1;
 
   return (
-    <TiltCard className="overflow-hidden p-5" sweep>
-      <span
-        aria-hidden
-        className="absolute inset-x-0 top-0 z-[2] h-px opacity-80"
-        style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }}
-      />
+    <TiltCard className="overflow-hidden p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 flex-1 items-center gap-2">
           <p className="min-w-0 truncate text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
@@ -86,7 +81,7 @@ export function KpiCard({
         className={cn(
           "mt-3 font-semibold tabular-nums tracking-tight",
           size === "lg" ? "text-[28px] leading-tight" : "text-[22px] leading-tight",
-          value == null ? "text-foreground" : value < 0 ? "neon-neg" : "text-foreground neon-text",
+          value == null ? "text-foreground" : value < 0 ? "text-destructive" : "text-foreground",
         )}
       >
         {value == null ? (
@@ -102,8 +97,8 @@ export function KpiCard({
             className={cn(
               "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums",
               positive
-                ? "bg-[color:var(--success)]/12 neon-pos"
-                : "bg-destructive/12 neon-neg",
+                ? "bg-[color:var(--success)]/12 text-[color:var(--success)]"
+                : "bg-destructive/12 text-destructive",
             )}
           >
             {positive ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
