@@ -108,21 +108,22 @@ export function DreTable({
   }, [transactions]);
 
   return (
-    <div className="max-h-[70vh] overflow-auto rounded-2xl border border-border bg-card shadow-sm">
+    <div className="holo max-h-[70vh] overflow-auto">
       <table className="w-full min-w-[920px] text-sm">
-        <thead className="sticky top-0 z-20 bg-secondary text-xs uppercase tracking-wide text-muted-foreground shadow-sm">
+        <thead className="hud-sticky-head text-[10px] uppercase tracking-[0.2em] text-[color:var(--neon)]">
           <tr>
-            <th className="sticky left-0 z-30 bg-secondary px-4 py-3 text-left">Linha</th>
+            <th className="hud-sticky-col z-30 px-4 py-3 text-left">Linha</th>
             {months.map((m) => (
               <th key={m} className="text-right px-3 py-3 whitespace-nowrap">
                 {m}
               </th>
             ))}
-            <th className="bg-primary/10 px-4 py-3 text-right whitespace-nowrap text-primary">
+            <th className="bg-[color:var(--neon)]/12 px-4 py-3 text-right whitespace-nowrap">
               Total
             </th>
           </tr>
         </thead>
+
         <tbody>
           {ROWS.map((row, rowIndex) => {
             const cells = data.map((k) => valueFor(k, row.key));
