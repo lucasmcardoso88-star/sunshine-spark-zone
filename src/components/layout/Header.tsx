@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/select";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { GlyphText } from "@/components/fx/GlyphText";
+
 import { useFilters } from "@/context/FiltersContext";
 import { COMPANY_OPTIONS, type CompanyId } from "@/data/mock";
 import { toast } from "sonner";
