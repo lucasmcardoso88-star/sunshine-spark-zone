@@ -129,11 +129,16 @@ function DreDashboardPage() {
   }, [txs]);
 
   const extremes = useMemo(() => {
-    if (txs.length === 0) return { maxR: 0, maxD: 0 };
-    const maxR = Math.max(...txs.filter(t => t.type === 'revenue').map(t => t.amount), 0);
-    const maxD = Math.max(...txs.filter(t => t.type === 'expense').map(t => t.amount), 0);
+    let maxR = 0;
+    let maxD = 0;
+    for (const t of txs) {
+      const amount = Number(t.amount) || 0;
+      if (t.type === "revenue") maxR = Math.max(maxR, amount);
+      else maxD = Math.max(maxD, amount);
+    }
     return { maxR, maxD };
   }, [txs]);
+
 
   return (
     <div className="flex min-h-screen animate-in fade-in duration-500">

@@ -269,7 +269,7 @@ export function HorizontalBarsChart({
       />
     );
 
-  const max = Math.max(...data.map((d) => Math.abs(Number(d[valueKey]) || 0)), 1);
+  const max = data.reduce((acc, d) => Math.max(acc, Math.abs(Number(d[valueKey]) || 0)), 1);
 
   return (
     <div className="flex h-full flex-col justify-center gap-3.5 pr-1">
