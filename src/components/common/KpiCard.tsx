@@ -1,8 +1,9 @@
 import { ArrowDownRight, ArrowUpRight, HelpCircle, type LucideIcon } from "lucide-react";
-import { Card } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { formatBRL, formatVariation } from "@/lib/format";
+import { TiltCard } from "@/components/fx/TiltCard";
+import { AnimatedNumber } from "@/components/fx/AnimatedNumber";
 
 export type KpiTone = "positive" | "warning" | "critical" | "neutral";
 
@@ -10,7 +11,7 @@ const TONE_ACCENT: Record<KpiTone, string> = {
   positive: "var(--success)",
   warning: "var(--warning)",
   critical: "var(--destructive)",
-  neutral: "var(--primary)",
+  neutral: "var(--neon)",
 };
 
 export function KpiCard({
@@ -39,15 +40,17 @@ export function KpiCard({
   const max = trend?.length ? trend.reduce((acc, n) => Math.max(acc, Math.abs(Number(n) || 0)), 1) : 1;
 
   return (
-    <Card className="group relative overflow-hidden rounded-2xl border-border/70 bg-card p-5 shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:border-border hover:shadow-[0_16px_40px_-24px_rgb(0_0_0/0.45)]">
+    <TiltCard className="overflow-hidden p-5" sweep>
       <span
         aria-hidden
-        className="absolute inset-x-0 top-0 h-px opacity-70"
+        className="absolute inset-x-0 top-0 z-[2] h-px opacity-80"
         style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }}
       />
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          <p className="min-w-0 truncate text-[13px] font-medium text-muted-foreground">{label}</p>
+          <p className="min-w-0 truncate text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+            {label}
+          </p>
           {formula ? (
             <TooltipProvider>
               <Tooltip>
@@ -67,8 +70,12 @@ export function KpiCard({
         </div>
         {Icon ? (
           <span
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
-            style={{ background: `color-mix(in oklab, ${accent} 14%, transparent)`, color: accent }}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110"
+            style={{
+              background: `color-mix(in oklab, ${accent} 16%, transparent)`,
+              color: accent,
+              boxShadow: `0 0 22px -8px ${accent}`,
+            }}
           >
             <Icon className="h-4 w-4" />
           </span>
@@ -79,10 +86,14 @@ export function KpiCard({
         className={cn(
           "mt-3 font-semibold tabular-nums tracking-tight",
           size === "lg" ? "text-[28px] leading-tight" : "text-[22px] leading-tight",
-          (value ?? 0) < 0 ? "text-destructive" : "text-foreground",
+          value == null ? "text-foreground" : value < 0 ? "neon-neg" : "text-foreground neon-text",
         )}
       >
-        {value == null ? "—" : formatValue ? formatValue(value) : formatBRL(value)}
+        {value == null ? (
+          "—"
+        ) : (
+          <AnimatedNumber value={value} format={formatValue ?? formatBRL} />
+        )}
       </p>
 
       <div className="mt-3 flex items-end justify-between gap-3">
@@ -91,8 +102,8 @@ export function KpiCard({
             className={cn(
               "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums",
               positive
-                ? "bg-[color:var(--success)]/12 text-[color:var(--success)]"
-                : "bg-destructive/12 text-destructive",
+                ? "bg-[color:var(--success)]/12 neon-pos"
+                : "bg-destructive/12 neon-neg",
             )}
           >
             {positive ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
@@ -107,17 +118,19 @@ export function KpiCard({
             {trend.map((v, i) => (
               <span
                 key={i}
-                className="w-full max-w-[6px] rounded-full transition-opacity"
+                className="hud-bar w-full max-w-[6px] rounded-full"
                 style={{
                   height: `${Math.max(12, (Math.abs(v) / max) * 100)}%`,
                   background: accent,
-                  opacity: 0.25 + (i / Math.max(trend.length - 1, 1)) * 0.75,
+                  boxShadow: `0 0 10px -2px ${accent}`,
+                  opacity: 0.3 + (i / Math.max(trend.length - 1, 1)) * 0.7,
+                  animationDelay: `${i * 45}ms`,
                 }}
               />
             ))}
           </div>
         ) : null}
       </div>
-    </Card>
+    </TiltCard>
   );
 }
