@@ -139,9 +139,10 @@ export function DreTable({
                   onClick={() => canExpand && setOpen((s) => ({ ...s, [row.label]: !s[row.label] }))}
                   style={{ animationDelay: `${Math.min(rowIndex, 20) * 30}ms` }}
                   className={cn(
-                    "hud-row border-t border-border/50 transition-all duration-200",
+                    "hud-row hud-row-hover border-t border-border/50",
                     canExpand &&
-                      "cursor-pointer hover:bg-[color:var(--neon)]/8 hover:shadow-[inset_0_0_30px_-14px_var(--hud-glow)]",
+                      "cursor-pointer",
+
                     row.emphasis === "subtotal" && "bg-[color:var(--neon)]/6 font-medium",
                     row.emphasis === "total" && "bg-[color:var(--neon)]/12 font-semibold",
                   )}
