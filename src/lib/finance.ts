@@ -129,9 +129,11 @@ export function getAggregateKpis(f: FiltersState) {
   );
   const ebitda = sum((k) => k.ebitda);
   const netProfit = sum((k) => k.netProfit);
-  const cashBalance = ks[ks.length - 1].cashBalance;
-  const accountsReceivable = ks[ks.length - 1].accountsReceivable;
-  const accountsPayable = ks[ks.length - 1].accountsPayable;
+  const last = ks[ks.length - 1];
+  const cashBalance = last?.cashBalance ?? 0;
+  const accountsReceivable = last?.accountsReceivable ?? 0;
+  const accountsPayable = last?.accountsPayable ?? 0;
+
   return {
     grossRevenue,
     netRevenue,
