@@ -39,10 +39,11 @@ function FluxoCaixaPage() {
     "Saldo acumulado": k.cashBalance,
   }));
 
-  const initialBalance = period.length ? period[0].cashBalance - (period[0].cashIn - period[0].cashOut) : 0;
+  const first = period[0];
+  const initialBalance = first ? first.cashBalance - (first.cashIn - first.cashOut) : 0;
   const totalIn = period.reduce((a, b) => a + b.cashIn, 0);
   const totalOut = period.reduce((a, b) => a + b.cashOut, 0);
-  const finalBalance = period.length ? period[period.length - 1].cashBalance : 0;
+  const finalBalance = period[period.length - 1]?.cashBalance ?? 0;
   const projected30 = finalBalance + (totalIn - totalOut) / Math.max(1, period.length);
 
   return (
