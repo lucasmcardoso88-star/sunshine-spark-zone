@@ -34,14 +34,16 @@ export function DataTable<T>({
       />
     );
   return (
-    <div className="max-h-[640px] overflow-auto rounded-2xl border border-border/70 bg-card">
+    <div className="holo max-h-[640px] overflow-auto">
       <Table>
-        <TableHeader className="sticky top-0 z-10 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
+        <TableHeader className="hud-sticky-head">
           <TableRow className="border-border/70 hover:bg-transparent">
-            {columns.map((c) => (
+            {columns.map((c, ci) => (
               <TableHead
                 key={c.key}
-                className={`h-11 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground ${c.className ?? ""}`}
+                className={`h-11 text-[10px] font-bold uppercase tracking-[0.2em] text-[color:var(--neon)] ${
+                  ci === 0 ? "hud-sticky-col" : ""
+                } ${c.className ?? ""}`}
               >
                 {c.header}
               </TableHead>
@@ -52,12 +54,13 @@ export function DataTable<T>({
           {rows.map((r, i) => (
             <TableRow
               key={i}
-              className="border-border/50 transition-colors hover:bg-muted/40"
+              className="hud-row group border-border/40 transition-all duration-200 hover:bg-[color:var(--neon)]/8 hover:shadow-[inset_0_0_28px_-14px_var(--hud-glow)]"
+              style={{ animationDelay: `${Math.min(i, 24) * 28}ms` }}
             >
-              {columns.map((c) => (
+              {columns.map((c, ci) => (
                 <TableCell
                   key={c.key}
-                  className={`py-3 text-sm tabular-nums ${c.className ?? ""}`}
+                  className={`py-3 text-sm tabular-nums ${ci === 0 ? "hud-sticky-col font-medium" : ""} ${c.className ?? ""}`}
                 >
                   {c.cell(r)}
                 </TableCell>

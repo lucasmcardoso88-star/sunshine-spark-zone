@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/select";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { GlyphText } from "@/components/fx/GlyphText";
+
 import { useFilters } from "@/context/FiltersContext";
 import { COMPANY_OPTIONS, type CompanyId } from "@/data/mock";
 import { toast } from "sonner";
@@ -49,10 +51,18 @@ export function Header() {
 
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/70 backdrop-blur-2xl supports-[backdrop-filter]:bg-background/50">
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-px"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent, color-mix(in oklab, var(--neon) 65%, transparent), transparent)",
+        }}
+      />
       <div className="grid min-h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-6 py-4 lg:flex">
         <div className="flex min-w-0 items-center gap-4">
-          <div className="flex h-10 shrink-0 items-center justify-center rounded-xl border border-border bg-muted px-2.5">
+          <div className="flex h-10 shrink-0 items-center justify-center rounded-xl border border-border/70 bg-muted/60 px-2.5 backdrop-blur-xl">
             <img
               src={somusLogoWhite.url}
               alt="SOMUS"
@@ -62,10 +72,15 @@ export function Header() {
 
 
           <div className="min-w-0 leading-tight">
-            <p className="truncate text-lg font-bold tracking-tight text-foreground">BPO Controladoria</p>
-            <p className="text-xs text-muted-foreground font-medium">Enterprise Intelligence</p>
+            <p className="truncate text-lg font-bold tracking-tight text-foreground neon-text">
+              <GlyphText text="BPO Controladoria" />
+            </p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[color:var(--neon)]">
+              Enterprise Intelligence
+            </p>
           </div>
         </div>
+
 
         <div className="col-span-2 flex min-w-0 flex-wrap items-center gap-4 lg:col-span-1 lg:ml-12 lg:flex-nowrap">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted border border-border">

@@ -72,10 +72,11 @@ const POSITIVE_LINES: DreLine[] = ["grossRevenue", "financialIncome"];
 
 
 function amountClass(v: number) {
-  if (v > 0) return "text-success";
-  if (v < 0) return "text-destructive";
+  if (v > 0) return "neon-pos";
+  if (v < 0) return "neon-neg";
   return "text-muted-foreground";
 }
+
 
 export function DreTable({
   data,
@@ -107,21 +108,22 @@ export function DreTable({
   }, [transactions]);
 
   return (
-    <div className="max-h-[70vh] overflow-auto rounded-2xl border border-border bg-card shadow-sm">
+    <div className="holo max-h-[70vh] overflow-auto">
       <table className="w-full min-w-[920px] text-sm">
-        <thead className="sticky top-0 z-20 bg-secondary text-xs uppercase tracking-wide text-muted-foreground shadow-sm">
+        <thead className="hud-sticky-head text-[10px] uppercase tracking-[0.2em] text-[color:var(--neon)]">
           <tr>
-            <th className="sticky left-0 z-30 bg-secondary px-4 py-3 text-left">Linha</th>
+            <th className="hud-sticky-col z-30 px-4 py-3 text-left">Linha</th>
             {months.map((m) => (
               <th key={m} className="text-right px-3 py-3 whitespace-nowrap">
                 {m}
               </th>
             ))}
-            <th className="bg-primary/10 px-4 py-3 text-right whitespace-nowrap text-primary">
+            <th className="bg-[color:var(--neon)]/12 px-4 py-3 text-right whitespace-nowrap">
               Total
             </th>
           </tr>
         </thead>
+
         <tbody>
           {ROWS.map((row, rowIndex) => {
             const cells = data.map((k) => valueFor(k, row.key));
@@ -135,25 +137,27 @@ export function DreTable({
               <Fragment key={row.label}>
                 <tr
                   onClick={() => canExpand && setOpen((s) => ({ ...s, [row.label]: !s[row.label] }))}
+                  style={{ animationDelay: `${Math.min(rowIndex, 20) * 30}ms` }}
                   className={cn(
-                    "border-t border-border odd:bg-secondary/20 transition-colors",
-                    canExpand && "cursor-pointer hover:bg-accent/40",
-                    row.emphasis === "subtotal" && "bg-primary/5 font-medium",
-                    row.emphasis === "total" && "bg-primary/10 font-semibold",
+                    "hud-row border-t border-border/50 transition-all duration-200",
+                    canExpand &&
+                      "cursor-pointer hover:bg-[color:var(--neon)]/8 hover:shadow-[inset_0_0_30px_-14px_var(--hud-glow)]",
+                    row.emphasis === "subtotal" && "bg-[color:var(--neon)]/6 font-medium",
+                    row.emphasis === "total" && "bg-[color:var(--neon)]/12 font-semibold",
                   )}
                 >
                   <td
                     className={cn(
-                      "sticky left-0 z-10 px-4 py-2 bg-card text-foreground",
-                      rowIndex % 2 === 0 && "bg-secondary/20",
-                      row.emphasis === "subtotal" && "bg-primary/5",
-                      row.emphasis === "total" && "bg-primary/10",
+                      "hud-sticky-col px-4 py-2 text-foreground",
+                      row.emphasis === "subtotal" && "font-medium",
+                      row.emphasis === "total" && "font-semibold neon-text",
                     )}
                   >
+
                     <span className="flex items-center gap-1.5">
                       {canExpand ? (
                         isOpen ? (
-                          <ChevronDown size={14} className="text-primary" />
+                          <ChevronDown size={14} className="text-[color:var(--neon)]" />
                         ) : (
                           <ChevronRight size={14} className="text-muted-foreground" />
                         )
@@ -176,7 +180,7 @@ export function DreTable({
                   ))}
                   <td
                     className={cn(
-                      "bg-primary/10 px-4 py-2 text-right tabular-nums whitespace-nowrap font-semibold",
+                      "bg-[color:var(--neon)]/12 px-4 py-2 text-right tabular-nums whitespace-nowrap font-semibold",
                       amountClass(total),
                     )}
                   >
@@ -191,11 +195,16 @@ export function DreTable({
                         return { cat, values, total: values.reduce((a, b) => a + b, 0) };
                       })
                       .sort((a, b) => Math.abs(b.total) - Math.abs(a.total))
-                      .map((sub) => (
-                        <tr key={`${row.label}-${sub.cat}`} className="border-t border-border/60 bg-muted/30">
-                          <td className="sticky left-0 z-10 bg-muted/60 px-4 py-1.5 pl-10 text-xs text-muted-foreground">
+                      .map((sub, si) => (
+                        <tr
+                          key={`${row.label}-${sub.cat}`}
+                          style={{ animationDelay: `${Math.min(si, 16) * 25}ms` }}
+                          className="hud-row border-t border-border/40 bg-muted/20 transition-colors hover:bg-[color:var(--neon)]/6"
+                        >
+                          <td className="hud-sticky-col px-4 py-1.5 pl-10 text-xs text-muted-foreground">
                             {sub.cat}
                           </td>
+
                           {sub.values.map((v, i) => (
                             <td
                               key={i}
