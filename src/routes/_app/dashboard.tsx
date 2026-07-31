@@ -334,7 +334,7 @@ function DreTableRow({ row, index }: { row: any, index: number }) {
     <>
       <TableRow 
         className={cn(
-          "group transition-colors border-border/30 hover:bg-primary/5 cursor-pointer",
+          "group hud-row-hover border-border/30 cursor-pointer",
           index % 2 === 0 ? "bg-transparent" : "bg-muted/10",
           isOpen && "bg-primary/5"
         )}

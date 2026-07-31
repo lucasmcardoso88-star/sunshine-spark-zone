@@ -54,7 +54,7 @@ export function DataTable<T>({
           {rows.map((r, i) => (
             <TableRow
               key={i}
-              className="hud-row group border-border/40 transition-all duration-200 hover:bg-[color:var(--neon)]/8 hover:shadow-[inset_0_0_28px_-14px_var(--hud-glow)]"
+              className="hud-row hud-row-hover group border-border/40"
               style={{ animationDelay: `${Math.min(i, 24) * 28}ms` }}
             >
               {columns.map((c, ci) => (

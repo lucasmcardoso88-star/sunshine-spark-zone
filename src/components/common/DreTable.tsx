@@ -139,9 +139,10 @@ export function DreTable({
                   onClick={() => canExpand && setOpen((s) => ({ ...s, [row.label]: !s[row.label] }))}
                   style={{ animationDelay: `${Math.min(rowIndex, 20) * 30}ms` }}
                   className={cn(
-                    "hud-row border-t border-border/50 transition-all duration-200",
+                    "hud-row hud-row-hover border-t border-border/50",
                     canExpand &&
-                      "cursor-pointer hover:bg-[color:var(--neon)]/8 hover:shadow-[inset_0_0_30px_-14px_var(--hud-glow)]",
+                      "cursor-pointer",
+
                     row.emphasis === "subtotal" && "bg-[color:var(--neon)]/6 font-medium",
                     row.emphasis === "total" && "bg-[color:var(--neon)]/12 font-semibold",
                   )}
@@ -199,7 +200,7 @@ export function DreTable({
                         <tr
                           key={`${row.label}-${sub.cat}`}
                           style={{ animationDelay: `${Math.min(si, 16) * 25}ms` }}
-                          className="hud-row border-t border-border/40 bg-muted/20 transition-colors hover:bg-[color:var(--neon)]/6"
+                          className="hud-row hud-row-hover-soft border-t border-border/40 bg-muted/20"
                         >
                           <td className="hud-sticky-col px-4 py-1.5 pl-10 text-xs text-muted-foreground">
                             {sub.cat}
