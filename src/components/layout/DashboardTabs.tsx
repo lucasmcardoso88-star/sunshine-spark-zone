@@ -26,7 +26,15 @@ const TABS = [
 export function DashboardTabs() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (
-    <nav className="border-b border-border bg-background py-1">
+    <nav className="relative border-b border-border/70 bg-background/40 py-1 backdrop-blur-xl">
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-px"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent, color-mix(in oklab, var(--neon) 55%, transparent), transparent)",
+        }}
+      />
       <div className="flex gap-2 overflow-x-auto px-6 [scrollbar-width:thin] lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden">
         {TABS.map((t) => {
           const active = t.to === "/" ? pathname === "/" : pathname.startsWith(t.to);
@@ -36,16 +44,36 @@ export function DashboardTabs() {
               key={t.to}
               to={t.to}
               className={cn(
-                "relative inline-flex items-center gap-2.5 whitespace-nowrap px-4 py-3.5 text-xs font-bold uppercase tracking-wider transition-all duration-200",
-                active 
-                  ? "text-primary bg-primary/10 rounded-t-xl" 
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent rounded-xl"
+                "relative inline-flex items-center gap-2.5 whitespace-nowrap rounded-t-xl px-4 py-3.5 text-xs font-bold uppercase tracking-wider transition-all duration-300",
+                active
+                  ? "text-[color:var(--neon)] neon-text"
+                  : "text-muted-foreground hover:text-foreground",
               )}
+              style={
+                active
+                  ? {
+                      background:
+                        "linear-gradient(to top, color-mix(in oklab, var(--neon) 16%, transparent), transparent)",
+                    }
+                  : undefined
+              }
             >
-              <Icon className={cn("h-4 w-4", active ? "text-primary" : "text-muted-foreground")} />
+              <Icon className="h-4 w-4" />
               {t.label}
               {active && (
-                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-primary" />
+                <>
+                  <span
+                    className="absolute inset-x-2 bottom-0 h-[2px] rounded-full transition-all duration-300"
+                    style={{
+                      background: "linear-gradient(90deg, transparent, var(--neon), transparent)",
+                      boxShadow: "0 0 14px 2px var(--hud-glow)",
+                    }}
+                  />
+                  <span
+                    className="absolute -bottom-1 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full"
+                    style={{ background: "var(--neon)", boxShadow: "0 0 12px 3px var(--hud-glow)" }}
+                  />
+                </>
               )}
             </Link>
           );
