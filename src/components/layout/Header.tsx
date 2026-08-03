@@ -34,6 +34,7 @@ import { GlyphText } from "@/components/fx/GlyphText";
 
 import { useFilters } from "@/context/FiltersContext";
 import { COMPANY_OPTIONS, type CompanyId } from "@/data/mock";
+import { refreshLiveData } from "@/data/live-sync";
 import { toast } from "sonner";
 
 export function Header() {
@@ -47,6 +48,15 @@ export function Header() {
     queryClient.clear();
     await supabase.auth.signOut();
     navigate({ to: "/login", replace: true });
+  }
+
+  async function handleRefresh() {
+    const promise = refreshLiveData();
+    toast.promise(promise, {
+      loading: "Sincronizando dados...",
+      success: "Dados atualizados com sucesso!",
+      error: "Falha ao sincronizar dados.",
+    });
   }
 
 
@@ -116,7 +126,7 @@ export function Header() {
             variant="outline"
             size="sm"
             className="h-10 rounded-xl border-border bg-card px-4 text-xs font-bold text-foreground transition-all hover:bg-accent"
-            onClick={() => toast.success("Sincronização iniciada...")}
+            onClick={handleRefresh}
           >
             <RefreshCw className="h-4 w-4 mr-2" />
             Sync Now
