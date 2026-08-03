@@ -144,12 +144,19 @@ export function Header() {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-border" />
-              <DropdownMenuItem className="rounded-lg py-3 focus:bg-accent cursor-pointer">
+              <DropdownMenuItem
+                className="rounded-lg py-3 focus:bg-accent cursor-pointer"
+                onSelect={() => navigate({ to: "/configuracoes" })}
+              >
                 <User className="mr-3 h-5 w-5 text-muted-foreground" /> Perfil Executivo
               </DropdownMenuItem>
-              <DropdownMenuItem className="rounded-lg py-3 focus:bg-accent cursor-pointer">
+              <DropdownMenuItem
+                className="rounded-lg py-3 focus:bg-accent cursor-pointer"
+                onSelect={() => navigate({ to: "/configuracoes" })}
+              >
                 <Settings className="mr-3 h-5 w-5 text-muted-foreground" /> Preferências
               </DropdownMenuItem>
+
               <DropdownMenuSeparator className="bg-border" />
               <DropdownMenuItem
                 className="rounded-lg py-3 focus:bg-accent text-rose-500 cursor-pointer"
