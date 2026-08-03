@@ -46,7 +46,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const seed = useServerFn(ensureDefaultUser);
   const [tab, setTab] = useState<Tab>("login");
-  const [email, setEmail] = useState("financeiro@agenciaw2.com.br");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
