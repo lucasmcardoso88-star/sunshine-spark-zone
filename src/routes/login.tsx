@@ -392,7 +392,136 @@ function LoginPage() {
                   )}
                 </button>
               </form>
+            ) : (
+              <form onSubmit={handleSignup} className="mt-7 space-y-5">
+                <div className="space-y-2.5">
+                  <label htmlFor="full-name" className="text-sm text-slate-200">
+                    Nome completo
+                  </label>
+                  <div className="relative">
+                    <UserPlus className="pointer-events-none absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#3b9df6]" />
+                    <input
+                      id="full-name"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Seu nome"
+                      autoComplete="name"
+                      required
+                      maxLength={120}
+                      className={fieldClass}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2.5">
+                  <label htmlFor="signup-email" className="text-sm text-slate-200">
+                    E-mail
+                  </label>
+                  <div className="relative">
+                    <Mail className="pointer-events-none absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#3b9df6]" />
+                    <input
+                      id="signup-email"
+                      type="email"
+                      value={signupEmail}
+                      onChange={(e) => setSignupEmail(e.target.value)}
+                      placeholder="Digite seu e-mail"
+                      autoComplete="email"
+                      required
+                      maxLength={255}
+                      className={fieldClass}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2.5">
+                  <label htmlFor="signup-password" className="text-sm text-slate-200">
+                    Senha
+                  </label>
+                  <div className="relative">
+                    <Lock className="pointer-events-none absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#3b9df6]" />
+                    <input
+                      id="signup-password"
+                      type={showPassword ? "text" : "password"}
+                      value={signupPassword}
+                      onChange={(e) => setSignupPassword(e.target.value)}
+                      placeholder="Mínimo de 8 caracteres"
+                      autoComplete="new-password"
+                      required
+                      className={fieldClass}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((v) => !v)}
+                      aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-200"
+                    >
+                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2.5">
+                  <label htmlFor="signup-confirm" className="text-sm text-slate-200">
+                    Confirmar senha
+                  </label>
+                  <div className="relative">
+                    <Lock className="pointer-events-none absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-[#3b9df6]" />
+                    <input
+                      id="signup-confirm"
+                      type={showPassword ? "text" : "password"}
+                      value={signupConfirm}
+                      onChange={(e) => setSignupConfirm(e.target.value)}
+                      placeholder="Repita a senha"
+                      autoComplete="new-password"
+                      required
+                      className={fieldClass}
+                    />
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-500">
+                  A conta criada recebe perfil <strong className="text-[#3b9df6]">master admin</strong>,
+                  com acesso completo ao painel.
+                </p>
+
+                <button type="submit" disabled={loading} className={submitBtn}>
+                  {loading ? (
+                    <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+                  ) : (
+                    <>
+                      <span className="flex-1 text-center">Criar conta e acessar</span>
+                      <ArrowRight className="h-5 w-5 transition group-hover:translate-x-1" />
+                    </>
+                  )}
+                </button>
+              </form>
             )}
+
+            <p className="mt-6 text-center text-sm text-slate-400">
+              {tab === "signup" ? (
+                <>
+                  Já tem uma conta?{" "}
+                  <button
+                    type="button"
+                    onClick={() => setTab("login")}
+                    className="font-medium text-[#3b9df6] transition hover:underline"
+                  >
+                    Entrar
+                  </button>
+                </>
+              ) : (
+                <>
+                  Não tem uma conta?{" "}
+                  <button
+                    type="button"
+                    onClick={() => setTab("signup")}
+                    className="font-medium text-[#3b9df6] transition hover:underline"
+                  >
+                    Criar conta
+                  </button>
+                </>
+              )}
+            </p>
 
             <div className="mt-9 flex items-center gap-5">
               <span className="h-px flex-1 bg-[#152437]" />
