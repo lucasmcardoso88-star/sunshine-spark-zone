@@ -46,7 +46,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const seed = useServerFn(ensureDefaultUser);
   const [tab, setTab] = useState<Tab>("login");
-  const [email, setEmail] = useState("financeiro@agenciaw2.com.br");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
@@ -81,9 +81,17 @@ function LoginPage() {
 
   async function handleCredentials(e: React.FormEvent) {
     e.preventDefault();
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail || !password) {
+      toast.error("Informe e-mail e senha.");
+      return;
+    }
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password,
+      });
       if (!error) {
         toast.success("Bem-vindo!");
         navigate({ to: "/" });
@@ -92,7 +100,7 @@ function LoginPage() {
       const msg = (error.message ?? "").toLowerCase();
       if (msg.includes("not confirmed") || msg.includes("confirm")) {
         const { error: otpErr } = await supabase.auth.signInWithOtp({
-          email,
+          email: cleanEmail,
           options: { shouldCreateUser: false },
         });
         if (otpErr) {
@@ -102,6 +110,8 @@ function LoginPage() {
         toast.success("Enviamos um código de verificação para seu e-mail.");
         setTab("code");
         setOtpSent(true);
+      } else if (msg.includes("invalid login credentials")) {
+        toast.error("E-mail ou senha incorretos. Confira o e-mail usado no cadastro.");
       } else {
         toast.error(error.message);
       }
@@ -109,6 +119,7 @@ function LoginPage() {
       setLoading(false);
     }
   }
+
 
   async function sendCode(e: React.FormEvent) {
     e.preventDefault();
@@ -163,10 +174,15 @@ function LoginPage() {
       toast.error("As senhas não coincidem.");
       return;
     }
+    const cleanEmail = signupEmail.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(cleanEmail)) {
+      toast.error("Informe um e-mail válido (ex.: nome@empresa.com.br).");
+      return;
+    }
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signUp({
-        email: signupEmail.trim(),
+        email: cleanEmail,
         password: signupPassword,
         options: {
           data: { full_name: fullName.trim(), invite_token: inviteToken },
@@ -184,17 +200,18 @@ function LoginPage() {
         return;
       }
       const { error: signInErr } = await supabase.auth.signInWithPassword({
-        email: signupEmail.trim(),
+        email: cleanEmail,
         password: signupPassword,
       });
       if (signInErr) {
         toast.success("Conta criada! Faça login para continuar.");
-        setEmail(signupEmail.trim());
+        setEmail(cleanEmail);
         setTab("login");
         return;
       }
       toast.success("Conta criada! Acesso master admin liberado.");
       navigate({ to: "/" });
+
     } finally {
       setLoading(false);
     }
