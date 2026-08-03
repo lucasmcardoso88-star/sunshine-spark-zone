@@ -500,8 +500,8 @@ function LoginPage() {
                 </div>
 
                 <p className="text-xs text-slate-500">
-                  A conta criada recebe perfil <strong className="text-[#3b9df6]">master admin</strong>,
-                  com acesso completo ao painel.
+                  Cadastro autorizado por convite. A conta criada recebe perfil{" "}
+                  <strong className="text-[#3b9df6]">master admin</strong>, com acesso completo ao painel.
                 </p>
 
                 <button type="submit" disabled={loading} className={submitBtn}>
@@ -529,9 +529,9 @@ function LoginPage() {
                     Entrar
                   </button>
                 </>
-              ) : (
+              ) : inviteValid ? (
                 <>
-                  Não tem uma conta?{" "}
+                  Convite validado.{" "}
                   <button
                     type="button"
                     onClick={() => setTab("signup")}
@@ -540,8 +540,13 @@ function LoginPage() {
                     Criar conta
                   </button>
                 </>
+              ) : (
+                <span className="text-slate-500">
+                  Acesso restrito. Novas contas somente por link de convite.
+                </span>
               )}
             </p>
+
 
             <div className="mt-9 flex items-center gap-5">
               <span className="h-px flex-1 bg-[#152437]" />
