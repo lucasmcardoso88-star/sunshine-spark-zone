@@ -336,7 +336,7 @@ function LoginPage() {
                   )}
                 </button>
               </form>
-            ) : (
+            ) : tab === "code" ? (
               <form onSubmit={otpSent ? handleOtp : sendCode} className="mt-7 space-y-5">
                 <div className="space-y-2.5">
                   <label htmlFor="email-code" className="text-sm text-slate-200">
