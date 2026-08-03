@@ -123,7 +123,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR" translate="no" className="notranslate">
       <head>
         <HeadContent />
       </head>
@@ -138,6 +138,13 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    const uninstall = installStaleAssetRecovery();
+    // Chegou até aqui: a versão atual carregou, libera futuras recuperações.
+    clearStaleAssetFlag();
+    return uninstall;
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
@@ -145,3 +152,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
