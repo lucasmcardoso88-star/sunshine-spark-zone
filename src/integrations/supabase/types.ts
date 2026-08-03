@@ -414,6 +414,42 @@ export type Database = {
           },
         ]
       }
+      convites: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          email: string | null
+          expires_at: string
+          id: string
+          token: string
+          updated_at: string
+          used_at: string | null
+          used_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          expires_at?: string
+          id?: string
+          token: string
+          updated_at?: string
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          expires_at?: string
+          id?: string
+          token?: string
+          updated_at?: string
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Relationships: []
+      }
       despesas: {
         Row: {
           categoria: string | null
@@ -947,6 +983,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      invite_is_valid: { Args: { _token: string }; Returns: boolean }
       user_has_company_access: {
         Args: { _company_id: string; _user_id: string }
         Returns: boolean

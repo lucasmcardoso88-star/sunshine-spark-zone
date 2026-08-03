@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { COMPANIES } from "@/data/mock";
+import { InviteManager } from "@/components/settings/InviteManager";
+
 import { Building2, Link2, Target, Bell, Mail, Users, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
@@ -121,7 +123,10 @@ function ConfiguracoesPage() {
             </li>
           </ul>
         </Section>
+
+        <InviteManager />
       </div>
+
     </>
   );
 }

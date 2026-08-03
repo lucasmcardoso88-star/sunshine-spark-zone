@@ -57,13 +57,27 @@ function LoginPage() {
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [signupConfirm, setSignupConfirm] = useState("");
+  const [inviteToken, setInviteToken] = useState("");
+  const [inviteValid, setInviteValid] = useState(false);
 
   useEffect(() => {
     seed().catch(() => {});
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) navigate({ to: "/" });
     });
+    const token = new URLSearchParams(window.location.search).get("convite")?.trim() ?? "";
+    if (!token) return;
+    setInviteToken(token);
+    supabase.rpc("invite_is_valid", { _token: token }).then(({ data, error }) => {
+      if (error || data !== true) {
+        toast.error("Este link de convite é inválido, já foi usado ou expirou.");
+        return;
+      }
+      setInviteValid(true);
+      setTab("signup");
+    });
   }, []);
+
 
   async function handleCredentials(e: React.FormEvent) {
     e.preventDefault();
@@ -137,6 +151,10 @@ function LoginPage() {
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
+    if (!inviteValid || !inviteToken) {
+      toast.error("O cadastro é permitido somente por link de convite válido.");
+      return;
+    }
     if (signupPassword.length < 8) {
       toast.error("A senha deve ter no mínimo 8 caracteres.");
       return;
@@ -151,10 +169,11 @@ function LoginPage() {
         email: signupEmail.trim(),
         password: signupPassword,
         options: {
-          data: { full_name: fullName.trim() },
+          data: { full_name: fullName.trim(), invite_token: inviteToken },
           emailRedirectTo: window.location.origin,
         },
       });
+
       if (error) {
         toast.error(error.message);
         return;
@@ -481,8 +500,8 @@ function LoginPage() {
                 </div>
 
                 <p className="text-xs text-slate-500">
-                  A conta criada recebe perfil <strong className="text-[#3b9df6]">master admin</strong>,
-                  com acesso completo ao painel.
+                  Cadastro autorizado por convite. A conta criada recebe perfil{" "}
+                  <strong className="text-[#3b9df6]">master admin</strong>, com acesso completo ao painel.
                 </p>
 
                 <button type="submit" disabled={loading} className={submitBtn}>
@@ -510,9 +529,9 @@ function LoginPage() {
                     Entrar
                   </button>
                 </>
-              ) : (
+              ) : inviteValid ? (
                 <>
-                  Não tem uma conta?{" "}
+                  Convite validado.{" "}
                   <button
                     type="button"
                     onClick={() => setTab("signup")}
@@ -521,8 +540,13 @@ function LoginPage() {
                     Criar conta
                   </button>
                 </>
+              ) : (
+                <span className="text-slate-500">
+                  Acesso restrito. Novas contas somente por link de convite.
+                </span>
               )}
             </p>
+
 
             <div className="mt-9 flex items-center gap-5">
               <span className="h-px flex-1 bg-[#152437]" />
