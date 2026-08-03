@@ -39,7 +39,7 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
-type Tab = "login" | "code";
+type Tab = "login" | "code" | "signup";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -52,6 +52,10 @@ function LoginPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
+  const [signupConfirm, setSignupConfirm] = useState("");
 
   useEffect(() => {
     seed().catch(() => {});
