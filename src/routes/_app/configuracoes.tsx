@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { COMPANIES } from "@/data/mock";
 import { InviteManager } from "@/components/settings/InviteManager";
+import { CollaboratorsManager } from "@/components/settings/CollaboratorsManager";
 
 import { Building2, Link2, Target, Bell, Mail, Users, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
