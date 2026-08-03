@@ -134,6 +134,53 @@ function LoginPage() {
     }
   }
 
+  async function handleSignup(e: React.FormEvent) {
+    e.preventDefault();
+    if (signupPassword.length < 8) {
+      toast.error("A senha deve ter no mínimo 8 caracteres.");
+      return;
+    }
+    if (signupPassword !== signupConfirm) {
+      toast.error("As senhas não coincidem.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: signupEmail.trim(),
+        password: signupPassword,
+        options: {
+          data: { full_name: fullName.trim() },
+          emailRedirectTo: window.location.origin,
+        },
+      });
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      if (data.session) {
+        toast.success("Conta criada! Acesso master admin liberado.");
+        navigate({ to: "/" });
+        return;
+      }
+      const { error: signInErr } = await supabase.auth.signInWithPassword({
+        email: signupEmail.trim(),
+        password: signupPassword,
+      });
+      if (signInErr) {
+        toast.success("Conta criada! Faça login para continuar.");
+        setEmail(signupEmail.trim());
+        setTab("login");
+        return;
+      }
+      toast.success("Conta criada! Acesso master admin liberado.");
+      navigate({ to: "/" });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
   async function handleForgot() {
     if (!email) {
       toast.error("Informe seu e-mail primeiro.");
