@@ -87,8 +87,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "Controladoria Agência — Dashboard Financeiro" },
       { name: "twitter:description", content: "Dashboard de controladoria financeira para agências de marketing." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/db48a090-63c1-47f2-aea9-79c46cb74828" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/db48a090-63c1-47f2-aea9-79c46cb74828" },
+      { property: "og:url", content: "https://controladoria.somus.group/" },
+      { property: "og:image", content: "https://controladoria.somus.group/og-image.png" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { name: "twitter:image", content: "https://controladoria.somus.group/og-image.png" },
     ],
     links: [
       {
