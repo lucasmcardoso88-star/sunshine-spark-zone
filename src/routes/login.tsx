@@ -9,6 +9,7 @@ import {
   Lock,
   Mail,
   ShieldCheck,
+  UserPlus,
 } from "lucide-react";
 import somusLogo from "@/assets/somus-logo-white.png.asset.json";
 import loginHero from "@/assets/login-hero.jpg";
