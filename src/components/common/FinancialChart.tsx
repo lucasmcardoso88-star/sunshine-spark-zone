@@ -300,6 +300,7 @@ export function HorizontalBarsChart({
           </div>
         );
       })}
+      </div>
     </div>
   );
 }
