@@ -81,9 +81,17 @@ function LoginPage() {
 
   async function handleCredentials(e: React.FormEvent) {
     e.preventDefault();
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail || !password) {
+      toast.error("Informe e-mail e senha.");
+      return;
+    }
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password,
+      });
       if (!error) {
         toast.success("Bem-vindo!");
         navigate({ to: "/" });
@@ -92,7 +100,7 @@ function LoginPage() {
       const msg = (error.message ?? "").toLowerCase();
       if (msg.includes("not confirmed") || msg.includes("confirm")) {
         const { error: otpErr } = await supabase.auth.signInWithOtp({
-          email,
+          email: cleanEmail,
           options: { shouldCreateUser: false },
         });
         if (otpErr) {
@@ -102,6 +110,8 @@ function LoginPage() {
         toast.success("Enviamos um código de verificação para seu e-mail.");
         setTab("code");
         setOtpSent(true);
+      } else if (msg.includes("invalid login credentials")) {
+        toast.error("E-mail ou senha incorretos. Confira o e-mail usado no cadastro.");
       } else {
         toast.error(error.message);
       }
@@ -109,6 +119,7 @@ function LoginPage() {
       setLoading(false);
     }
   }
+
 
   async function sendCode(e: React.FormEvent) {
     e.preventDefault();
