@@ -5,6 +5,7 @@ import { DashboardTabs } from "./DashboardTabs";
 import { FiltersProvider } from "@/context/FiltersContext";
 import { Toaster } from "@/components/ui/sonner";
 import { HudBackground } from "@/components/fx/HudBackground";
+import { ContentBoundary } from "./ContentBoundary";
 
 export function AppLayout({ children }: { children: ReactNode }) {
   return (
@@ -17,7 +18,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <SidebarFilters />
             <div className="flex-1 min-w-0">
               <DashboardTabs />
-              <main className="mx-auto w-full max-w-[1600px] p-4 sm:p-6">{children}</main>
+              <main className="mx-auto w-full max-w-[1600px] p-4 sm:p-6">
+                <ContentBoundary>{children}</ContentBoundary>
+              </main>
+
             </div>
           </div>
         </div>
