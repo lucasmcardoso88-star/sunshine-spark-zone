@@ -125,6 +125,10 @@ function ConfiguracoesPage() {
         </Section>
 
         <InviteManager />
+
+        <div className="lg:col-span-2">
+          <CollaboratorsManager />
+        </div>
       </div>
 
     </>
