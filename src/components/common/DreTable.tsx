@@ -113,8 +113,8 @@ export function DreTable({
         <thead className="hud-sticky-head text-[10px] tracking-[0.2em] text-[color:var(--neon)]">
           <tr>
             <th className="hud-sticky-col z-30 px-4 py-3 text-left">Linha</th>
-            {months.map((m) => (
-              <th key={m} className="text-right px-3 py-3 whitespace-nowrap">
+            {months.map((m, mi) => (
+              <th key={`${m}-${mi}`} className="text-right px-3 py-3 whitespace-nowrap">
                 {m}
               </th>
             ))}

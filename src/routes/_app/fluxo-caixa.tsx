@@ -76,25 +76,25 @@ function FluxoCaixaPage() {
           <thead className="bg-secondary/60 text-xs tracking-wide text-muted-foreground">
             <tr>
               <th className="text-left px-4 py-3 sticky left-0 bg-secondary/60">Linha</th>
-              {all.map((k) => (<th key={k.monthIndex} className="text-right px-3 py-3">{MONTHS_PT[k.monthIndex]}</th>))}
+              {all.map((k) => (<th key={`${k.year}-${k.monthIndex}`} className="text-right px-3 py-3">{MONTHS_PT[k.monthIndex]}</th>))}
             </tr>
           </thead>
           <tbody>
             <tr className="border-t border-border/60">
               <td className="px-4 py-2 sticky left-0 bg-card">Entradas</td>
-              {all.map((k) => (<td key={k.monthIndex} className="px-3 py-2 text-right tabular-nums">{formatBRL(k.cashIn)}</td>))}
+              {all.map((k) => (<td key={`${k.year}-${k.monthIndex}`} className="px-3 py-2 text-right tabular-nums">{formatBRL(k.cashIn)}</td>))}
             </tr>
             <tr className="border-t border-border/60">
               <td className="px-4 py-2 sticky left-0 bg-card">Saídas</td>
-              {all.map((k) => (<td key={k.monthIndex} className="px-3 py-2 text-right tabular-nums text-destructive">{formatBRL(-k.cashOut)}</td>))}
+              {all.map((k) => (<td key={`${k.year}-${k.monthIndex}`} className="px-3 py-2 text-right tabular-nums text-destructive">{formatBRL(-k.cashOut)}</td>))}
             </tr>
             <tr className="border-t border-border/60 bg-primary/5 font-medium">
               <td className="px-4 py-2 sticky left-0 bg-primary/5">Saldo do mês</td>
-              {all.map((k) => (<td key={k.monthIndex} className="px-3 py-2 text-right tabular-nums">{formatBRL(k.cashIn - k.cashOut)}</td>))}
+              {all.map((k) => (<td key={`${k.year}-${k.monthIndex}`} className="px-3 py-2 text-right tabular-nums">{formatBRL(k.cashIn - k.cashOut)}</td>))}
             </tr>
             <tr className="border-t border-border/60 bg-primary/10 font-semibold">
               <td className="px-4 py-2 sticky left-0 bg-primary/10">Saldo acumulado</td>
-              {all.map((k) => (<td key={k.monthIndex} className="px-3 py-2 text-right tabular-nums">{formatBRL(k.cashBalance)}</td>))}
+              {all.map((k) => (<td key={`${k.year}-${k.monthIndex}`} className="px-3 py-2 text-right tabular-nums">{formatBRL(k.cashBalance)}</td>))}
             </tr>
           </tbody>
         </table>
