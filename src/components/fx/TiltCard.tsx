@@ -9,7 +9,7 @@ export function TiltCard({
   children,
   className,
   intensity = 7,
-  spotlight = true,
+  spotlight = false,
   sweep = false,
   style,
 }: {
