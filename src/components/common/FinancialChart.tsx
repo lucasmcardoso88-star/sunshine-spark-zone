@@ -60,7 +60,7 @@ function ChartTooltip({
   return (
     <div className="min-w-40 rounded-xl border border-border/70 bg-popover/95 p-3 shadow-lg backdrop-blur">
       {label != null ? (
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <p className="mb-2 text-[11px] font-semibold tracking-wider text-muted-foreground">
           {label}
         </p>
       ) : null}

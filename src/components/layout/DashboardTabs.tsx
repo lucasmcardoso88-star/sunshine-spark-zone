@@ -44,7 +44,7 @@ export function DashboardTabs() {
               key={t.to}
               to={t.to}
               className={cn(
-                "relative inline-flex items-center gap-2.5 whitespace-nowrap rounded-t-xl px-4 py-3.5 text-xs font-bold uppercase tracking-wider transition-all duration-300",
+                "relative inline-flex items-center gap-2.5 whitespace-nowrap rounded-t-xl px-4 py-3.5 text-xs font-bold tracking-wider transition-all duration-300",
                 active
                   ? "text-[color:var(--neon)] neon-text"
                   : "text-muted-foreground hover:text-foreground",

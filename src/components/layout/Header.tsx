@@ -75,7 +75,7 @@ export function Header() {
             <p className="truncate text-lg font-bold tracking-tight text-foreground neon-text">
               <GlyphText text="BPO Controladoria" />
             </p>
-            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[color:var(--neon)]">
+            <p className="text-[10px] font-bold tracking-[0.28em] text-[color:var(--neon)]">
               Enterprise Intelligence
             </p>
           </div>
@@ -84,7 +84,7 @@ export function Header() {
 
         <div className="col-span-2 flex min-w-0 flex-wrap items-center gap-4 lg:col-span-1 lg:ml-12 lg:flex-nowrap">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted border border-border">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Unidade</span>
+            <span className="text-[10px] font-bold tracking-widest text-muted-foreground">Unidade</span>
             <Select value={company} onValueChange={(v) => setCompany(v as CompanyId)}>
               <SelectTrigger className="h-7 w-auto min-w-[140px] border-none bg-transparent p-0 text-sm font-normal text-foreground shadow-none focus:ring-0 normal-case">
                 <SelectValue />
@@ -102,14 +102,14 @@ export function Header() {
           <div className="hidden items-center gap-3 xl:flex">
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
               <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-              <span className="text-[10px] font-bold text-emerald-500 uppercase">Live Sync</span>
+              <span className="text-[10px] font-bold text-emerald-500">Live Sync</span>
             </div>
           </div>
         </div>
 
         <div className="flex items-center justify-end gap-4 lg:ml-auto">
           <div className="hidden text-right xl:block">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Última Sincronização</p>
+            <p className="text-[10px] font-bold tracking-widest text-muted-foreground">Última Sincronização</p>
             <p className="text-xs font-bold text-foreground/80">{lastUpdate}</p>
           </div>
           <Button

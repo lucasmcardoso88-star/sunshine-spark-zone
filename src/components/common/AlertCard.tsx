@@ -75,14 +75,14 @@ export function AlertCard({ alert, onResolve }: { alert: AlertEvent; onResolve?:
                 </SheetHeader>
                 <div className="mt-6 space-y-5">
                   <section className="rounded-2xl border border-border p-4">
-                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    <p className="text-xs font-medium tracking-wide text-muted-foreground">
                       Descrição
                     </p>
                     <p className="mt-2 text-sm text-foreground">{alert.description}</p>
                   </section>
                   <div className="grid gap-3 sm:grid-cols-2">
                     <section className="rounded-2xl border border-border p-4">
-                      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      <p className="text-xs font-medium tracking-wide text-muted-foreground">
                         Impacto financeiro
                       </p>
                       <p
@@ -92,7 +92,7 @@ export function AlertCard({ alert, onResolve }: { alert: AlertEvent; onResolve?:
                       </p>
                     </section>
                     <section className="rounded-2xl border border-border p-4">
-                      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      <p className="text-xs font-medium tracking-wide text-muted-foreground">
                         Valores comparados
                       </p>
                       <p className="mt-2 text-sm text-foreground">
@@ -101,13 +101,13 @@ export function AlertCard({ alert, onResolve }: { alert: AlertEvent; onResolve?:
                     </section>
                   </div>
                   <section className="rounded-2xl border border-border p-4">
-                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    <p className="text-xs font-medium tracking-wide text-muted-foreground">
                       Recomendação
                     </p>
                     <p className="mt-2 text-sm text-foreground">{alert.recommendation}</p>
                   </section>
                   <section className="rounded-2xl border border-border p-4">
-                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    <p className="text-xs font-medium tracking-wide text-muted-foreground">
                       Origem do dado
                     </p>
                     <div className="mt-3 flex items-center gap-2 text-sm text-foreground">
@@ -116,7 +116,7 @@ export function AlertCard({ alert, onResolve }: { alert: AlertEvent; onResolve?:
                     </div>
                   </section>
                   <section className="rounded-2xl border border-border p-4">
-                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    <p className="text-xs font-medium tracking-wide text-muted-foreground">
                       Timeline
                     </p>
                     <ol className="mt-3 space-y-3 text-sm text-foreground">

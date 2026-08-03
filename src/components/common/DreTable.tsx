@@ -110,7 +110,7 @@ export function DreTable({
   return (
     <div className="holo max-h-[70vh] overflow-auto">
       <table className="w-full min-w-[920px] text-sm">
-        <thead className="hud-sticky-head text-[10px] uppercase tracking-[0.2em] text-[color:var(--neon)]">
+        <thead className="hud-sticky-head text-[10px] tracking-[0.2em] text-[color:var(--neon)]">
           <tr>
             <th className="hud-sticky-col z-30 px-4 py-3 text-left">Linha</th>
             {months.map((m) => (

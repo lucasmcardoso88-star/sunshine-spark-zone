@@ -203,7 +203,7 @@ function PainelGerencial() {
       </div>
 
       {/* Indicadores complementares */}
-      <p className="mb-3 mt-8 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+      <p className="mb-3 mt-8 text-[11px] font-semibold tracking-wider text-muted-foreground">
         Detalhamento
       </p>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
@@ -264,7 +264,7 @@ function PainelGerencial() {
         </Card>
       ) : null}
 
-      <p className="mb-3 mt-8 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+      <p className="mb-3 mt-8 text-[11px] font-semibold tracking-wider text-muted-foreground">
         Análises
       </p>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
