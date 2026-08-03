@@ -151,6 +151,10 @@ function LoginPage() {
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
+    if (!inviteValid || !inviteToken) {
+      toast.error("O cadastro é permitido somente por link de convite válido.");
+      return;
+    }
     if (signupPassword.length < 8) {
       toast.error("A senha deve ter no mínimo 8 caracteres.");
       return;
@@ -165,10 +169,11 @@ function LoginPage() {
         email: signupEmail.trim(),
         password: signupPassword,
         options: {
-          data: { full_name: fullName.trim() },
+          data: { full_name: fullName.trim(), invite_token: inviteToken },
           emailRedirectTo: window.location.origin,
         },
       });
+
       if (error) {
         toast.error(error.message);
         return;
