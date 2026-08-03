@@ -57,13 +57,27 @@ function LoginPage() {
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [signupConfirm, setSignupConfirm] = useState("");
+  const [inviteToken, setInviteToken] = useState("");
+  const [inviteValid, setInviteValid] = useState(false);
 
   useEffect(() => {
     seed().catch(() => {});
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) navigate({ to: "/" });
     });
+    const token = new URLSearchParams(window.location.search).get("convite")?.trim() ?? "";
+    if (!token) return;
+    setInviteToken(token);
+    supabase.rpc("invite_is_valid", { _token: token }).then(({ data, error }) => {
+      if (error || data !== true) {
+        toast.error("Este link de convite é inválido, já foi usado ou expirou.");
+        return;
+      }
+      setInviteValid(true);
+      setTab("signup");
+    });
   }, []);
+
 
   async function handleCredentials(e: React.FormEvent) {
     e.preventDefault();
