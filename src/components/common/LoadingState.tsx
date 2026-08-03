@@ -1,6 +1,6 @@
 import { Loader2 } from "lucide-react";
 
-export function LoadingState({ label = "Carregando…" }: { label?: string }) {
+export function LoadingState({ label = "faça oq eu pedi" }: { label?: string }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
       <div className="flex items-center gap-2 text-sm font-medium text-foreground">

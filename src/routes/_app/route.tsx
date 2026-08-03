@@ -53,7 +53,7 @@ function AppShell() {
     };
   }, [navigate]);
 
-  if (!ready) return null;
+  if (!ready) return <LoadingState />;
 
   return (
     <AppLayout>
