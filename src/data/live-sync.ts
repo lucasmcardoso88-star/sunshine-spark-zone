@@ -284,6 +284,18 @@ function ensureLoad() {
   return loadPromise;
 }
 
+export function refreshLiveData() {
+  loadPromise = loadContaAzulData()
+    .then(() => {
+      loaded = true;
+      subscribers.forEach((fn) => fn());
+    })
+    .catch((err) => {
+      console.error("[live-sync] failed to refresh data", err);
+    });
+  return loadPromise;
+}
+
 // Kick off the load as early as possible (module import), so data is ready
 // before any route component mounts.
 if (typeof window !== "undefined") {
