@@ -121,7 +121,10 @@ function ConfiguracoesPage() {
             </li>
           </ul>
         </Section>
+
+        <InviteManager />
       </div>
+
     </>
   );
 }
