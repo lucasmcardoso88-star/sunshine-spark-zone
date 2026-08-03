@@ -64,7 +64,7 @@ export function SidebarFilters() {
           {!collapsed && (
             <div className="flex items-center gap-2">
               <div className="h-2 w-2 rounded-full bg-primary shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+              <p className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground">
                 Filtros Inteligentes
               </p>
             </div>
@@ -93,13 +93,13 @@ export function SidebarFilters() {
           <div className="space-y-6 animate-in fade-in slide-in-from-left-2 duration-300">
             <div className="flex items-center justify-between">
               <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
-                <span className="text-[10px] font-bold text-primary uppercase">{activeFilterCount} Ativos</span>
+                <span className="text-[10px] font-bold text-primary">{activeFilterCount} Ativos</span>
               </div>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={resetFilters}
-                className="h-7 text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground"
+                className="h-7 text-[10px] font-bold tracking-wider text-muted-foreground hover:text-foreground"
               >
                 Resetar
               </Button>
@@ -204,7 +204,7 @@ export function SidebarFilters() {
 function FilterField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-2">
-      <Label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1">{label}</Label>
+      <Label className="text-[10px] font-bold tracking-wider text-muted-foreground ml-1">{label}</Label>
       {children}
     </div>
   );

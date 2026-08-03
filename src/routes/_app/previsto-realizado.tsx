@@ -88,13 +88,13 @@ function PrevistoRealizadoPage() {
       <PageHeader title="Previsto x Realizado" description="Previsto = total do período (liquidado + pendente). Realizado = liquidado." />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
         <Card className="p-5 rounded-2xl shadow-sm border-border/60">
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">Receita realizada x prevista</p>
+          <p className="text-xs tracking-wide text-muted-foreground">Receita realizada x prevista</p>
           <p className="mt-2 text-2xl font-semibold">{formatBRL(revenueRealized)} <span className="text-sm font-normal text-muted-foreground">/ {formatBRL(revenuePlanned)}</span></p>
           <Progress value={revPct} className="mt-3 h-3" />
           <p className="mt-2 text-xs text-muted-foreground">{revPct.toFixed(1)}% do previsto</p>
         </Card>
         <Card className="p-5 rounded-2xl shadow-sm border-border/60">
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">Despesas realizadas x previstas</p>
+          <p className="text-xs tracking-wide text-muted-foreground">Despesas realizadas x previstas</p>
           <p className="mt-2 text-2xl font-semibold">{formatBRL(expenseRealized)} <span className="text-sm font-normal text-muted-foreground">/ {formatBRL(expensePlanned)}</span></p>
           <Progress value={expPct} className="mt-3 h-3" />
           <p className="mt-2 text-xs text-muted-foreground">{expPct.toFixed(1)}% do previsto</p>

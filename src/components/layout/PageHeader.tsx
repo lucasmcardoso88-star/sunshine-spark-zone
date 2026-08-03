@@ -11,7 +11,7 @@ export function PageHeader({ title, description }: { title: string; description?
             "linear-gradient(90deg, transparent, color-mix(in oklab, var(--neon) 60%, transparent), transparent)",
         }}
       />
-      <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.35em] text-[color:var(--neon)]">
+      <p className="mb-1 text-[10px] font-bold tracking-[0.35em] text-[color:var(--neon)]">
         // sistema
       </p>
       <h1 className="text-2xl font-semibold tracking-tight text-foreground neon-text sm:text-3xl">

@@ -73,7 +73,7 @@ function FluxoCaixaPage() {
 
       <div className="mt-6 overflow-x-auto rounded-2xl border border-border/60 bg-card">
         <table className="w-full text-sm">
-          <thead className="bg-secondary/60 text-xs uppercase tracking-wide text-muted-foreground">
+          <thead className="bg-secondary/60 text-xs tracking-wide text-muted-foreground">
             <tr>
               <th className="text-left px-4 py-3 sticky left-0 bg-secondary/60">Linha</th>
               {all.map((k) => (<th key={k.monthIndex} className="text-right px-3 py-3">{MONTHS_PT[k.monthIndex]}</th>))}

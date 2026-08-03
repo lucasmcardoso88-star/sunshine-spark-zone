@@ -41,7 +41,7 @@ export function DataTable<T>({
             {columns.map((c, ci) => (
               <TableHead
                 key={c.key}
-                className={`h-11 text-[10px] font-bold uppercase tracking-[0.2em] text-[color:var(--neon)] ${
+                className={`h-11 text-[10px] font-bold tracking-[0.2em] text-[color:var(--neon)] ${
                   ci === 0 ? "hud-sticky-col" : ""
                 } ${c.className ?? ""}`}
               >

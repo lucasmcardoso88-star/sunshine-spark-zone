@@ -43,7 +43,7 @@ export function KpiCard({
     <TiltCard className="overflow-hidden p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          <p className="min-w-0 truncate text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+          <p className="min-w-0 truncate text-[11px] font-bold tracking-[0.18em] text-muted-foreground">
             {label}
           </p>
           {formula ? (

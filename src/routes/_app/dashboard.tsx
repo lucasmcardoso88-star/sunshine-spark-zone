@@ -288,7 +288,7 @@ function DreDashboardPage() {
               <div className="pt-6 border-t border-border space-y-4">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Melhor mês</span>
-                  <span className="font-bold text-emerald-500 uppercase tracking-tighter">Outubro</span>
+                  <span className="font-bold text-emerald-500 tracking-tighter">Outubro</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Maior Receita</span>
@@ -424,7 +424,7 @@ function IndicatorCard({ label, value, sub, icon, numeric }: { label: string, va
         {icon}
       </div>
       <div>
-        <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">{label}</p>
+        <p className="text-[10px] tracking-widest text-muted-foreground font-bold">{label}</p>
         <p className={cn("text-lg font-bold tabular-nums", numeric != null && numeric < 0 && "text-rose-500")}>{value}</p>
         <p className="text-[10px] text-muted-foreground font-medium">{sub}</p>
       </div>
