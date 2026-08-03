@@ -145,7 +145,7 @@ export function InviteManager() {
                   {inv.used_at ? (
                     <StatusBadge tone="neutral">Utilizado</StatusBadge>
                   ) : expired ? (
-                    <StatusBadge tone="negative">Expirado</StatusBadge>
+                    <StatusBadge tone="critical">Expirado</StatusBadge>
                   ) : (
                     <StatusBadge tone="positive">Ativo</StatusBadge>
                   )}
