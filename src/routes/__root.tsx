@@ -83,7 +83,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "Controladoria Agência — Dashboard Financeiro" },
       { property: "og:description", content: "Dashboard de controladoria financeira para agências de marketing." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "Controladoria Agência — Dashboard Financeiro" },
       { name: "twitter:description", content: "Dashboard de controladoria financeira para agências de marketing." },
