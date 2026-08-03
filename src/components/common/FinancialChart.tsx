@@ -118,7 +118,7 @@ export function ChartCard({
         </div>
         {action}
       </div>
-      <div className="h-72 w-full">{children}</div>
+      <div className="h-72 w-full min-w-0 overflow-hidden">{children}</div>
     </Card>
   );
 }
@@ -272,7 +272,8 @@ export function HorizontalBarsChart({
   const max = data.reduce((acc, d) => Math.max(acc, Math.abs(Number(d[valueKey]) || 0)), 1);
 
   return (
-    <div className="flex h-full flex-col justify-center gap-3.5 pr-1">
+    <div className="flex h-full flex-col gap-3.5 overflow-y-auto pr-2">
+      <div className="my-auto flex flex-col gap-3.5">
       {data.map((d, i) => {
         const value = Number(d[valueKey]) || 0;
         const pct = (Math.abs(value) / max) * 100;
@@ -299,6 +300,7 @@ export function HorizontalBarsChart({
           </div>
         );
       })}
+      </div>
     </div>
   );
 }
