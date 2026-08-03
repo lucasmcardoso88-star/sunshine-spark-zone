@@ -174,10 +174,15 @@ function LoginPage() {
       toast.error("As senhas não coincidem.");
       return;
     }
+    const cleanEmail = signupEmail.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(cleanEmail)) {
+      toast.error("Informe um e-mail válido (ex.: nome@empresa.com.br).");
+      return;
+    }
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signUp({
-        email: signupEmail.trim(),
+        email: cleanEmail,
         password: signupPassword,
         options: {
           data: { full_name: fullName.trim(), invite_token: inviteToken },
@@ -195,17 +200,18 @@ function LoginPage() {
         return;
       }
       const { error: signInErr } = await supabase.auth.signInWithPassword({
-        email: signupEmail.trim(),
+        email: cleanEmail,
         password: signupPassword,
       });
       if (signInErr) {
         toast.success("Conta criada! Faça login para continuar.");
-        setEmail(signupEmail.trim());
+        setEmail(cleanEmail);
         setTab("login");
         return;
       }
       toast.success("Conta criada! Acesso master admin liberado.");
       navigate({ to: "/" });
+
     } finally {
       setLoading(false);
     }
