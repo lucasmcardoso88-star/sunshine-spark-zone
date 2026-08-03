@@ -418,48 +418,21 @@
   }
 }
 
-@keyframes hud-row-scan {
-  from {
-    background-position: -60% 0;
-  }
-  to {
-    background-position: 160% 0;
-  }
-}
-
-/* Hover: moving light scan across the row instead of a flat blue fill */
+/* Hover: destaque simples e discreto, sem animação */
 @utility hud-row-hover {
-  transition: box-shadow 0.3s ease;
+  transition: background-color 0.2s ease;
   &:hover {
-    background-image: linear-gradient(
-      90deg,
-      transparent 0%,
-      color-mix(in oklab, var(--neon) 6%, transparent) 25%,
-      color-mix(in oklab, var(--neon) 26%, transparent) 50%,
-      color-mix(in oklab, var(--neon) 6%, transparent) 75%,
-      transparent 100%
-    );
-    background-size: 60% 100%;
-    background-repeat: no-repeat;
-    animation: hud-row-scan 1.4s linear infinite;
-    box-shadow: inset 0 0 30px -14px var(--hud-glow);
+    background-color: color-mix(in oklab, var(--muted) 55%, transparent);
   }
 }
 
 @utility hud-row-hover-soft {
-  transition: box-shadow 0.3s ease;
+  transition: background-color 0.2s ease;
   &:hover {
-    background-image: linear-gradient(
-      90deg,
-      transparent 0%,
-      color-mix(in oklab, var(--neon) 16%, transparent) 50%,
-      transparent 100%
-    );
-    background-size: 55% 100%;
-    background-repeat: no-repeat;
-    animation: hud-row-scan 1.6s linear infinite;
+    background-color: color-mix(in oklab, var(--muted) 35%, transparent);
   }
 }
+
 
 @utility neon-pos {
   color: var(--success);
