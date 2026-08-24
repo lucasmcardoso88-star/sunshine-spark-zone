@@ -4,17 +4,21 @@ import { dateIsInRange, getLocalMonthIndex, monthOverlapsRange } from "@/lib/dat
 import { classifyTransaction } from "@/lib/dre-classify";
 
 
+/** Data usada conforme a base de cálculo escolhida (Caixa x Competência). */
+export function txDate(t: Transaction, basis: FiltersState["basis"]): string {
+  return (basis === "cash" ? t.paymentDate || t.date : t.competencyDate || t.date) || t.date;
+}
+
 export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
   const hasCustomRange = Boolean(f.customStart || f.customEnd);
 
-  // When filtering by a specific company (or with any tx-affecting filter),
-  // derive KPIs from transactions so the company/category/cost-center filter
-  // actually reflects on all dashboards.
-  const deriveFromTx =
-    f.company !== "all" || f.category !== "all" || f.costCenter !== "all";
+  // Sempre derivamos dos lançamentos para que empresa, categoria, centro de custo
+  // e a base de cálculo (Caixa x Competência) reflitam em todos os painéis.
+  const deriveFromTx = true;
 
   if (deriveFromTx) {
     const txs = getTransactions(f);
+
     const buckets = new Map<string, MonthlyKpi>();
     const key = (y: number, m: number) => `${y}-${m}`;
     for (const t of txs) {
