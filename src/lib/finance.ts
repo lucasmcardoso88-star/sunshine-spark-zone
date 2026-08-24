@@ -99,19 +99,21 @@ export function getMonthlyKpis(f: FiltersState): MonthlyKpi[] {
 export function getTransactions(f: FiltersState): Transaction[] {
   const hasCustomRange = Boolean(f.customStart || f.customEnd);
   const allYears = f.year === 0;
-  const list = hasCustomRange || allYears
-    ? Object.values(TRANSACTIONS_BY_YEAR).flat()
-    : (TRANSACTIONS_BY_YEAR[f.year] ?? []);
+  // Os lançamentos são indexados por vencimento; como a base pode ser competência
+  // ou caixa, percorremos todos e filtramos pela data correta.
+  const list = Object.values(TRANSACTIONS_BY_YEAR).flat();
   const months = hasCustomRange
     ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     : monthsForFilters(f);
   return list.filter((t) => {
     if (f.company !== "all" && t.company !== f.company) return false;
+    const d = txDate(t, f.basis);
     if (!hasCustomRange) {
-      const txMonth = getLocalMonthIndex(t.date);
+      if (!allYears && Number(d.slice(0, 4)) !== f.year) return false;
+      const txMonth = getLocalMonthIndex(d);
       if (txMonth == null || !months.includes(txMonth)) return false;
     }
-    if (hasCustomRange && !dateIsInRange(t.date, f.customStart, f.customEnd)) return false;
+    if (hasCustomRange && !dateIsInRange(d, f.customStart, f.customEnd)) return false;
     if (f.costCenter !== "all" && t.costCenter !== f.costCenter) return false;
     if (f.category !== "all" && t.category !== f.category) return false;
     if (f.payment === "paid" && t.status !== "Pago") return false;
@@ -119,6 +121,7 @@ export function getTransactions(f: FiltersState): Transaction[] {
     return true;
   });
 }
+
 
 /** Aggregates monthly KPIs for the period covered by current filters. */
 export function getAggregateKpis(f: FiltersState) {
