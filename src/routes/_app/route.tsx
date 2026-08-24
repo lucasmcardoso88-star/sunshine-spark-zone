@@ -54,7 +54,7 @@ function AppShell() {
     };
   }, [navigate]);
 
-  if (!ready) return <LoadingState label="confere se ta puxando todos os dados do banco de dados e veja se ta tudo ok , nao e pra escrever nada , e pra puxar tudo do banco de dados e conferir se ta tudo certo" />;
+  if (!ready) return <LoadingState label="Carregando dados..." />;
 
   return (
     <AppLayout>
