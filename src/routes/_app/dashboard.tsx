@@ -172,8 +172,9 @@ function DreDashboardPage() {
             {/* KPI Cards */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
               <KpiPremium 
-                label="Receita Líquida" 
+                label="Receita Bruta" 
                 value={stats.receita} 
+
                 trend={12.5} 
                 icon={<TrendingUp className="text-blue-500" />} 
                 sparklineColor="#3B82F6"
